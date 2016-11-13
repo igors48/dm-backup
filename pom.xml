@@ -65,6 +65,7 @@
 
         <!-- for hot reload of the web application-->
         <outputDirectory>${project.build.directory}/${project.build.finalName}/WEB-INF/classes</outputDirectory>
+
         <plugins>
 
             <plugin>
@@ -82,10 +83,6 @@
                 <configuration>
                     <doCheck>true</doCheck>
                     <doUpdate>true</doUpdate>
-                    <format>{0,number,integer}</format>
-                    <items>
-                        <item>buildNumber</item>
-                    </items>
                 </configuration>
             </plugin>
 
