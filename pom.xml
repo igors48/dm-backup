@@ -61,10 +61,8 @@
 
     <build>
 
-        <finalName>${project.artifactId}-${app.version}.${buildNumber}</finalName>
-
         <!-- for hot reload of the web application-->
-        <outputDirectory>${project.build.directory}/${project.artifactId}/WEB-INF/classes</outputDirectory>
+        <outputDirectory>${project.build.directory}/${project.build.finalName}/WEB-INF/classes</outputDirectory>
 
         <plugins>
 
