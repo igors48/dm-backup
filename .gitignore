@@ -1,0 +1,9 @@
+.idea
+target
+*.log
+*.iml
+*.ipr
+*.iws
+*.rar
+
+build.properties.local
