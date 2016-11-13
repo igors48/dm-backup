@@ -16,7 +16,7 @@
 
     <properties>
         <app.id>dm-backup</app.id>
-        <app.version>1</app.version>
+        <app.version>1.0</app.version>
         <appengine.version>1.9.46</appengine.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
@@ -61,7 +61,7 @@
 
     <build>
 
-        <finalName>${project.artifactId}-${app.version}-${buildNumber}</finalName>
+        <finalName>${project.artifactId}-${app.version}.${buildNumber}</finalName>
 
         <!-- for hot reload of the web application-->
         <outputDirectory>${project.build.directory}/${project.build.finalName}/WEB-INF/classes</outputDirectory>
@@ -82,7 +82,10 @@
                 <configuration>
                     <doCheck>true</doCheck>
                     <doUpdate>true</doUpdate>
-                    <shortRevisionLength>5</shortRevisionLength>
+                    <format>{0,number,integer}</format>
+                    <items>
+                        <item>buildNumber</item>
+                    </items>
                 </configuration>
             </plugin>
 
