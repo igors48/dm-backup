@@ -1,9 +1,6 @@
 import org.junit.Before;
 import org.junit.Test;
-import service.Backup;
-import service.Loader;
-import service.Recipients;
-import service.Sender;
+import service.*;
 
 import java.util.Arrays;
 
@@ -18,11 +15,14 @@ public class BackupTest {
     private Sender sender;
     private Recipients recipients;
     private Backup backup;
+    private ServiceError serviceError;
 
     @Before
     public void setUp() throws Exception {
         this.loader = mock(Loader.class);
         this.sender = mock(Sender.class);
+        this.serviceError = mock(ServiceError.class);
+
         this.recipients = new Recipients("a", Arrays.asList("b", "c"));
 
         this.backup = new Backup(this.loader, this.sender, this.recipients);
@@ -39,6 +39,19 @@ public class BackupTest {
 
         verify(sender).sendContent("b", "content");
         verify(sender).sendContent("c", "content");
+        verifyNoMoreInteractions(sender);
+    }
+
+    @Test
+    public void whenContentNotReceivedThenItErrorSentToErrorRecipient() throws Exception {
+        when(loader.load()).thenThrow(new ServiceException(this.serviceError));
+
+        backup.execute();
+
+        verify(loader).load();
+        verifyNoMoreInteractions(loader);
+
+        verify(sender).sendError("a", this.serviceError);
         verifyNoMoreInteractions(sender);
     }
 
