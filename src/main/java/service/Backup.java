@@ -32,7 +32,7 @@ public class Backup {
         } catch (ServiceException exception) {
             LOGGER.log(Level.SEVERE, "Backup failed", exception);
 
-            sendError(exception);
+            sendError(exception.error);
         }
     }
 
@@ -50,15 +50,15 @@ public class Backup {
         } catch (ServiceException exception) {
             LOGGER.log(Level.SEVERE, format("Sending content to [ %s ] failed", recipient), exception);
 
-            this.sendError(exception);
+            this.sendError(exception.error);
         }
     }
 
-    private void sendError(final ServiceException exception) {
+    private void sendError(final ServiceError error) {
         final String errorRecipient = recipients.errorRecipient;
 
         try {
-            this.sender.sendError(errorRecipient, exception.error);
+            this.sender.sendError(errorRecipient, error);
         } catch (ServiceException anotherException) {
             LOGGER.log(Level.SEVERE, format("Sending error report to [ %s ] failed", errorRecipient), anotherException);
         }
