@@ -5,8 +5,8 @@ package service;
  */
 public interface Sender {
 
-    void sendContent(String content) throws ServiceException;
+    void sendContent(String recipient, String content) throws ServiceException;
 
-    void sendError(ServiceError error) throws ServiceException;
+    void sendError(String recipient, ServiceError error) throws ServiceException;
 
 }
