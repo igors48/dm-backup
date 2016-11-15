@@ -3,8 +3,10 @@ package service;
 /**
  * Created by igor on 14.11.2016.
  */
-public interface Loader {
+public class Loader {
 
-    String load() throws ServiceException;
+    public String load() throws ServiceException {
+        return "";
+    }
 
 }
