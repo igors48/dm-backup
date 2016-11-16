@@ -8,12 +8,16 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.zip.GZIPInputStream;
 
 /**
  * @author : igu
  */
 public class ConnectionTools {
+
+    private static final Logger LOGGER = Logger.getLogger(ConnectionTools.class.getName());
 
     public static final String CONTENT_ENCODING = "content-encoding";
     public static final String CONTENT_TYPE = "content-type";
@@ -93,7 +97,7 @@ public class ConnectionTools {
 
         for (final String header : headers.keySet()) {
 
-            if  (header == null) {
+            if (header == null) {
                 continue;
             }
 
@@ -117,7 +121,7 @@ public class ConnectionTools {
 
         for (final String header : headers.keySet()) {
 
-            if  (header == null) {
+            if (header == null) {
                 continue;
             }
 
@@ -180,6 +184,15 @@ public class ConnectionTools {
             return buffer.toByteArray();
         } finally {
             CloseableTools.close(gZipInputStream);
+        }
+    }
+
+    public static void disconnect(final HttpURLConnection connection) {
+
+        try {
+            connection.disconnect();
+        } catch (Exception exception) {
+            LOGGER.log(Level.SEVERE, "Error while disconnect", exception);
         }
     }
 

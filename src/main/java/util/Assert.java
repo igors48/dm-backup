@@ -1,5 +1,8 @@
 package util;
 
+import service.ServiceError;
+import service.ServiceException;
+
 /**
  * Author : Igor Usenko ( igors48@gmail.com )
  * Date : 28.04.13
@@ -10,6 +13,13 @@ public final class Assert {
 
         if (!value) {
             throw new IllegalArgumentException();
+        }
+    }
+
+    public static void guard(final boolean value, ServiceError error) throws ServiceException {
+
+        if (!value) {
+            throw new ServiceException(error);
         }
     }
 
