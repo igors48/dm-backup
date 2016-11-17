@@ -29,6 +29,8 @@ public class Backup {
         try {
             final String content = this.loader.load();
             sendContent(content);
+
+            LOGGER.info("Backup ok");
         } catch (ServiceException exception) {
             LOGGER.log(Level.SEVERE, "Backup failed", exception);
 
