@@ -7,6 +7,13 @@
     <system-properties>
         <property name="java.util.logging.config.file" value="WEB-INF/logging.properties"/>
 
-        <property name="a" value="${a}"/>
+        <property name="origin" value="${origin}"/>
+        <property name="host" value="${host}"/>
+        <property name="login.url" value="${login.url}"/>
+        <property name="login.referer" value="${login.referer}"/>
+        <property name="login.data" value="${login.data}"/>
+        <property name="download.url" value="${download.url}"/>
+        <property name="download.referer" value="${download.referer}"/>
+        <property name="download.data" value="${download.data}"/>
     </system-properties>
 </appengine-web-app>
