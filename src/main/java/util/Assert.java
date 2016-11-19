@@ -23,6 +23,13 @@ public final class Assert {
         }
     }
 
+    public static void guard(final boolean value, ServiceException exception) throws ServiceException {
+
+        if (!value) {
+            throw exception;
+        }
+    }
+
     private Assert() {
         // empty
     }

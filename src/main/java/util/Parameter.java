@@ -1,5 +1,7 @@
 package util;
 
+import org.apache.commons.validator.routines.EmailValidator;
+import util.apache.DomainValidator;
 import util.apache.UrlValidator;
 
 import java.util.regex.Pattern;
@@ -14,6 +16,8 @@ public final class Parameter {
 
     private static final String[] SCHEMES = {"http", "https"};
     private static final UrlValidator URL_VALIDATOR = new UrlValidator(SCHEMES);
+    private static final DomainValidator DOMAIN_VALIDATOR = DomainValidator.getInstance();
+    private static final EmailValidator EMAIL_VALIDATOR = EmailValidator.getInstance();
 
     private static final Pattern FILE_NAME_CHARS = Pattern.compile("[_a-zA-Z0-9\\-\\.]+");
 
@@ -46,6 +50,14 @@ public final class Parameter {
 
     public static boolean isValidUrl(final String value) {
         return notNull(value) && URL_VALIDATOR.isValid(value.toLowerCase());
+    }
+
+    public static boolean isValidDomain(final String value) {
+        return notNull(value) && DOMAIN_VALIDATOR.isValid(value.toLowerCase());
+    }
+
+    public static boolean isValidEmail(final String value) {
+        return notNull(value) && EMAIL_VALIDATOR.isValid(value.toLowerCase());
     }
 
     private Parameter() {
