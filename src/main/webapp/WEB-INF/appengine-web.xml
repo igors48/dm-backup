@@ -15,5 +15,7 @@
         <property name="download.url" value="${download.url}"/>
         <property name="download.referer" value="${download.referer}"/>
         <property name="download.data" value="${download.data}"/>
+        <property name="admin" value="${admin}"/>
+        <property name="recipients" value="${recipients}"/>
     </system-properties>
 </appengine-web-app>
