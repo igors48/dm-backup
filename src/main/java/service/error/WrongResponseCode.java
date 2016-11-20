@@ -1,11 +1,11 @@
 package service.error;
 
-import service.ServiceError;
+import service.ServiceException;
 
 /**
  * Created by igor on 16.11.2016.
  */
-public class WrongResponseCode extends ServiceError {
+public class WrongResponseCode extends ServiceException {
 
     public final int expected;
     public final int actual;

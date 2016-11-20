@@ -5,11 +5,11 @@ import service.ServiceException;
 /**
  * Created by igor on 16.11.2016.
  */
-public class IoError extends ServiceException {
+public class SendingException extends ServiceException {
 
     public String message;
 
-    public IoError(final String message) {
+    public SendingException(final String message) {
         this.message = message;
     }
 

@@ -17,13 +17,13 @@ public class BackupTest {
     private Loader loader;
     private Sender sender;
     private Backup backup;
-    private ServiceError serviceError;
+    private ServiceException serviceException;
 
     @Before
     public void setUp() throws Exception {
         this.loader = mock(Loader.class);
         this.sender = mock(Sender.class);
-        this.serviceError = mock(ServiceError.class);
+        this.serviceException = mock(ServiceException.class);
 
         final Recipients recipients = new Recipients("a", Arrays.asList("b", "c"));
 
@@ -48,7 +48,7 @@ public class BackupTest {
     public void whenContentCannotBeSentThenErrorSentToErrorRecipient() throws Exception {
         when(loader.load()).thenReturn(CONTENT);
 
-        doThrow(new ServiceException(this.serviceError)).when(sender).sendContent("b", CONTENT);
+        doThrow(this.serviceException).when(sender).sendContent("b", CONTENT);
 
         backup.execute();
 
@@ -56,21 +56,21 @@ public class BackupTest {
         verifyNoMoreInteractions(loader);
 
         verify(sender).sendContent("b", CONTENT);
-        verify(sender).sendError("a", this.serviceError);
+        verify(sender).sendException("a", this.serviceException);
         verify(sender).sendContent("c", CONTENT);
         verifyNoMoreInteractions(sender);
     }
 
     @Test
     public void whenContentNotReceivedThenErrorSentToErrorRecipient() throws Exception {
-        when(loader.load()).thenThrow(new ServiceException(this.serviceError));
+        when(loader.load()).thenThrow(this.serviceException);
 
         backup.execute();
 
         verify(loader).load();
         verifyNoMoreInteractions(loader);
 
-        verify(sender).sendError("a", this.serviceError);
+        verify(sender).sendException("a", this.serviceException);
         verifyNoMoreInteractions(sender);
     }
 
@@ -78,8 +78,8 @@ public class BackupTest {
     public void whenErrorCanNotBeSentThenNoExceptionThrown() throws Exception {
 
         try {
-            when(loader.load()).thenThrow(new ServiceException(this.serviceError));
-            doThrow(new ServiceException(this.serviceError)).when(sender).sendError("a", this.serviceError);
+            when(loader.load()).thenThrow(this.serviceException);
+            doThrow(this.serviceException).when(sender).sendException("a", this.serviceException);
 
             backup.execute();
         } catch (Exception exception) {

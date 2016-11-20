@@ -30,7 +30,7 @@ public class Loader {
         try {
             return downloadFile(login(getSession()));
         } catch (IOException exception) {
-            throw new ServiceException(new IoError(exception.getMessage()));
+            throw new IoError(exception.getMessage());
         }
     }
 

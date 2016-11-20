@@ -43,8 +43,8 @@ public class Configuration {
     private final List<String> recipients;
 
     public Configuration(final String origin, final String host, final String loginUrl, final String loginReferer, final String loginData, final String downloadUrl, final String downloadReferer, final String downloadData, final String admin, final List<String> recipients) throws ServiceException {
-        guard(isValidDomain(this.origin = origin), new InvalidConfigurationParameter("origin", origin));
-        guard(isValidUrl(this.host = host), new InvalidConfigurationParameter("host", host));
+        guard(isValidUrl(this.origin = origin), new InvalidConfigurationParameter("origin", origin));
+        guard(isValidDomain(this.host = host), new InvalidConfigurationParameter("host", host));
 
         guard(isValidUrl(this.loginUrl = loginUrl), new InvalidConfigurationParameter("loginUrl", loginUrl));
         guard(isValidUrl(this.loginReferer = loginReferer), new InvalidConfigurationParameter("loginReferer", loginReferer));

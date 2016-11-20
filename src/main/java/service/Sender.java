@@ -1,6 +1,6 @@
 package service;
 
-import service.error.SenderError;
+import service.error.SendingException;
 
 import javax.activation.DataHandler;
 import javax.activation.DataSource;
@@ -24,7 +24,7 @@ public class Sender {
 
     }
 
-    public void sendError(final String recipient, final ServiceError error) throws ServiceException {
+    public void sendException(final String recipient, final ServiceException exception) throws ServiceException {
 
     }
 
@@ -58,7 +58,7 @@ public class Sender {
 
             Transport.send(message);
         } catch (Exception exception) {
-            throw new ServiceException(new SenderError(exception.getMessage()));
+            throw new SendingException(exception.getMessage());
         }
     }
 

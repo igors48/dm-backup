@@ -11,7 +11,6 @@ public class InvalidConfigurationParameter extends ServiceException {
     public final String value;
 
     public InvalidConfigurationParameter(final String parameter, final String value) {
-        super(null);
         this.parameter = parameter;
         this.value = value;
     }

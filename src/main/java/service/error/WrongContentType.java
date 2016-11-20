@@ -1,11 +1,11 @@
 package service.error;
 
-import service.ServiceError;
+import service.ServiceException;
 
 /**
  * Created by igor on 16.11.2016.
  */
-public class WrongContentType extends ServiceError {
+public class WrongContentType extends ServiceException {
 
     public final String actual;
 
