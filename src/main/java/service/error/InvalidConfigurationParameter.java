@@ -23,4 +23,24 @@ public class InvalidConfigurationParameter extends ServiceException {
                 '}';
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        InvalidConfigurationParameter that = (InvalidConfigurationParameter) o;
+
+        if (parameter != null ? !parameter.equals(that.parameter) : that.parameter != null) return false;
+
+        return value != null ? value.equals(that.value) : that.value == null;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = parameter != null ? parameter.hashCode() : 0;
+        result = 31 * result + (value != null ? value.hashCode() : 0);
+
+        return result;
+    }
+
 }
