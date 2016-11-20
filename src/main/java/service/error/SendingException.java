@@ -7,7 +7,7 @@ import service.ServiceException;
  */
 public class SendingException extends ServiceException {
 
-    public String message;
+    public final String message;
 
     public SendingException(final String message) {
         this.message = message;

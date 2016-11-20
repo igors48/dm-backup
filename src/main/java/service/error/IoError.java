@@ -7,7 +7,7 @@ import service.ServiceException;
  */
 public class IoError extends ServiceException {
 
-    public String message;
+    public final String message;
 
     public IoError(final String message) {
         this.message = message;
