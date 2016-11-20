@@ -15,4 +15,24 @@ public class WrongResponseCode extends ServiceException {
         this.actual = actual;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        WrongResponseCode that = (WrongResponseCode) o;
+
+        if (expected != that.expected) return false;
+
+        return actual == that.actual;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = expected;
+        result = 31 * result + actual;
+
+        return result;
+    }
+
 }

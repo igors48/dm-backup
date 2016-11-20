@@ -70,6 +70,8 @@ public class ConfigurationTest {
 
         try {
             new Configuration(WRONG, this.host, this.loginUrl, this.loginReferer, this.loginData, this.downloadUrl, this.downloadReferer, this.downloadData, this.admin, this.recipients);
+
+            fail();
         } catch (Exception exception) {
             assertEquals(new InvalidConfigurationParameter("origin", WRONG), exception);
         }
@@ -81,6 +83,8 @@ public class ConfigurationTest {
 
         try {
             new Configuration(this.origin, WRONG, this.loginUrl, this.loginReferer, this.loginData, this.downloadUrl, this.downloadReferer, this.downloadData, this.admin, this.recipients);
+
+            fail();
         } catch (Exception exception) {
             assertEquals(new InvalidConfigurationParameter("host", WRONG), exception);
         }
@@ -92,6 +96,8 @@ public class ConfigurationTest {
 
         try {
             new Configuration(this.origin, this.host, WRONG, this.loginReferer, this.loginData, this.downloadUrl, this.downloadReferer, this.downloadData, this.admin, this.recipients);
+
+            fail();
         } catch (Exception exception) {
             assertEquals(new InvalidConfigurationParameter("loginUrl", WRONG), exception);
         }
@@ -103,6 +109,8 @@ public class ConfigurationTest {
 
         try {
             new Configuration(this.origin, this.host, this.loginUrl, WRONG, this.loginData, this.downloadUrl, this.downloadReferer, this.downloadData, this.admin, this.recipients);
+
+            fail();
         } catch (Exception exception) {
             assertEquals(new InvalidConfigurationParameter("loginReferer", WRONG), exception);
         }
@@ -114,6 +122,8 @@ public class ConfigurationTest {
 
         try {
             new Configuration(this.origin, this.host, this.loginUrl, this.loginReferer, WRONG, this.downloadUrl, this.downloadReferer, this.downloadData, this.admin, this.recipients);
+
+            fail();
         } catch (Exception exception) {
             assertEquals(new InvalidConfigurationParameter("loginData", WRONG), exception);
         }
@@ -125,6 +135,8 @@ public class ConfigurationTest {
 
         try {
             new Configuration(this.origin, this.host, this.loginUrl, this.loginReferer, this.loginData, WRONG, this.downloadReferer, this.downloadData, this.admin, this.recipients);
+
+            fail();
         } catch (Exception exception) {
             assertEquals(new InvalidConfigurationParameter("downloadUrl", WRONG), exception);
         }
@@ -136,6 +148,8 @@ public class ConfigurationTest {
 
         try {
             new Configuration(this.origin, this.host, this.loginUrl, this.loginReferer, this.loginData, this.downloadUrl, WRONG, this.downloadData, this.admin, this.recipients);
+
+            fail();
         } catch (Exception exception) {
             assertEquals(new InvalidConfigurationParameter("downloadReferer", WRONG), exception);
         }
@@ -146,7 +160,9 @@ public class ConfigurationTest {
     public void wrongDownloadData() {
 
         try {
-            new Configuration(this.origin, this.host, this.loginUrl, this.loginReferer, this.loginData, this.downloadUrl, this.downloadReferer, this.downloadData, this.admin, this.recipients);
+            new Configuration(this.origin, this.host, this.loginUrl, this.loginReferer, this.loginData, this.downloadUrl, this.downloadReferer, WRONG, this.admin, this.recipients);
+
+            fail();
         } catch (Exception exception) {
             assertEquals(new InvalidConfigurationParameter("downloadData", WRONG), exception);
         }
@@ -158,6 +174,8 @@ public class ConfigurationTest {
 
         try {
             new Configuration(this.origin, this.host, this.loginUrl, this.loginReferer, this.loginData, this.downloadUrl, this.downloadReferer, this.downloadData, WRONG, this.recipients);
+
+            fail();
         } catch (Exception exception) {
             assertEquals(new InvalidConfigurationParameter("admin", WRONG), exception);
         }
@@ -169,7 +187,10 @@ public class ConfigurationTest {
 
         try {
             this.recipients.add(WRONG);
+
             new Configuration(this.origin, this.host, this.loginUrl, this.loginReferer, this.loginData, this.downloadUrl, this.downloadReferer, this.downloadData, this.admin, this.recipients);
+
+            fail();
         } catch (Exception exception) {
             assertEquals(new InvalidConfigurationParameter("recipient", WRONG), exception);
         }
