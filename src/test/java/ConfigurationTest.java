@@ -5,6 +5,8 @@ import service.Configuration;
 import java.util.Arrays;
 import java.util.List;
 
+import static org.junit.Assert.fail;
+
 /**
  * Created by igor on 20.11.2016.
  */
@@ -37,7 +39,11 @@ public class ConfigurationTest {
 
     @Test
     public void whenAllAreOkThenAllAreOk() throws Exception {
-        Configuration configuration = new Configuration(this.origin, this.host, this.loginUrl, this.loginReferer, this.loginData, this.downloadUrl, this.downloadReferer, this.downloadData, this.admin, this.recipients);
+        try {
+            new Configuration(this.origin, this.host, this.loginUrl, this.loginReferer, this.loginData, this.downloadUrl, this.downloadReferer, this.downloadData, this.admin, this.recipients);
+        } catch (Exception exception) {
+            fail();
+        }
 
     }
 }

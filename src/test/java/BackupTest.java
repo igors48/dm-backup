@@ -13,6 +13,9 @@ import static org.mockito.Mockito.*;
 public class BackupTest {
 
     private static final String CONTENT = "content";
+    private static final String A_B_COM = "a@b.com";
+    private static final String B_C_COM = "b@c.com";
+    private static final String C_D_COM = "c@d.com";
 
     private Loader loader;
     private Sender sender;
@@ -25,7 +28,7 @@ public class BackupTest {
         this.sender = mock(Sender.class);
         this.serviceException = mock(ServiceException.class);
 
-        final Recipients recipients = new Recipients("a", Arrays.asList("b", "c"));
+        final Recipients recipients = new Recipients(A_B_COM, Arrays.asList(B_C_COM, C_D_COM));
 
         this.backup = new Backup(this.loader, this.sender, recipients);
     }
@@ -39,8 +42,8 @@ public class BackupTest {
         verify(loader).load();
         verifyNoMoreInteractions(loader);
 
-        verify(sender).sendContent("b", CONTENT);
-        verify(sender).sendContent("c", CONTENT);
+        verify(sender).sendContent(B_C_COM, CONTENT);
+        verify(sender).sendContent(C_D_COM, CONTENT);
         verifyNoMoreInteractions(sender);
     }
 
@@ -48,16 +51,16 @@ public class BackupTest {
     public void whenContentCannotBeSentThenErrorSentToErrorRecipient() throws Exception {
         when(loader.load()).thenReturn(CONTENT);
 
-        doThrow(this.serviceException).when(sender).sendContent("b", CONTENT);
+        doThrow(this.serviceException).when(sender).sendContent(B_C_COM, CONTENT);
 
         backup.execute();
 
         verify(loader).load();
         verifyNoMoreInteractions(loader);
 
-        verify(sender).sendContent("b", CONTENT);
-        verify(sender).sendException("a", this.serviceException);
-        verify(sender).sendContent("c", CONTENT);
+        verify(sender).sendContent(B_C_COM, CONTENT);
+        verify(sender).sendException(A_B_COM, this.serviceException);
+        verify(sender).sendContent(C_D_COM, CONTENT);
         verifyNoMoreInteractions(sender);
     }
 
@@ -70,7 +73,7 @@ public class BackupTest {
         verify(loader).load();
         verifyNoMoreInteractions(loader);
 
-        verify(sender).sendException("a", this.serviceException);
+        verify(sender).sendException(A_B_COM, this.serviceException);
         verifyNoMoreInteractions(sender);
     }
 
@@ -79,7 +82,7 @@ public class BackupTest {
 
         try {
             when(loader.load()).thenThrow(this.serviceException);
-            doThrow(this.serviceException).when(sender).sendException("a", this.serviceException);
+            doThrow(this.serviceException).when(sender).sendException(A_B_COM, this.serviceException);
 
             backup.execute();
         } catch (Exception exception) {
