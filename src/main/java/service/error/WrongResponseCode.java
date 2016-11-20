@@ -7,8 +7,8 @@ import service.ServiceException;
  */
 public class WrongResponseCode extends ServiceException {
 
-    public final int expected;
-    public final int actual;
+    private final int expected;
+    private final int actual;
 
     public WrongResponseCode(final int expected, final int actual) {
         this.expected = expected;
@@ -33,6 +33,14 @@ public class WrongResponseCode extends ServiceException {
         result = 31 * result + actual;
 
         return result;
+    }
+
+    @Override
+    public String toString() {
+        return "WrongResponseCode{" +
+                "expected=" + expected +
+                ", actual=" + actual +
+                '}';
     }
 
 }

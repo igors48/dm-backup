@@ -7,10 +7,17 @@ import service.ServiceException;
  */
 public class IoError extends ServiceException {
 
-    public final String message;
+    private final String message;
 
     public IoError(final String message) {
         this.message = message;
+    }
+
+    @Override
+    public String toString() {
+        return "IoError{" +
+                "message='" + message + '\'' +
+                '}';
     }
 
 }

@@ -7,7 +7,7 @@ import service.ServiceException;
  */
 public class InvalidSessionId extends ServiceException {
 
-    public final String sessionId;
+    private final String sessionId;
 
     public InvalidSessionId(final String sessionId) {
         this.sessionId = sessionId;
@@ -26,6 +26,13 @@ public class InvalidSessionId extends ServiceException {
     @Override
     public int hashCode() {
         return sessionId != null ? sessionId.hashCode() : 0;
+    }
+
+    @Override
+    public String toString() {
+        return "InvalidSessionId{" +
+                "sessionId='" + sessionId + '\'' +
+                '}';
     }
 
 }

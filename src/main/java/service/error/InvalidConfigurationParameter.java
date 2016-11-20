@@ -7,8 +7,8 @@ import service.ServiceException;
  */
 public class InvalidConfigurationParameter extends ServiceException {
 
-    public final String parameter;
-    public final String value;
+    private final String parameter;
+    private final String value;
 
     public InvalidConfigurationParameter(final String parameter, final String value) {
         this.parameter = parameter;

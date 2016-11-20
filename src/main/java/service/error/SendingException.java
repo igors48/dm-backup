@@ -7,10 +7,17 @@ import service.ServiceException;
  */
 public class SendingException extends ServiceException {
 
-    public final String message;
+    private final String message;
 
     public SendingException(final String message) {
         this.message = message;
+    }
+
+    @Override
+    public String toString() {
+        return "SendingException{" +
+                "message='" + message + '\'' +
+                '}';
     }
 
 }

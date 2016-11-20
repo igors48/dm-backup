@@ -7,7 +7,7 @@ import service.ServiceException;
  */
 public class WrongContentType extends ServiceException {
 
-    public final String actual;
+    private final String actual;
 
     public WrongContentType(final String actual) {
         this.actual = actual;
@@ -28,4 +28,10 @@ public class WrongContentType extends ServiceException {
         return actual != null ? actual.hashCode() : 0;
     }
 
+    @Override
+    public String toString() {
+        return "WrongContentType{" +
+                "actual='" + actual + '\'' +
+                '}';
+    }
 }

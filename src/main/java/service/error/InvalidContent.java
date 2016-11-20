@@ -7,7 +7,7 @@ import service.ServiceException;
  */
 public class InvalidContent extends ServiceException {
 
-    public final String content;
+    private final String content;
 
     public InvalidContent(final String content) {
         this.content = content;
@@ -26,6 +26,13 @@ public class InvalidContent extends ServiceException {
     @Override
     public int hashCode() {
         return content != null ? content.hashCode() : 0;
+    }
+
+    @Override
+    public String toString() {
+        return "InvalidContent{" +
+                "content='" + content + '\'' +
+                '}';
     }
 
 }
