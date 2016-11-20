@@ -95,7 +95,7 @@
                         </goals>
                         <configuration>
                             <files>
-                                <file>app.properties</file>
+                                <file>app.properties.local</file>
                             </files>
                         </configuration>
                     </execution>
