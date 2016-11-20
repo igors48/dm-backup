@@ -15,20 +15,29 @@ import javax.mail.internet.MimeMultipart;
 import javax.mail.util.ByteArrayDataSource;
 import java.util.Properties;
 
+import static util.Assert.guard;
+import static util.Parameter.*;
+
 /**
  * Created by igor on 14.11.2016.
  */
 public class Sender {
 
     public void sendContent(final String recipient, final String content) throws ServiceException {
+        guard(isValidEmail(recipient));
+        guard(isValidString(content));
 
+        sendMail(recipient, "downloaded file", "file", content);
     }
 
     public void sendException(final String recipient, final ServiceException exception) throws ServiceException {
+        guard(isValidEmail(recipient));
+        guard(notNull(exception));
 
+        sendMail(recipient, exception.toString(), null, null);
     }
 
-    private void sendChangeNotification(final String recipient, final String body, final String attachmentName, final String attachmentContent) throws ServiceException {
+    private static void sendMail(final String recipient, final String body, final String attachmentName, final String attachmentContent) throws ServiceException {
 
         try {
             final Properties props = new Properties();
