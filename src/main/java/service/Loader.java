@@ -121,7 +121,7 @@ public class Loader {
 
     public static void validateContentResponse(final int statusCode, final String contentType, final String content) throws ServiceException {
         guard(statusCode == 200, new WrongResponseCode(200, statusCode));
-        guard(contentType.contains("text/html"), new WrongContentType(contentType));
+        guard(contentType.contains("text/csv"), new WrongContentType(contentType));
         guard(!(content == null || content.isEmpty()), new InvalidContent(content));
     }
 
