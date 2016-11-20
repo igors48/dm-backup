@@ -20,6 +20,7 @@ public final class Parameter {
     private static final EmailValidator EMAIL_VALIDATOR = EmailValidator.getInstance();
 
     private static final Pattern FILE_NAME_CHARS = Pattern.compile("[_a-zA-Z0-9\\-\\.]+");
+    private static final Pattern FORM_DATA = Pattern.compile("(([^=]+)=([^&]+))*");
 
     public static boolean isContainOnlyFileNameChars(final String value) {
         return FILE_NAME_CHARS.matcher(value).matches();
@@ -58,6 +59,10 @@ public final class Parameter {
 
     public static boolean isValidEmail(final String value) {
         return notNull(value) && EMAIL_VALIDATOR.isValid(value.toLowerCase());
+    }
+
+    public static boolean isValidFormData(final String value) {
+        return notNull(value) && FORM_DATA.matcher(value).matches();
     }
 
     private Parameter() {

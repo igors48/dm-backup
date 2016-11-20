@@ -2,6 +2,10 @@ package service;
 
 import service.error.InvalidConfigurationParameter;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 import static util.Assert.guard;
 import static util.Parameter.*;
 
@@ -36,22 +40,41 @@ public class Configuration {
     private final String downloadData;
 
     private final String admin;
-    private final String recipients;
+    private final List<String> recipients;
 
-    public Configuration(final String origin, final String host, final String loginUrl, final String loginReferer, final String loginData, final String downloadUrl, final String downloadReferer, final String downloadData, final String admin, final String recipients) throws ServiceException {
+    public Configuration(final String origin, final String host, final String loginUrl, final String loginReferer, final String loginData, final String downloadUrl, final String downloadReferer, final String downloadData, final String admin, final List<String> recipients) throws ServiceException {
         guard(isValidDomain(this.origin = origin), new InvalidConfigurationParameter("origin", origin));
         guard(isValidUrl(this.host = host), new InvalidConfigurationParameter("host", host));
 
         guard(isValidUrl(this.loginUrl = loginUrl), new InvalidConfigurationParameter("loginUrl", loginUrl));
         guard(isValidUrl(this.loginReferer = loginReferer), new InvalidConfigurationParameter("loginReferer", loginReferer));
-        this.loginData = loginData;
+        guard(isValidFormData(this.loginData = loginData), new InvalidConfigurationParameter("loginData", loginData));
 
         guard(isValidUrl(this.downloadUrl = downloadUrl), new InvalidConfigurationParameter("downloadUrl", downloadUrl));
         guard(isValidUrl(this.downloadReferer = downloadReferer), new InvalidConfigurationParameter("downloadReferer", downloadReferer));
-        this.downloadData = downloadData;
+        guard(isValidFormData(this.downloadData = downloadData), new InvalidConfigurationParameter("downloadData", downloadData));
 
         guard(isValidEmail(this.admin = admin), new InvalidConfigurationParameter("admin", admin));
-        this.recipients = recipients;
+
+        guard(notNull(recipients), new InvalidConfigurationParameter("recipients", "null"));
+        this.recipients = new ArrayList<>();
+
+        for (final String recipient : recipients) {
+            guard(isValidEmail(recipient), new InvalidConfigurationParameter("recipient", recipient));
+            this.recipients.add(recipient);
+        }
+    }
+
+    public AccessParameters getAccessParameters() {
+        final GeneralParameters general = new GeneralParameters(this.origin, this.host);
+        final FormParameters login = new FormParameters(this.loginUrl, this.loginReferer, this.loginData);
+        final FormParameters download = new FormParameters(this.downloadUrl, this.downloadReferer, this.downloadData);
+
+        return new AccessParameters(general, login, download);
+    }
+
+    public Recipients getRecipients() {
+        return new Recipients(this.admin, this.recipients);
     }
 
     public static Configuration fromSystemProperties() throws ServiceException {
@@ -64,7 +87,8 @@ public class Configuration {
         final String downloadReferer = System.getProperty(DOWNLOAD_REFERER);
         final String downloadData = System.getProperty(DOWNLOAD_DATA);
         final String admin = System.getProperty(ADMIN);
-        final String recipients = System.getProperty(RECIPIENTS);
+        final String recipientsAsString = System.getProperty(RECIPIENTS);
+        final List<String> recipients = Arrays.asList(recipientsAsString.split(";"));
 
         return new Configuration(origin, host, loginUrl, loginReferer, loginData, downloadUrl, downloadReferer, downloadData, admin, recipients);
     }
