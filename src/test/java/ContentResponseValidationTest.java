@@ -13,6 +13,8 @@ import static service.Loader.validateContentResponse;
  */
 public class ContentResponseValidationTest {
 
+    private static final String WRONG = "WRONG";
+
     private int statusCode;
     private String contentType;
     private String content;
@@ -52,11 +54,11 @@ public class ContentResponseValidationTest {
     public void wrongContentType() throws Exception {
 
         try {
-            validateContentResponse(this.statusCode, "WRONG", this.content);
+            validateContentResponse(this.statusCode, WRONG, this.content);
 
             fail();
         } catch (Exception exception) {
-            assertEquals(new WrongContentType("WRONG"), exception);
+            assertEquals(new WrongContentType(WRONG), exception);
         }
 
     }
