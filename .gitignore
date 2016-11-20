@@ -6,4 +6,4 @@ target
 *.iws
 *.rar
 
-build.properties.local
+app.properties.local
