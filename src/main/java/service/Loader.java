@@ -44,6 +44,7 @@ public class Loader {
             final int responseCode = connection.getResponseCode();
             final String contentType = connection.getHeaderField(ConnectionTools.CONTENT_TYPE);
             final String cookie = connection.getHeaderField("Set-Cookie");
+            System.out.println(cookie);
             final CookieManager cookieManager = new CookieManager();
             cookieManager.getCookieStore().add(null, HttpCookie.parse(cookie).get(0));
 
