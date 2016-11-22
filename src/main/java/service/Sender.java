@@ -43,7 +43,7 @@ public class Sender {
 
     private static void sendMail(final String recipient, final String body, final String attachmentName, final String attachmentContent) throws ServiceException {
 
-        LOGGER.log(Level.INFO, String.format("recipient [ %s ] body [ %s ] content [ %s ]", recipient, body, attachmentName));
+        LOGGER.log(Level.INFO, String.format("recipient [ %s ] body [ %s ] content [ %s ]", recipient, body, attachmentContent));
 
         try {
             final Properties props = new Properties();
