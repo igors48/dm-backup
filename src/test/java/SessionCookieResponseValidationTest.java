@@ -79,6 +79,6 @@ public class SessionCookieResponseValidationTest {
         assertEquals("", Loader.parseSessionCookie(null));
         assertEquals("", Loader.parseSessionCookie(""));
         assertEquals("", Loader.parseSessionCookie("asdasdfasdf"));
-
     }
+
 }
