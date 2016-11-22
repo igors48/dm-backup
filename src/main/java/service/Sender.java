@@ -14,6 +14,7 @@ import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
 import javax.mail.util.ByteArrayDataSource;
 import java.util.Properties;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import static util.Assert.guard;
@@ -42,7 +43,7 @@ public class Sender {
 
     private static void sendMail(final String recipient, final String body, final String attachmentName, final String attachmentContent) throws ServiceException {
 
-        LOGGER.info(String.format("recipient [ %s ] body [ %s ] content [ %s ]", recipient, body, attachmentName));
+        LOGGER.log(Level.INFO, String.format("recipient [ %s ] body [ %s ] content [ %s ]", recipient, body, attachmentName));
 
         try {
             final Properties props = new Properties();
