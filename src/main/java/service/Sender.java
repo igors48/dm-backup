@@ -58,7 +58,7 @@ public class Sender {
                 final MimeBodyPart attachment = new MimeBodyPart();
 
                 attachment.setFileName(attachmentName);
-                DataSource dataSource = new ByteArrayDataSource(attachmentContent.getBytes("UTF-8"), "text/csv");
+                DataSource dataSource = new ByteArrayDataSource(attachmentContent.getBytes("UTF-8"), "application/octet-stream");
                 attachment.setDataHandler(new DataHandler(dataSource));
                 multipart.addBodyPart(attachment);
             }
