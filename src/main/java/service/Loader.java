@@ -5,9 +5,9 @@ import util.ConnectionTools;
 
 import java.io.IOException;
 import java.io.OutputStream;
-import java.net.CookieManager;
-import java.net.HttpCookie;
 import java.net.HttpURLConnection;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import static util.Assert.guard;
 import static util.ConnectionTools.UTF_8;
@@ -18,6 +18,8 @@ import static util.Parameter.notNull;
  * Created by igor on 14.11.2016.
  */
 public class Loader {
+
+    private static final Pattern SESSION_COOKIE_PATTERN = Pattern.compile("(PHPSESSID=.*);.*");
 
     private final AccessParameters accessParameters;
 
@@ -44,11 +46,7 @@ public class Loader {
             final int responseCode = connection.getResponseCode();
             final String contentType = connection.getHeaderField(ConnectionTools.CONTENT_TYPE);
             final String cookie = connection.getHeaderField("Set-Cookie");
-            System.out.println(cookie);
-            final CookieManager cookieManager = new CookieManager();
-            cookieManager.getCookieStore().add(null, HttpCookie.parse(cookie).get(0));
-
-            final String sessionCookie = cookieManager.getCookieStore().getCookies().get(0) + ";";
+            final String sessionCookie = parseSessionCookie(cookie);
 
             validateSessionCookieResponse(responseCode, contentType, sessionCookie);
 
@@ -129,6 +127,17 @@ public class Loader {
     public static void validateLoginResponse(final int statusCode, final String contentType) throws ServiceException {
         guard(statusCode == 302, new WrongResponseCode(302, statusCode));
         guard(contentType.contains("text/html"), new WrongContentType(contentType));
+    }
+
+    public static String parseSessionCookie(final String cookie) {
+
+        if (cookie == null) {
+            return "";
+        }
+
+        final Matcher matcher = SESSION_COOKIE_PATTERN.matcher(cookie);
+
+        return matcher.matches() ? matcher.group(1) + ";" : "";
     }
 
 }

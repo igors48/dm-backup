@@ -1,5 +1,6 @@
 import org.junit.Before;
 import org.junit.Test;
+import service.Loader;
 import service.error.InvalidSessionId;
 import service.error.WrongContentType;
 import service.error.WrongResponseCode;
@@ -72,4 +73,12 @@ public class SessionCookieResponseValidationTest {
         }
     }
 
+    @Test
+    public void parseSessionCookie() throws Exception {
+        assertEquals("PHPSESSID=qkao5t95s566jqtvdhfumedea3;", Loader.parseSessionCookie("PHPSESSID=qkao5t95s566jqtvdhfumedea3; path=/"));
+        assertEquals("", Loader.parseSessionCookie(null));
+        assertEquals("", Loader.parseSessionCookie(""));
+        assertEquals("", Loader.parseSessionCookie("asdasdfasdf"));
+
+    }
 }
