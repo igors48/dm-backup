@@ -31,7 +31,7 @@ public class Sender {
         guard(isValidEmail(recipient));
         guard(isValidString(content));
 
-        sendMail(recipient, "downloaded file", "file", content);
+        sendMail(recipient, "downloaded file", "file.csv", content);
     }
 
     public void sendException(final String recipient, final ServiceException exception) throws ServiceException {
