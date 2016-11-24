@@ -53,7 +53,7 @@ public class Backup {
     private void sendContent(final String recipient, final String content) {
 
         try {
-            this.sender.sendContent(recipient, content);
+            this.sender.sendContent(recipients.adminRecipient, recipient, content);
         } catch (ServiceException exception) {
             LOGGER.log(Level.SEVERE, format("Sending content to [ %s ] failed", recipient), exception);
 
@@ -62,7 +62,7 @@ public class Backup {
     }
 
     private void sendError(final ServiceException exception) {
-        final String errorRecipient = recipients.errorRecipient;
+        final String errorRecipient = recipients.adminRecipient;
 
         try {
             this.sender.sendException(errorRecipient, exception);

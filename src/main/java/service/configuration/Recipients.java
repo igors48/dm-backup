@@ -10,11 +10,11 @@ import static util.Parameter.isValidEmail;
  */
 public class Recipients {
 
-    public final String errorRecipient;
+    public final String adminRecipient;
     public final List<String> contentRecipients;
 
-    public Recipients(final String errorRecipient, final List<String> contentRecipients) {
-        guard(isValidRecipient(this.errorRecipient = errorRecipient));
+    public Recipients(final String adminRecipient, final List<String> contentRecipients) {
+        guard(isValidRecipient(this.adminRecipient = adminRecipient));
         guard(isValidRecipients(this.contentRecipients = contentRecipients));
     }
 
@@ -49,14 +49,14 @@ public class Recipients {
 
         Recipients that = (Recipients) o;
 
-        if (!errorRecipient.equals(that.errorRecipient)) return false;
+        if (!adminRecipient.equals(that.adminRecipient)) return false;
 
         return contentRecipients.equals(that.contentRecipients);
     }
 
     @Override
     public int hashCode() {
-        int result = errorRecipient.hashCode();
+        int result = adminRecipient.hashCode();
         result = 31 * result + contentRecipients.hashCode();
 
         return result;

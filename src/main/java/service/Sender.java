@@ -33,7 +33,8 @@ public class Sender {
     private static final String DATE_FORMAT_FOR_BODY = "yyyy-MM-dd HH:mm:ss";
     private static final String CSV = ".csv";
 
-    public void sendContent(final String recipient, final String content) throws ServiceException {
+    public void sendContent(final String sender, final String recipient, final String content) throws ServiceException {
+        guard(isValidEmail(sender));
         guard(isValidEmail(recipient));
         guard(isValidString(content));
 
@@ -49,7 +50,7 @@ public class Sender {
         final String dateForBody = formatForBody.format(now);
         final String body = "File backed up at " + dateForBody;
 
-        sendMail(recipient, body, body, attachmentName, content);
+        sendMail(sender, recipient, body, body, attachmentName, content);
     }
 
     public void sendException(final String recipient, final ServiceException exception) throws ServiceException {
@@ -58,17 +59,17 @@ public class Sender {
 
         LOGGER.info(String.format("Sending error message to [ %s ]", recipient));
 
-        sendMail(recipient, "Backup error", exception.toString(), null, null);
+        sendMail(recipient, recipient, "Backup error", exception.toString(), null, null);
     }
 
-    private static void sendMail(final String recipient, final String subject, final String body, final String attachmentName, final String attachmentContent) throws ServiceException {
+    private static void sendMail(final String sender, final String recipient, final String subject, final String body, final String attachmentName, final String attachmentContent) throws ServiceException {
 
         try {
             final Properties props = new Properties();
             final Session session = Session.getDefaultInstance(props, null);
 
             final Message message = new MimeMessage(session);
-            message.setFrom(new InternetAddress(recipient));
+            message.setFrom(new InternetAddress(sender));
             message.addRecipient(Message.RecipientType.TO, new InternetAddress(recipient));
 
             message.setSubject(subject);

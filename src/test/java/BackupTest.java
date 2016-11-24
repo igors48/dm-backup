@@ -46,8 +46,8 @@ public class BackupTest {
         verify(loader).load();
         verifyNoMoreInteractions(loader);
 
-        verify(sender).sendContent(B_C_COM, CONTENT);
-        verify(sender).sendContent(C_D_COM, CONTENT);
+        verify(sender).sendContent(A_B_COM, B_C_COM, CONTENT);
+        verify(sender).sendContent(A_B_COM, C_D_COM, CONTENT);
         verifyNoMoreInteractions(sender);
     }
 
@@ -55,16 +55,16 @@ public class BackupTest {
     public void whenContentCannotBeSentThenErrorSentToErrorRecipient() throws Exception {
         when(loader.load()).thenReturn(CONTENT);
 
-        doThrow(this.serviceException).when(sender).sendContent(B_C_COM, CONTENT);
+        doThrow(this.serviceException).when(sender).sendContent(A_B_COM, B_C_COM, CONTENT);
 
         backup.execute();
 
         verify(loader).load();
         verifyNoMoreInteractions(loader);
 
-        verify(sender).sendContent(B_C_COM, CONTENT);
+        verify(sender).sendContent(A_B_COM, B_C_COM, CONTENT);
         verify(sender).sendException(A_B_COM, this.serviceException);
-        verify(sender).sendContent(C_D_COM, CONTENT);
+        verify(sender).sendContent(A_B_COM, C_D_COM, CONTENT);
         verifyNoMoreInteractions(sender);
     }
 
