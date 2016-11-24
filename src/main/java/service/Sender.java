@@ -13,6 +13,8 @@ import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
 import javax.mail.util.ByteArrayDataSource;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -27,21 +29,31 @@ public class Sender {
 
     private static final Logger LOGGER = Logger.getLogger(Sender.class.getName());
 
+    private static final String DATE_FORMAT_FOR_NAME = "yyyy-MM-dd'T'HH:mm:ss";
+    private static final String CSV = ".csv";
+
     public void sendContent(final String recipient, final String content) throws ServiceException {
         guard(isValidEmail(recipient));
         guard(isValidString(content));
 
-        sendMail(recipient, "downloaded file", "file.csv", content);
+        final Date now = new Date();
+        final SimpleDateFormat format = new SimpleDateFormat(DATE_FORMAT_FOR_NAME);
+        final String date = format.format(now);
+        final String attachmentName = date + CSV;
+
+        final String body = "File backed up at " + date;
+
+        sendMail(recipient, body, body, attachmentName, content);
     }
 
     public void sendException(final String recipient, final ServiceException exception) throws ServiceException {
         guard(isValidEmail(recipient));
         guard(notNull(exception));
 
-        sendMail(recipient, exception.toString(), null, null);
+        sendMail(recipient, "Backup error", exception.toString(), null, null);
     }
 
-    private static void sendMail(final String recipient, final String body, final String attachmentName, final String attachmentContent) throws ServiceException {
+    private static void sendMail(final String recipient, final String subject, final String body, final String attachmentName, final String attachmentContent) throws ServiceException {
 
         LOGGER.log(Level.INFO, String.format("recipient [ %s ] body [ %s ] content [ %s ]", recipient, body, attachmentContent));
 
@@ -52,6 +64,8 @@ public class Sender {
             final Message message = new MimeMessage(session);
             message.setFrom(new InternetAddress(recipient));
             message.addRecipient(Message.RecipientType.TO, new InternetAddress(recipient));
+
+            message.setSubject(subject);
 
             final Multipart multipart = new MimeMultipart();
 
