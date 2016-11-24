@@ -1,7 +1,6 @@
 package war;
 
 import gae.Services;
-import service.Backup;
 
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -18,9 +17,7 @@ public class CronServlet extends HttpServlet {
     public void doGet(final HttpServletRequest request, final HttpServletResponse response) throws IOException {
 
         try {
-            final Backup backup = Services.INSTANCE.createBackupService();
-
-            backup.execute();
+            Services.INSTANCE.createBackupService().execute();
         } catch (Throwable throwable) {
             LOGGER.log(Level.SEVERE, "Unexpected error", throwable);
         }

@@ -1,6 +1,7 @@
-package service;
+package service.configuration;
 
 import service.error.InvalidConfigurationParameter;
+import service.error.ServiceException;
 
 import java.util.ArrayList;
 import java.util.Arrays;

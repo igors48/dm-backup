@@ -1,6 +1,10 @@
 import org.junit.Before;
 import org.junit.Test;
-import service.*;
+import service.Backup;
+import service.Loader;
+import service.Sender;
+import service.configuration.Recipients;
+import service.error.ServiceException;
 
 import java.util.Arrays;
 

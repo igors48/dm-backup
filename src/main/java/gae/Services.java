@@ -1,6 +1,10 @@
 package gae;
 
-import service.*;
+import service.Backup;
+import service.Loader;
+import service.Sender;
+import service.configuration.Configuration;
+import service.error.ServiceException;
 
 /**
  * Created by igor on 20.11.2016.

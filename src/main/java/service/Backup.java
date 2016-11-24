@@ -1,5 +1,8 @@
 package service;
 
+import service.configuration.Recipients;
+import service.error.ServiceException;
+
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -27,10 +30,12 @@ public class Backup {
     public void execute() {
 
         try {
+            LOGGER.info("Backup started");
+
             final String content = this.loader.load();
             sendContent(content);
 
-            LOGGER.info("Backup ok");
+            LOGGER.info("Backup finished");
         } catch (ServiceException exception) {
             LOGGER.log(Level.SEVERE, "Backup failed", exception);
 

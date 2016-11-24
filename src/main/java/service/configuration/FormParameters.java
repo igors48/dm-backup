@@ -1,4 +1,4 @@
-package service;
+package service.configuration;
 
 import static util.Assert.guard;
 import static util.Parameter.isValidFormData;

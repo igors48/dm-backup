@@ -1,7 +1,5 @@
 package service.error;
 
-import service.ServiceException;
-
 /**
  * Created by igor on 19.11.2016.
  */

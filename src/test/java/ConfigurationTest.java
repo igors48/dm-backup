@@ -1,6 +1,6 @@
 import org.junit.Before;
 import org.junit.Test;
-import service.*;
+import service.configuration.*;
 import service.error.InvalidConfigurationParameter;
 
 import java.util.ArrayList;

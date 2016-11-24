@@ -1,6 +1,6 @@
 package util;
 
-import service.ServiceException;
+import service.error.ServiceException;
 
 /**
  * Author : Igor Usenko ( igors48@gmail.com )
