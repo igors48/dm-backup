@@ -13,4 +13,8 @@ public class ChangesTimestamp {
         this.notificationSent = notificationSent;
     }
 
+    public ChangesTimestamp setTimestamp(final long timestamp) {
+        return new ChangesTimestamp(timestamp, this.notificationSent);
+    }
+
 }
