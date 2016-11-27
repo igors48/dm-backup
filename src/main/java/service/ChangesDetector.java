@@ -77,7 +77,7 @@ public class ChangesDetector {
     }
 
     private boolean isContentChanged(final String oldContent, final String newContent) {
-        return false;
+        return !(oldContent.equals(newContent));
     }
 
 }
