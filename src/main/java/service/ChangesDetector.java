@@ -1,7 +1,10 @@
 package service;
 
+import com.google.appengine.api.datastore.Transaction;
+
 import static util.Assert.guard;
-import static util.Parameter.isValidString;
+import static util.Parameter.*;
+import static util.TransactionTools.rollbackIfActive;
 
 /**
  * Created by igor on 25.11.2016.
@@ -9,42 +12,68 @@ import static util.Parameter.isValidString;
 public class ChangesDetector {
 
     private final ContentRepository contentRepository;
-    private final ChangesRepository changesRepository;
+    private final TimestampRepository timestampRepository;
     private final TimeService timeService;
+    private final Transactions transactions;
+    private final long waitInMillis;
 
-    public ChangesDetector(final ContentRepository contentRepository, final ChangesRepository changesRepository, final TimeService timeService) {
-        this.contentRepository = contentRepository;
-        this.changesRepository = changesRepository;
-        this.timeService = timeService;
+    public ChangesDetector(final ContentRepository contentRepository, final TimestampRepository timestampRepository, final TimeService timeService, final long waitInMillis, final Transactions transactions) {
+        guard(notNull(this.contentRepository = contentRepository));
+        guard(notNull(this.timestampRepository = timestampRepository));
+        guard(notNull(this.timeService = timeService));
+        guard(notNull(this.transactions = transactions));
+        guard(isPositive(this.waitInMillis = waitInMillis));
     }
 
-    public boolean isContentWasChanged(final String content) {
+    public boolean contentMustBeSent(final String content) {
         guard(isValidString(content));
 
-        final String latestSnapshot = this.contentRepository.loadLatestSnapshot();
-        final boolean contentChanged = isContentChanged(latestSnapshot, content);
-        final ChangesTimestamp changesTimestamp = this.changesRepository.load();
+        Transaction transaction = null;
 
-        if (contentChanged) {
-            //TODO not from here
-            updateTimestamp(changesTimestamp);
+        try {
+            transaction = this.transactions.beginOne();
 
-            return false;
-        } else {
-            updateContent(content, changesTimestamp);
+            final String latestSnapshot = this.contentRepository.loadLatestSnapshot();
+            final boolean contentChanged = isContentChanged(latestSnapshot, content);
 
-            return true;
+            boolean contentMustBeSent = false;
+
+            if (contentChanged) {
+                updateStoredTimestamp();
+            } else {
+                contentMustBeSent = isWaitPeriodFinished();
+            }
+
+            transaction.commit();
+
+            return contentMustBeSent;
+        } finally {
+            rollbackIfActive(transaction);
         }
     }
 
-    private void updateContent(final String content, final ChangesTimestamp changesTimestamp) {
+    private boolean isWaitPeriodFinished() {
+        final Long stored = this.timestampRepository.load();
 
+        if (stored == null) {
+            return false;
+        }
+
+        final long current = this.timeService.currentTimestamp();
+        final long delta = current - stored;
+
+        if (delta > this.waitInMillis) {
+            this.timestampRepository.clear();
+
+            return true;
+        }
+
+        return false;
     }
 
-    private void updateTimestamp(final ChangesTimestamp changesTimestamp) {
-        final long current = this.timeService.currentTimestamp();
-        final ChangesTimestamp updatedTimestamp = changesTimestamp.setTimestamp(current);
-        this.changesRepository.store(updatedTimestamp);
+    private void updateStoredTimestamp() {
+        final long timestamp = this.timeService.currentTimestamp();
+        this.timestampRepository.store(timestamp);
     }
 
     private boolean isContentChanged(final String oldContent, final String newContent) {
