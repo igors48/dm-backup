@@ -24,14 +24,12 @@ public abstract class AbstractRepository<T> {
         guard(notNull(this.writer = writer));
     }
 
-    private Entity writeToEntity(final T data) {
-        final Entity entity = this.writer.write(data);
+    protected void writeToEntity(final Entity entity, final T data) {
+        this.writer.write(entity, data);
         entity.setProperty(VERSION_KEY, this.version);
-
-        return entity;
     }
 
-    private T readFromEntity(final Entity entity) {
+    protected T readFromEntity(final Entity entity) {
         final Integer version = (Integer) entity.getProperty(VERSION_KEY);
         final Reader<T> reader = this.readers.get(version);
 

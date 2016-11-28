@@ -7,6 +7,6 @@ import com.google.appengine.api.datastore.Entity;
  */
 public interface Writer<T> {
 
-    Entity write(T entity);
+    void write(Entity entity, T data);
 
 }
