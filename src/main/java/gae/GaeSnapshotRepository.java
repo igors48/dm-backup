@@ -5,6 +5,7 @@ import com.google.appengine.api.datastore.Key;
 import service.Snapshot;
 import service.SnapshotRepository;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -77,6 +78,13 @@ public class GaeSnapshotRepository extends AbstractRepository<Snapshot> implemen
 
     private GaeSnapshotRepository(final int version, final Map<Integer, gae.Reader<Snapshot>> readers, final gae.Writer<Snapshot> writer) {
         super(version, readers, writer);
+    }
+
+    public static GaeSnapshotRepository create() {
+        final Map<Integer, gae.Reader<Snapshot>> readers = new HashMap<>();
+        readers.put(VERSION, new Reader());
+
+        return new GaeSnapshotRepository(VERSION, readers, new Writer());
     }
 
 }
