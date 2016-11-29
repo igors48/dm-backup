@@ -70,6 +70,21 @@ public class GaeSnapshotRepository extends AbstractRepository<Snapshot> implemen
     }
 
     @Override
+    public List<Snapshot> loadAll() {
+        return null;
+    }
+
+    @Override
+    public void storeAll(List<Snapshot> snapshots) {
+
+    }
+
+    @Override
+    public void clear() {
+
+    }
+
+    @Override
     protected Entity createEmptyEntityFor(final Snapshot snapshot) {
         final Key key = GaeDatastoreTools.createEntityKey(snapshot.uuid.toString(), Kind.SNAPSHOT);
 

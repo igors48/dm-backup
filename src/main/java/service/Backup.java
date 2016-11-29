@@ -19,11 +19,13 @@ public class Backup {
 
     private final Loader loader;
     private final Sender sender;
+    private final ChangesDetector changesDetector;
     private final Recipients recipients;
 
-    public Backup(final Loader loader, final Sender sender, final Recipients recipients) {
+    public Backup(final Loader loader, final Sender sender, final ChangesDetector changesDetector, final Recipients recipients) {
         guard(notNull(this.loader = loader));
         guard(notNull(this.sender = sender));
+        guard(notNull(this.changesDetector = changesDetector));
         guard(notNull(this.recipients = recipients));
     }
 
@@ -33,7 +35,13 @@ public class Backup {
             LOGGER.info("Backup started");
 
             final String content = this.loader.load();
-            sendContent(content);
+
+            boolean contentMustBeSent = this.changesDetector.contentMustBeSent(content);
+
+            if (contentMustBeSent) {
+                storeContent(content);
+                sendContent(content);
+            }
 
             LOGGER.info("Backup finished");
         } catch (ServiceException exception) {
@@ -41,6 +49,10 @@ public class Backup {
 
             sendError(exception);
         }
+    }
+
+    private void storeContent(final String content) {
+
     }
 
     private void sendContent(final String content) {

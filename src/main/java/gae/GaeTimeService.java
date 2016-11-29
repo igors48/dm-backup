@@ -5,7 +5,9 @@ import service.TimeService;
 /**
  * Created by igor on 29.11.2016.
  */
-public class GaeTimeService implements TimeService {
+public enum GaeTimeService implements TimeService {
+
+    INSTANCE;
 
     @Override
     public long currentTimestamp() {
