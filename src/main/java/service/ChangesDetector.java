@@ -11,14 +11,14 @@ import static util.TransactionTools.rollbackIfActive;
  */
 public class ChangesDetector {
 
-    private final ContentRepository contentRepository;
+    private final SnapshotRepository snapshotRepository;
     private final TimestampRepository timestampRepository;
     private final TimeService timeService;
     private final Transactions transactions;
     private final long waitInMillis;
 
-    public ChangesDetector(final ContentRepository contentRepository, final TimestampRepository timestampRepository, final TimeService timeService, final long waitInMillis, final Transactions transactions) {
-        guard(notNull(this.contentRepository = contentRepository));
+    public ChangesDetector(final SnapshotRepository snapshotRepository, final TimestampRepository timestampRepository, final TimeService timeService, final long waitInMillis, final Transactions transactions) {
+        guard(notNull(this.snapshotRepository = snapshotRepository));
         guard(notNull(this.timestampRepository = timestampRepository));
         guard(notNull(this.timeService = timeService));
         guard(notNull(this.transactions = transactions));
@@ -33,7 +33,7 @@ public class ChangesDetector {
         try {
             transaction = this.transactions.beginOne();
 
-            final String latestSnapshot = this.contentRepository.loadLatestSnapshot();
+            final String latestSnapshot = this.snapshotRepository.loadLatestSnapshot();
             final boolean contentChanged = isContentChanged(latestSnapshot, content);
 
             boolean contentMustBeSent = false;

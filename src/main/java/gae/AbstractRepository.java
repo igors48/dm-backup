@@ -25,7 +25,7 @@ public abstract class AbstractRepository<T> {
     }
 
     protected void write(final T data) {
-        final Entity entity = this.createEmptyEntity();
+        final Entity entity = this.createEmptyEntityFor(data);
         this.writer.write(entity, data);
         entity.setProperty(VERSION_KEY, this.version);
     }
@@ -37,7 +37,7 @@ public abstract class AbstractRepository<T> {
         return reader.read(entity);
     }
 
-    protected abstract Entity createEmptyEntity();
+    protected abstract Entity createEmptyEntityFor(final T data);
 
     private boolean validReaders(final Map<Integer, Reader<T>> readers) {
         return readers != null && !readers.isEmpty();

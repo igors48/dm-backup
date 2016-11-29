@@ -7,7 +7,8 @@ package gae;
 public enum Kind {
 
     ROOT("Root"),
-    TIMESTAMP("Timestamp");
+    TIMESTAMP("Timestamp"),
+    SNAPSHOT("Snapshot");
 
     public final String value;
 

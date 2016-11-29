@@ -63,7 +63,7 @@ public class GaeTimestampRepository extends AbstractRepository<Long> implements 
     }
 
     @Override
-    protected Entity createEmptyEntity() {
+    protected Entity createEmptyEntityFor(final Long data) {
         final Key key = GaeDatastoreTools.createEntityKey(Kind.TIMESTAMP.value, Kind.TIMESTAMP);
 
         return new Entity(Kind.TIMESTAMP.value, key);

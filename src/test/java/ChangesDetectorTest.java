@@ -10,7 +10,7 @@ import static org.mockito.Mockito.*;
  */
 public class ChangesDetectorTest {
 
-    private ContentRepository contentRepository;
+    private SnapshotRepository snapshotRepository;
     private TimestampRepository timestampRepository;
     private TimeService timeService;
     private long waitInMillis;
@@ -21,7 +21,7 @@ public class ChangesDetectorTest {
 
     @Before
     public void setUp() throws Exception {
-        this.contentRepository = mock(ContentRepository.class);
+        this.snapshotRepository = mock(SnapshotRepository.class);
         this.timestampRepository = mock(TimestampRepository.class);
         this.timeService = mock(TimeService.class);
         this.waitInMillis = 48;
@@ -29,10 +29,10 @@ public class ChangesDetectorTest {
         this.transactionStub = new TransactionStub();
 
         when(this.transactions.beginOne()).thenReturn(this.transactionStub);
-        when(this.contentRepository.loadLatestSnapshot()).thenReturn("a");
+        when(this.snapshotRepository.loadLatestSnapshot()).thenReturn("a");
         when(this.timeService.currentTimestamp()).thenReturn(42L);
 
-        this.changesDetector = new ChangesDetector(this.contentRepository, this.timestampRepository, this.timeService, this.waitInMillis, this.transactions);
+        this.changesDetector = new ChangesDetector(this.snapshotRepository, this.timestampRepository, this.timeService, this.waitInMillis, this.transactions);
     }
 
     @Test
@@ -46,7 +46,7 @@ public class ChangesDetectorTest {
     public void transactionCreatedAndRolledBackInCaseOfException() throws Exception {
 
         try {
-            when(this.contentRepository.loadLatestSnapshot()).thenThrow(new RuntimeException());
+            when(this.snapshotRepository.loadLatestSnapshot()).thenThrow(new RuntimeException());
 
             this.changesDetector.contentMustBeSent("content");
 
