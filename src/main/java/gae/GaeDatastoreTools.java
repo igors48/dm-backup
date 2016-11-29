@@ -17,7 +17,7 @@ public class GaeDatastoreTools {
 
     private static final Key ROOT_KEY = KeyFactory.createKey(Kind.ROOT.value, Kind.ROOT.value);
 
-    public static Key getEntityRootKey(final String uuid, final Kind kind) {
+    public static Key createEntityKey(final String uuid, final Kind kind) {
         guard(notNull(uuid));
         guard(notNull(kind));
 
@@ -64,7 +64,7 @@ public class GaeDatastoreTools {
     }
 
     private static PreparedQuery prepareQuery(final String uuid, final Kind rootKind, final Kind kind, final boolean keysOnly) {
-        final Key rootKey = getEntityRootKey(uuid, rootKind);
+        final Key rootKey = createEntityKey(uuid, rootKind);
         final Query query = new Query(kind.value).setAncestor(rootKey);
 
         if (keysOnly) {

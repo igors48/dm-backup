@@ -5,6 +5,7 @@ import com.google.appengine.api.datastore.Key;
 import service.TimestampRepository;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import static util.Assert.guard;
@@ -13,12 +14,12 @@ import static util.Parameter.notNull;
 /**
  * Created by igor on 28.11.2016.
  */
-public class GaeTimestampRepository<Long> extends AbstractRepository implements TimestampRepository {
+public class GaeTimestampRepository extends AbstractRepository<Long> implements TimestampRepository {
 
     public static final int VERSION = 1;
     public static final String TIMESTAMP_KEY = "timestamp";
 
-    public class Writer implements gae.Writer<Long> {
+    public static class Writer implements gae.Writer<Long> {
 
         @Override
         public void write(final Entity entity, final Long data) {
@@ -29,7 +30,7 @@ public class GaeTimestampRepository<Long> extends AbstractRepository implements 
 
     }
 
-    public class Reader implements gae.Reader<Long> {
+    public static class Reader implements gae.Reader<Long> {
 
         @Override
         public Long read(final Entity entity) {
@@ -42,28 +43,38 @@ public class GaeTimestampRepository<Long> extends AbstractRepository implements 
 
     @Override
     public void store(final long timestamp) {
-        final Key key = GaeDatastoreTools.getEntityRootKey(Kind.TIMESTAMP.value, Kind.TIMESTAMP);
-        final Entity entity = new Entity(Kind.TIMESTAMP.value, key);
-
-        this.writeToEntity(entity, timestamp);
+        this.write(timestamp);
     }
 
     @Override
     public Long load() {
-        return null;
+        final Entity entity = GaeDatastoreTools.loadEntity(Kind.TIMESTAMP.value, Kind.TIMESTAMP, false);
+
+        return this.read(entity);
     }
 
     @Override
     public void clear() {
+        final List<Entity> victims = GaeDatastoreTools.loadEntities(Kind.TIMESTAMP);
 
+        for (final Entity victim : victims) {
+            Datastore.INSTANCE.getDatastoreService().delete(victim.getKey());
+        }
     }
 
-    private GaeTimestampRepository(final int version, final Map<Integer, gae.Reader> readers, final gae.Writer writer) {
+    @Override
+    protected Entity createEmptyEntity() {
+        final Key key = GaeDatastoreTools.createEntityKey(Kind.TIMESTAMP.value, Kind.TIMESTAMP);
+
+        return new Entity(Kind.TIMESTAMP.value, key);
+    }
+
+    private GaeTimestampRepository(final int version, final Map<Integer, gae.Reader<Long>> readers, final gae.Writer<Long> writer) {
         super(version, readers, writer);
     }
 
     public static GaeTimestampRepository create() {
-        final Map<Integer, gae.Reader> readers = new HashMap<>();
+        final Map<Integer, gae.Reader<Long>> readers = new HashMap<>();
         readers.put(1, new Reader());
 
         return new GaeTimestampRepository(VERSION, readers, new Writer());

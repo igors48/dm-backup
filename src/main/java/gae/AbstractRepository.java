@@ -24,17 +24,20 @@ public abstract class AbstractRepository<T> {
         guard(notNull(this.writer = writer));
     }
 
-    protected void writeToEntity(final Entity entity, final T data) {
+    protected void write(final T data) {
+        final Entity entity = this.createEmptyEntity();
         this.writer.write(entity, data);
         entity.setProperty(VERSION_KEY, this.version);
     }
 
-    protected T readFromEntity(final Entity entity) {
+    protected T read(final Entity entity) {
         final Integer version = (Integer) entity.getProperty(VERSION_KEY);
         final Reader<T> reader = this.readers.get(version);
 
         return reader.read(entity);
     }
+
+    protected abstract Entity createEmptyEntity();
 
     private boolean validReaders(final Map<Integer, Reader<T>> readers) {
         return readers != null && !readers.isEmpty();
