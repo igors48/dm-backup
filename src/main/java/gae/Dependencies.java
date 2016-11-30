@@ -1,7 +1,7 @@
 package gae;
 
-import gae.repository.GaeSnapshotRepository;
-import gae.repository.GaeTimestampRepository;
+import gae.repository.snapshot.GaeSnapshotRepository;
+import gae.repository.timestamp.GaeTimestampRepository;
 import gae.repository.GaeTransactions;
 import gae.service.GaeTimeService;
 import service.*;

@@ -1,7 +1,10 @@
-package gae.repository;
+package gae.repository.snapshot;
 
 import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.Key;
+import gae.repository.AbstractConverter;
+import gae.repository.GaeDatastoreTools;
+import gae.repository.Kind;
 import service.Snapshot;
 import service.SnapshotRepository;
 

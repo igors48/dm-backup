@@ -1,7 +1,11 @@
-package gae.repository;
+package gae.repository.timestamp;
 
 import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.Key;
+import gae.repository.AbstractConverter;
+import gae.repository.GaeDatastore;
+import gae.repository.GaeDatastoreTools;
+import gae.repository.Kind;
 import service.TimestampRepository;
 
 import java.util.HashMap;
