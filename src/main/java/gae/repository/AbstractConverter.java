@@ -24,7 +24,7 @@ public abstract class AbstractConverter<T> {
         guard(notNull(this.writer = writer));
     }
 
-    protected Entity convert(final T data) {
+    public Entity convert(final T data) {
         final Entity entity = this.createEmptyEntityFor(data);
 
         this.writer.write(entity, data);
@@ -33,7 +33,7 @@ public abstract class AbstractConverter<T> {
         return entity;
     }
 
-    protected T convert(final Entity entity) {
+    public T convert(final Entity entity) {
         final Integer version = (Integer) entity.getProperty(VERSION_KEY);
         final Reader<T> reader = this.readers.get(version);
 
