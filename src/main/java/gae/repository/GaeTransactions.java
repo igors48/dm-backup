@@ -1,4 +1,4 @@
-package gae;
+package gae.repository;
 
 import com.google.appengine.api.datastore.Transaction;
 import service.Transactions;
@@ -12,7 +12,7 @@ public enum GaeTransactions implements Transactions {
 
     @Override
     public Transaction beginOne() {
-        return Datastore.INSTANCE.getDatastoreService().beginTransaction();
+        return GaeDatastore.INSTANCE.getDatastoreService().beginTransaction();
     }
 
 }

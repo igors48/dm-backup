@@ -1,4 +1,4 @@
-package gae;
+package gae.repository;
 
 import com.google.appengine.api.datastore.*;
 
@@ -42,7 +42,7 @@ public class GaeDatastoreTools {
         guard(notNull(kind));
 
         final Query query = new Query(kind.value);
-        final PreparedQuery preparedQuery = Datastore.INSTANCE.getDatastoreService().prepare(query);
+        final PreparedQuery preparedQuery = GaeDatastore.INSTANCE.getDatastoreService().prepare(query);
 
         return preparedQuery.asList(withLimit(MAX_VALUE));
     }
@@ -59,7 +59,7 @@ public class GaeDatastoreTools {
         final Entity victim = loadEntity(uuid, rootKind, kind, true);
 
         if (victim != null) {
-            Datastore.INSTANCE.getDatastoreService().delete(victim.getKey());
+            GaeDatastore.INSTANCE.getDatastoreService().delete(victim.getKey());
         }
     }
 
@@ -71,7 +71,7 @@ public class GaeDatastoreTools {
             query.setKeysOnly();
         }
 
-        return Datastore.INSTANCE.getDatastoreService().prepare(query);
+        return GaeDatastore.INSTANCE.getDatastoreService().prepare(query);
     }
 
     private GaeDatastoreTools() {

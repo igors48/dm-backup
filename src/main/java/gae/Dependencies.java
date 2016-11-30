@@ -1,5 +1,9 @@
 package gae;
 
+import gae.repository.GaeSnapshotRepository;
+import gae.repository.GaeTimestampRepository;
+import gae.repository.GaeTransactions;
+import gae.service.GaeTimeService;
 import service.*;
 import service.configuration.Configuration;
 import service.error.ServiceException;
@@ -7,11 +11,11 @@ import service.error.ServiceException;
 /**
  * Created by igor on 20.11.2016.
  */
-public enum Services {
+public enum Dependencies {
 
-    INSTANCE;
+    GET;
 
-    public Backup createBackupService() throws ServiceException {
+    public Backup backupService() throws ServiceException {
         final Configuration configuration = Configuration.fromSystemProperties();
 
         final Loader loader = new Loader(configuration.getAccessParameters());

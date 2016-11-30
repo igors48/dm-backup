@@ -1,12 +1,12 @@
-package gae;
+package gae.repository;
 
 import com.google.appengine.api.datastore.Entity;
 
 /**
  * Created by igor on 27.11.2016.
  */
-public interface Reader<T> {
+public interface Writer<T> {
 
-    T read(Entity entity);
+    void write(Entity entity, T data);
 
 }

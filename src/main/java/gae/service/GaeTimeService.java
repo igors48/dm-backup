@@ -1,4 +1,4 @@
-package gae;
+package gae.service;
 
 import service.TimeService;
 

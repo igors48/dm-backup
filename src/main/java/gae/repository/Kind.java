@@ -1,4 +1,4 @@
-package gae;
+package gae.repository;
 
 /**
  * Author : Igor Usenko ( igors48@gmail.com )

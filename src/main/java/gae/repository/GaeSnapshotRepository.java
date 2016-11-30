@@ -1,4 +1,4 @@
-package gae;
+package gae.repository;
 
 import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.Key;
@@ -16,7 +16,7 @@ import static util.Parameter.notNull;
 /**
  * Created by igor on 29.11.2016.
  */
-public class GaeSnapshotRepository extends AbstractRepository<Snapshot> implements SnapshotRepository {
+public class GaeSnapshotRepository extends AbstractConverter<Snapshot> implements SnapshotRepository {
 
     public static final int VERSION = 1;
 
@@ -24,7 +24,7 @@ public class GaeSnapshotRepository extends AbstractRepository<Snapshot> implemen
     public static final String TIMESTAMP_KEY = "timestamp";
     public static final String CONTENT_KEY = "content";
 
-    public static class Writer implements gae.Writer<Snapshot> {
+    public static class Writer implements gae.repository.Writer<Snapshot> {
 
         @Override
         public void write(final Entity entity, final Snapshot data) {
@@ -37,7 +37,7 @@ public class GaeSnapshotRepository extends AbstractRepository<Snapshot> implemen
 
     }
 
-    public static class Reader implements gae.Reader<Snapshot> {
+    public static class Reader implements gae.repository.Reader<Snapshot> {
 
         @Override
         public Snapshot read(final Entity entity) {
@@ -59,7 +59,7 @@ public class GaeSnapshotRepository extends AbstractRepository<Snapshot> implemen
         Snapshot latest = null;
 
         for (final Entity entity : entities) {
-            final Snapshot snapshot = this.read(entity);
+            final Snapshot snapshot = this.convert(entity);
 
             if ((latest == null) || (snapshot.timestamp > latest.timestamp)) {
                 latest = snapshot;
@@ -91,12 +91,12 @@ public class GaeSnapshotRepository extends AbstractRepository<Snapshot> implemen
         return new Entity(Kind.SNAPSHOT.value, key);
     }
 
-    private GaeSnapshotRepository(final int version, final Map<Integer, gae.Reader<Snapshot>> readers, final gae.Writer<Snapshot> writer) {
+    private GaeSnapshotRepository(final int version, final Map<Integer, gae.repository.Reader<Snapshot>> readers, final gae.repository.Writer<Snapshot> writer) {
         super(version, readers, writer);
     }
 
     public static GaeSnapshotRepository create() {
-        final Map<Integer, gae.Reader<Snapshot>> readers = new HashMap<>();
+        final Map<Integer, gae.repository.Reader<Snapshot>> readers = new HashMap<>();
         readers.put(VERSION, new Reader());
 
         return new GaeSnapshotRepository(VERSION, readers, new Writer());

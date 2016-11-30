@@ -1,4 +1,4 @@
-package gae;
+package gae.repository;
 
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
@@ -6,13 +6,13 @@ import com.google.appengine.api.datastore.DatastoreServiceFactory;
 /**
  * Created by igor on 27.11.2016.
  */
-public enum Datastore {
+public enum GaeDatastore {
 
     INSTANCE;
 
     private final DatastoreService datastoreService;
 
-    private Datastore() {
+    private GaeDatastore() {
         this.datastoreService = DatastoreServiceFactory.getDatastoreService();
     }
 
