@@ -21,11 +21,11 @@ public class SnapshotConverter extends AbstractConverter<Snapshot> {
 
     public static final SnapshotConverter SNAPSHOT_CONVERTER = SnapshotConverter.create();
 
-    public static final int VERSION = 1;
+    private static final int VERSION = 1;
 
-    public static final String UUID_KEY = "uuid";
-    public static final String TIMESTAMP_KEY = "timestamp";
-    public static final String CONTENT_KEY = "content";
+    private static final String UUID_KEY = "uuid";
+    private static final String TIMESTAMP_KEY = "timestamp";
+    private static final String CONTENT_KEY = "content";
 
     private static class Writer implements gae.repository.Writer<Snapshot> {
 
