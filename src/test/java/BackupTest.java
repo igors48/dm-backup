@@ -1,6 +1,7 @@
 import org.junit.Before;
 import org.junit.Test;
 import service.Backup;
+import service.ChangesDetector;
 import service.Loader;
 import service.Sender;
 import service.configuration.Recipients;
@@ -23,6 +24,7 @@ public class BackupTest {
 
     private Loader loader;
     private Sender sender;
+    private ChangesDetector changesDetector;
     private Backup backup;
     private ServiceException serviceException;
 
@@ -30,15 +32,19 @@ public class BackupTest {
     public void setUp() throws Exception {
         this.loader = mock(Loader.class);
         this.sender = mock(Sender.class);
+        this.changesDetector = mock(ChangesDetector.class);
+
         this.serviceException = mock(ServiceException.class);
 
         final Recipients recipients = new Recipients(A_B_COM, Arrays.asList(B_C_COM, C_D_COM));
 
-        this.backup = new Backup(this.loader, this.sender, recipients);
+        when(this.changesDetector.contentMustBeSent(CONTENT)).thenReturn(true);
+
+        this.backup = new Backup(this.loader, this.sender, this.changesDetector, recipients);
     }
 
     @Test
-    public void whenContentReceivedThenItSendsToAllRecipients() throws Exception {
+    public void whenContentReceivedThenItSendsToChangesDetector() throws Exception {
         when(loader.load()).thenReturn(CONTENT);
 
         backup.execute();
@@ -46,9 +52,30 @@ public class BackupTest {
         verify(loader).load();
         verifyNoMoreInteractions(loader);
 
+        verify(changesDetector).contentMustBeSent(CONTENT);
+        verifyNoMoreInteractions(changesDetector);
+    }
+
+    @Test
+    public void whenContentChangesDetectedThenContentSendsToAllRecipients() throws Exception {
+        when(loader.load()).thenReturn(CONTENT);
+        when(changesDetector.contentMustBeSent(CONTENT)).thenReturn(true);
+
+        backup.execute();
+
         verify(sender).sendContent(A_B_COM, B_C_COM, CONTENT);
         verify(sender).sendContent(A_B_COM, C_D_COM, CONTENT);
         verifyNoMoreInteractions(sender);
+    }
+
+    @Test
+    public void whenContentChangesNotDetectedThenContentNotSent() throws Exception {
+        when(loader.load()).thenReturn(CONTENT);
+        when(changesDetector.contentMustBeSent(CONTENT)).thenReturn(false);
+
+        backup.execute();
+
+        verifyZeroInteractions(sender);
     }
 
     @Test
