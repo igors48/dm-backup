@@ -29,6 +29,8 @@ public class Configuration {
     private static final String ADMIN = "admin";
     private static final String RECIPIENTS = "recipients";
 
+    private static final String WAIT_TIME_MILLIS = "wait.time.millis";
+
     private final String origin;
     private final String host;
 
@@ -43,7 +45,9 @@ public class Configuration {
     private final String admin;
     private final List<String> recipients;
 
-    public Configuration(final String origin, final String host, final String loginUrl, final String loginReferer, final String loginData, final String downloadUrl, final String downloadReferer, final String downloadData, final String admin, final List<String> recipients) throws ServiceException {
+    private final long waitTimeMillis;
+
+    public Configuration(final String origin, final String host, final String loginUrl, final String loginReferer, final String loginData, final String downloadUrl, final String downloadReferer, final String downloadData, final String admin, final List<String> recipients, final String waitTimeMillis) throws ServiceException {
         guard(isValidUrl(this.origin = origin), new InvalidConfigurationParameter("origin", origin));
         guard(isValidDomain(this.host = host), new InvalidConfigurationParameter("host", host));
 
@@ -64,6 +68,8 @@ public class Configuration {
             guard(isValidEmail(recipient), new InvalidConfigurationParameter("recipient", recipient));
             this.recipients.add(recipient);
         }
+
+        guard(isPositive(this.waitTimeMillis = waitTimeMillis), new InvalidConfigurationParameter("waitTimeMillis", String.valueOf(waitTimeMillis)));
     }
 
     public AccessParameters getAccessParameters() {
@@ -90,8 +96,9 @@ public class Configuration {
         final String admin = System.getProperty(ADMIN);
         final String recipientsAsString = System.getProperty(RECIPIENTS);
         final List<String> recipients = Arrays.asList(recipientsAsString.split(";"));
+        final String waitTimeMillis = System.getProperty(WAIT_TIME_MILLIS);
 
-        return new Configuration(origin, host, loginUrl, loginReferer, loginData, downloadUrl, downloadReferer, downloadData, admin, recipients);
+        return new Configuration(origin, host, loginUrl, loginReferer, loginData, downloadUrl, downloadReferer, downloadData, admin, recipients, waitTimeMillis);
     }
 
 }
