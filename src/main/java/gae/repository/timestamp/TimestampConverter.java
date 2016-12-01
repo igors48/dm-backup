@@ -2,7 +2,8 @@ package gae.repository.timestamp;
 
 import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.Key;
-import gae.repository.AbstractConverter;
+import gae.repository.Converter;
+import gae.repository.EntityFactory;
 import gae.repository.GaeDatastoreTools;
 import gae.repository.Kind;
 
@@ -15,7 +16,7 @@ import static util.Parameter.notNull;
 /**
  * Created by igor on 30.11.2016.
  */
-public class TimestampConverter extends AbstractConverter<Long> {
+public class TimestampConverter extends Converter<Long> {
 
     public static final TimestampConverter TIMESTAMP_CONVERTER = TimestampConverter.create();
 
@@ -44,22 +45,30 @@ public class TimestampConverter extends AbstractConverter<Long> {
 
     }
 
-    private TimestampConverter(final int version, final Map<Integer, gae.repository.Reader<Long>> readers, final gae.repository.Writer<Long> writer) {
-        super(version, readers, writer);
-    }
-
-    @Override
-    protected Entity createEmptyEntityFor(final Long data) {
-        final Key key = GaeDatastoreTools.createEntityKey(Kind.TIMESTAMP.value, Kind.TIMESTAMP);
-
-        return new Entity(Kind.TIMESTAMP.value, key);
+    private TimestampConverter(final int version, final Map<Integer, gae.repository.Reader<Long>> readers, final gae.repository.Writer<Long> writer, final EntityFactory<Long> entityFactory) {
+        super(version, readers, writer, entityFactory);
     }
 
     private static TimestampConverter create() {
+        final EntityFactory<Long> entityFactory = new EntityFactory<Long>() {
+            @Override
+            public Entity createFor(final Long data) {
+                final Key key = GaeDatastoreTools.createEntityKey(Kind.TIMESTAMP.value, Kind.TIMESTAMP);
+
+                return new Entity(Kind.TIMESTAMP.value, key);
+            }
+        };
+
+        return create(entityFactory);
+    }
+
+    public static TimestampConverter create(final EntityFactory<Long> entityFactory) {
+        guard(notNull(entityFactory));
+
         final Map<Integer, gae.repository.Reader<Long>> readers = new HashMap<>();
         readers.put(1, new Reader());
 
-        return new TimestampConverter(VERSION, readers, new Writer());
+        return new TimestampConverter(VERSION, readers, new Writer(), entityFactory);
     }
 
 }

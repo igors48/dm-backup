@@ -2,7 +2,8 @@ package gae.repository.snapshot;
 
 import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.Key;
-import gae.repository.AbstractConverter;
+import gae.repository.Converter;
+import gae.repository.EntityFactory;
 import gae.repository.GaeDatastoreTools;
 import gae.repository.Kind;
 import service.Snapshot;
@@ -17,7 +18,7 @@ import static util.Parameter.notNull;
 /**
  * Created by igor on 30.11.2016.
  */
-public class SnapshotConverter extends AbstractConverter<Snapshot> {
+public class SnapshotConverter extends Converter<Snapshot> {
 
     public static final SnapshotConverter SNAPSHOT_CONVERTER = SnapshotConverter.create();
 
@@ -55,22 +56,30 @@ public class SnapshotConverter extends AbstractConverter<Snapshot> {
 
     }
 
-    private SnapshotConverter(final int version, final Map<Integer, gae.repository.Reader<Snapshot>> readers, final gae.repository.Writer<Snapshot> writer) {
-        super(version, readers, writer);
-    }
-
-    @Override
-    protected Entity createEmptyEntityFor(final Snapshot data) {
-        final Key key = GaeDatastoreTools.createEntityKey(data.uuid.toString(), Kind.SNAPSHOT);
-
-        return new Entity(Kind.SNAPSHOT.value, key);
+    private SnapshotConverter(final int version, final Map<Integer, gae.repository.Reader<Snapshot>> readers, final gae.repository.Writer<Snapshot> writer, final EntityFactory<Snapshot> entityFactory) {
+        super(version, readers, writer, entityFactory);
     }
 
     private static SnapshotConverter create() {
+        final EntityFactory<Snapshot> entityFactory = new EntityFactory<Snapshot>() {
+            @Override
+            public Entity createFor(final Snapshot data) {
+                final Key key = GaeDatastoreTools.createEntityKey(data.uuid.toString(), Kind.SNAPSHOT);
+
+                return new Entity(Kind.SNAPSHOT.value, key);
+            }
+        };
+
+        return create(entityFactory);
+    }
+
+    public static SnapshotConverter create(final EntityFactory<Snapshot> entityFactory) {
+        guard(notNull(entityFactory));
+
         final Map<Integer, gae.repository.Reader<Snapshot>> readers = new HashMap<>();
         readers.put(VERSION, new Reader());
 
-        return new SnapshotConverter(VERSION, readers, new Writer());
+        return new SnapshotConverter(VERSION, readers, new Writer(), entityFactory);
     }
 
 }

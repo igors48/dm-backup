@@ -1,7 +1,7 @@
 package gae.repository.snapshot;
 
 import com.google.appengine.api.datastore.Entity;
-import gae.repository.AbstractConverter;
+import gae.repository.Converter;
 import gae.repository.GaeDatastoreTools;
 import gae.repository.Kind;
 import service.Snapshot;
@@ -17,9 +17,9 @@ import static util.Parameter.notNull;
  */
 public class GaeSnapshotRepository implements SnapshotRepository {
 
-    private final AbstractConverter<Snapshot> converter;
+    private final Converter<Snapshot> converter;
 
-    public GaeSnapshotRepository(final AbstractConverter<Snapshot> converter) {
+    public GaeSnapshotRepository(final Converter<Snapshot> converter) {
         guard(notNull(this.converter = converter));
     }
 

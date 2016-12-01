@@ -10,22 +10,24 @@ import static util.Parameter.notNull;
 /**
  * Created by igor on 27.11.2016.
  */
-public abstract class AbstractConverter<T> {
+public class Converter<T> {
 
     public static final String VERSION_KEY = "_version_";
 
     private final int version;
     private final Map<Integer, Reader<T>> readers;
     private final Writer<T> writer;
+    private final EntityFactory<T> entityFactory;
 
-    public AbstractConverter(final int version, final Map<Integer, Reader<T>> readers, final Writer<T> writer) {
+    public Converter(final int version, final Map<Integer, Reader<T>> readers, final Writer<T> writer, final EntityFactory<T> entityFactory) {
         this.version = version;
         guard(validReaders(this.readers = readers));
         guard(notNull(this.writer = writer));
+        guard(notNull(this.entityFactory = entityFactory));
     }
 
     public Entity convert(final T data) {
-        final Entity entity = this.createEmptyEntityFor(data);
+        final Entity entity = this.entityFactory.createFor(data);
 
         this.writer.write(entity, data);
         entity.setProperty(VERSION_KEY, this.version);
@@ -39,8 +41,6 @@ public abstract class AbstractConverter<T> {
 
         return reader.read(entity);
     }
-
-    protected abstract Entity createEmptyEntityFor(final T data);
 
     private static boolean validReaders(final Map readers) {
         return readers != null && !readers.isEmpty();

@@ -1,7 +1,7 @@
 package gae.repository.timestamp;
 
 import com.google.appengine.api.datastore.Entity;
-import gae.repository.AbstractConverter;
+import gae.repository.Converter;
 import gae.repository.GaeDatastore;
 import gae.repository.GaeDatastoreTools;
 import gae.repository.Kind;
@@ -17,9 +17,9 @@ import static util.Parameter.notNull;
  */
 public class GaeTimestampRepository implements TimestampRepository {
 
-    private final AbstractConverter<Long> converter;
+    private final Converter<Long> converter;
 
-    public GaeTimestampRepository(final AbstractConverter<Long> converter) {
+    public GaeTimestampRepository(final Converter<Long> converter) {
         guard(notNull(this.converter = converter));
     }
 
