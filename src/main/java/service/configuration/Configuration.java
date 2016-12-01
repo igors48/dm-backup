@@ -47,7 +47,7 @@ public class Configuration {
 
     private final long waitTimeMillis;
 
-    public Configuration(final String origin, final String host, final String loginUrl, final String loginReferer, final String loginData, final String downloadUrl, final String downloadReferer, final String downloadData, final String admin, final List<String> recipients, final String waitTimeMillis) throws ServiceException {
+    public Configuration(final String origin, final String host, final String loginUrl, final String loginReferer, final String loginData, final String downloadUrl, final String downloadReferer, final String downloadData, final String admin, final List<String> recipients, final String waitTimeMillisAsString) throws ServiceException {
         guard(isValidUrl(this.origin = origin), new InvalidConfigurationParameter("origin", origin));
         guard(isValidDomain(this.host = host), new InvalidConfigurationParameter("host", host));
 
@@ -69,6 +69,8 @@ public class Configuration {
             this.recipients.add(recipient);
         }
 
+        final long waitTimeMillis = convert(waitTimeMillisAsString, new InvalidConfigurationParameter("waitTimeMillis", waitTimeMillisAsString));
+
         guard(isPositive(this.waitTimeMillis = waitTimeMillis), new InvalidConfigurationParameter("waitTimeMillis", String.valueOf(waitTimeMillis)));
     }
 
@@ -82,6 +84,14 @@ public class Configuration {
 
     public Recipients getRecipients() {
         return new Recipients(this.admin, this.recipients);
+    }
+
+    private long convert(final String value, final ServiceException exception) throws ServiceException {
+        try {
+            return Long.valueOf(value);
+        } catch (Exception e) {
+            throw exception;
+        }
     }
 
     public static Configuration fromSystemProperties() throws ServiceException {
