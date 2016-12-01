@@ -86,6 +86,10 @@ public class Configuration {
         return new Recipients(this.admin, this.recipients);
     }
 
+    public long getWaitTimeMillis() {
+        return this.waitTimeMillis;
+    }
+
     private long convert(final String value, final ServiceException exception) throws ServiceException {
         try {
             return Long.valueOf(value);
