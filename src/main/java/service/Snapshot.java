@@ -20,4 +20,24 @@ public class Snapshot {
         guard(isValidString(this.content = content));
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Snapshot snapshot = (Snapshot) o;
+
+        if (timestamp != snapshot.timestamp) return false;
+        if (!uuid.equals(snapshot.uuid)) return false;
+        return content.equals(snapshot.content);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = uuid.hashCode();
+        result = 31 * result + (int) (timestamp ^ (timestamp >>> 32));
+        result = 31 * result + content.hashCode();
+        return result;
+    }
+
 }

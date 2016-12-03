@@ -34,7 +34,7 @@ public class SnapshotConverter extends Converter<Snapshot> {
         public void write(final Entity entity, final Snapshot data) {
             guard(notNull(data));
 
-            entity.setProperty(UUID_KEY, data.uuid);
+            entity.setProperty(UUID_KEY, data.uuid.toString());
             entity.setProperty(TIMESTAMP_KEY, data.timestamp);
             entity.setProperty(CONTENT_KEY, data.content);
         }
@@ -47,7 +47,7 @@ public class SnapshotConverter extends Converter<Snapshot> {
         public Snapshot read(final Entity entity) {
             guard(notNull(entity));
 
-            final UUID uuid = (UUID) entity.getProperty(UUID_KEY);
+            final UUID uuid = UUID.fromString((String) entity.getProperty(UUID_KEY));
             final long timestamp = (long) entity.getProperty(TIMESTAMP_KEY);
             final String content = (String) entity.getProperty(CONTENT_KEY);
 
