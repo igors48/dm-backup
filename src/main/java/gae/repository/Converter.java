@@ -27,6 +27,8 @@ public class Converter<T> {
     }
 
     public Entity convert(final T data) {
+        guard(notNull(data));
+
         final Entity entity = this.entityFactory.createFor(data);
 
         this.writer.write(entity, data);
@@ -36,6 +38,8 @@ public class Converter<T> {
     }
 
     public T convert(final Entity entity) {
+        guard(notNull(entity));
+
         final Integer version = (Integer) entity.getProperty(VERSION_KEY);
         final Reader<T> reader = this.readers.get(version);
 
