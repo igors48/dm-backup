@@ -1,9 +1,6 @@
 import org.junit.Before;
 import org.junit.Test;
-import service.Backup;
-import service.ChangesDetector;
-import service.Loader;
-import service.Sender;
+import service.*;
 import service.configuration.Recipients;
 import service.error.ServiceException;
 
@@ -25,6 +22,7 @@ public class BackupTest {
     private Loader loader;
     private Sender sender;
     private ChangesDetector changesDetector;
+    private Transactions transactions;
     private Backup backup;
     private ServiceException serviceException;
 
@@ -33,14 +31,15 @@ public class BackupTest {
         this.loader = mock(Loader.class);
         this.sender = mock(Sender.class);
         this.changesDetector = mock(ChangesDetector.class);
+        this.transactions = mock(Transactions.class);
 
         this.serviceException = mock(ServiceException.class);
 
         final Recipients recipients = new Recipients(A_B_COM, Arrays.asList(B_C_COM, C_D_COM));
 
-        when(this.changesDetector.contentMustBeSent(CONTENT)).thenReturn(true);
+        when(this.changesDetector.getActionForContent(CONTENT)).thenReturn(Action.NO_ACTION);
 
-        this.backup = new Backup(this.loader, this.sender, this.changesDetector, recipients);
+        this.backup = new Backup(this.loader, this.sender, this.changesDetector, recipients, transactions);
     }
 
     @Test
@@ -52,14 +51,14 @@ public class BackupTest {
         verify(loader).load();
         verifyNoMoreInteractions(loader);
 
-        verify(changesDetector).contentMustBeSent(CONTENT);
+        verify(changesDetector).getActionForContent(CONTENT);
         verifyNoMoreInteractions(changesDetector);
     }
 
     @Test
     public void whenContentChangesDetectedThenContentSendsToAllRecipients() throws Exception {
         when(loader.load()).thenReturn(CONTENT);
-        when(changesDetector.contentMustBeSent(CONTENT)).thenReturn(true);
+        when(changesDetector.getActionForContent(CONTENT)).thenReturn(Action.SEND);
 
         backup.execute();
 
@@ -71,7 +70,7 @@ public class BackupTest {
     @Test
     public void whenContentChangesNotDetectedThenContentNotSent() throws Exception {
         when(loader.load()).thenReturn(CONTENT);
-        when(changesDetector.contentMustBeSent(CONTENT)).thenReturn(false);
+        when(changesDetector.getActionForContent(CONTENT)).thenReturn(Action.NO_ACTION);
 
         backup.execute();
 
@@ -81,7 +80,7 @@ public class BackupTest {
     @Test
     public void whenContentCannotBeSentThenErrorSentToErrorRecipient() throws Exception {
         when(loader.load()).thenReturn(CONTENT);
-
+        when(this.changesDetector.getActionForContent(CONTENT)).thenReturn(Action.SEND);
         doThrow(this.serviceException).when(sender).sendContent(A_B_COM, B_C_COM, CONTENT);
 
         backup.execute();

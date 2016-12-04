@@ -8,6 +8,6 @@ public enum Action {
     NO_ACTION,
     SAVE,
     UPDATE_LAST,
-    SAVE_AND_SEND
+    SEND
 
 }

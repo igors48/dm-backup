@@ -2,8 +2,10 @@ import org.junit.Before;
 import org.junit.Test;
 import service.*;
 
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 /**
  * Created by igor on 26.11.2016.
@@ -37,7 +39,7 @@ public class ChangesDetectorTest {
 
     @Test
     public void transactionCreatedAndCommitted() throws Exception {
-        this.changesDetector.contentMustBeSent("content");
+        this.changesDetector.getActionForContent("content");
 
         assertEquals(TransactionState.COMMITTED, this.transactionStub.getState());
     }
@@ -48,69 +50,12 @@ public class ChangesDetectorTest {
         try {
             when(this.snapshotRepository.loadLatestSnapshot()).thenThrow(new RuntimeException());
 
-            this.changesDetector.contentMustBeSent("content");
+            this.changesDetector.getActionForContent("content");
 
             fail();
         } catch (Exception exception) {
             assertEquals(TransactionState.ROLLED_BACK, this.transactionStub.getState());
         }
-    }
-
-    @Test
-    public void whenContentChangedThenContentMustNotSaved() throws Exception {
-        final boolean contentMustBeSent = this.changesDetector.contentMustBeSent("b");
-
-        assertFalse(contentMustBeSent);
-    }
-
-    @Test
-    public void whenContentChangedThenTimestapSetToCurrentTime() throws Exception {
-        this.changesDetector.contentMustBeSent("b");
-
-        verify(this.timestampRepository).store(42L);
-    }
-
-    @Test
-    public void whenContentNotChangedAndWaitPeriodIsNotExpiredThenContentIsNotSaved() throws Exception {
-        final boolean contentMustBeSent = this.changesDetector.contentMustBeSent("a");
-
-        assertFalse(contentMustBeSent);
-    }
-
-    @Test
-    public void whenContentNotChangedAndNoStoredTimestampThenContentIsNotSaved() throws Exception {
-        when(this.timestampRepository.load()).thenReturn(null);
-
-        final boolean contentMustBeSent = this.changesDetector.contentMustBeSent("a");
-
-        assertFalse(contentMustBeSent);
-    }
-
-    @Test
-    public void whenContentNotChangedAndWaitPeriodIsExpiredThenContentIsSaved() throws Exception {
-        this.changesDetector.contentMustBeSent("b");
-
-        when(this.timeService.currentTimestamp()).thenReturn(42 + this.waitInMillis + 1);
-
-        when(this.transactions.beginOne()).thenReturn(new TransactionStub());
-
-        final boolean contentMustBeSent = this.changesDetector.contentMustBeSent("a");
-
-        assertTrue(contentMustBeSent);
-    }
-
-    @Test
-    public void whenContentNotChangedAndWaitPeriodIsExpiredThenTimestampRemoved() throws Exception {
-        this.changesDetector.contentMustBeSent("b");
-
-        when(this.timeService.currentTimestamp()).thenReturn(42 + this.waitInMillis + 1);
-
-        when(this.transactions.beginOne()).thenReturn(new TransactionStub());
-
-        this.changesDetector.contentMustBeSent("a");
-
-        verify(this.timestampRepository).store(42L);
-        verify(this.timestampRepository).clear();
     }
 
 }

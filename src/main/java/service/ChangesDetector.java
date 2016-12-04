@@ -25,7 +25,7 @@ public class ChangesDetector {
         guard(isPositive(this.waitInMillis = waitInMillis));
     }
 
-    public boolean contentMustBeSent(final String content) {
+    public Action getActionForContent(final String content) {
         guard(isValidString(content));
 
         Transaction transaction = null;
@@ -36,27 +36,21 @@ public class ChangesDetector {
             final String latestSnapshot = this.snapshotRepository.loadLatestSnapshot();
             final boolean contentChanged = isContentChanged(latestSnapshot, content);
 
-            boolean contentMustBeSent = false;
-
-            if (contentChanged) {
-                updateStoredTimestamp();
-            } else {
-                contentMustBeSent = isWaitPeriodFinished();
-            }
+            final Action action = contentChanged ? updateStoredTimestamp() : checkWaitPeriodFinished();
 
             transaction.commit();
 
-            return contentMustBeSent;
+            return action;
         } finally {
             rollbackIfActive(transaction);
         }
     }
 
-    private boolean isWaitPeriodFinished() {
+    private Action checkWaitPeriodFinished() {
         final Long stored = this.timestampRepository.load();
 
         if (stored == null) {
-            return false;
+            return Action.NO_ACTION;
         }
 
         final long current = this.timeService.currentTimestamp();
@@ -65,15 +59,19 @@ public class ChangesDetector {
         if (delta > this.waitInMillis) {
             this.timestampRepository.clear();
 
-            return true;
+            return Action.SEND;
         }
 
-        return false;
+        return Action.NO_ACTION;
     }
 
-    private void updateStoredTimestamp() {
+    private Action updateStoredTimestamp() {
+        final Long stored = this.timestampRepository.load();
+
         final long timestamp = this.timeService.currentTimestamp();
         this.timestampRepository.store(timestamp);
+
+        return stored == null ? Action.SAVE : Action.UPDATE_LAST;
     }
 
     private boolean isContentChanged(final String oldContent, final String newContent) {

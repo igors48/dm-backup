@@ -1,5 +1,6 @@
 package service;
 
+import com.google.appengine.api.datastore.Transaction;
 import service.configuration.Recipients;
 import service.error.ServiceException;
 
@@ -9,6 +10,7 @@ import java.util.logging.Logger;
 import static java.lang.String.format;
 import static util.Assert.guard;
 import static util.Parameter.notNull;
+import static util.TransactionTools.rollbackIfActive;
 
 /**
  * Created by igor on 14.11.2016.
@@ -21,12 +23,14 @@ public class Backup {
     private final Sender sender;
     private final ChangesDetector changesDetector;
     private final Recipients recipients;
+    private final Transactions transactions;
 
-    public Backup(final Loader loader, final Sender sender, final ChangesDetector changesDetector, final Recipients recipients) {
+    public Backup(final Loader loader, final Sender sender, final ChangesDetector changesDetector, final Recipients recipients, final Transactions transactions) {
         guard(notNull(this.loader = loader));
         guard(notNull(this.sender = sender));
         guard(notNull(this.changesDetector = changesDetector));
         guard(notNull(this.recipients = recipients));
+        guard(notNull(this.transactions = transactions));
     }
 
     public void execute() {
@@ -36,12 +40,23 @@ public class Backup {
 
             final String content = this.loader.load();
 
-            boolean contentMustBeSent = this.changesDetector.contentMustBeSent(content);
+            final Action action = this.changesDetector.getActionForContent(content);
+            LOGGER.info(String.format("Action [ %s ]", action));
 
-            if (contentMustBeSent) {
-                storeContent(content);
-                sendContent(content);
+            switch (action) {
+                case NO_ACTION:
+                    break;
+                case SAVE:
+                    storeContent(content);
+                    break;
+                case UPDATE_LAST:
+                    updateLast(content);
+                    break;
+                case SEND:
+                    sendContent(content);
+                    break;
             }
+            ;
 
             LOGGER.info("Backup finished");
         } catch (ServiceException exception) {
@@ -51,8 +66,26 @@ public class Backup {
         }
     }
 
-    private void storeContent(final String content) {
+    private void updateLast(final String content) {
+        Transaction transaction = null;
 
+        try {
+            transaction = this.transactions.beginOne();
+            transaction.commit();
+        } finally {
+            rollbackIfActive(transaction);
+        }
+    }
+
+    private void storeContent(final String content) {
+        Transaction transaction = null;
+
+        try {
+            transaction = this.transactions.beginOne();
+            transaction.commit();
+        } finally {
+            rollbackIfActive(transaction);
+        }
     }
 
     private void sendContent(final String content) {
