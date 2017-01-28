@@ -32,7 +32,9 @@ public class Loader {
     public String load() throws ServiceException {
 
         try {
-            return downloadFile(login(getSession()));
+            String session = login(getSession());
+            parseAccounts(session);
+            return downloadFile(session);
         } catch (IOException exception) {
             throw new IoError(exception.getMessage());
         }
@@ -53,6 +55,25 @@ public class Loader {
             validateSessionCookieResponse(responseCode, contentType, sessionCookie);
 
             return sessionCookie;
+        } finally {
+            disconnect(connection);
+        }
+    }
+
+    private String parseAccounts(final String session) throws IOException {
+        HttpURLConnection connection = null;
+
+        try {
+            connection = ConnectionTools.setupConnection(this.accessParameters.accounts.url, ConnectionTools.Method.GET);
+            configureConnection(connection, this.accessParameters.accounts.referer, session);
+
+            connection.connect();
+
+            final int responseCode = connection.getResponseCode();
+            final String contentType = connection.getHeaderField(ConnectionTools.CONTENT_TYPE);
+            final String content = ConnectionTools.readStringFromConnection(connection);
+
+            return "";
         } finally {
             disconnect(connection);
         }
@@ -93,17 +114,11 @@ public class Loader {
         }
     }
 
-    private HttpURLConnection postForm(final FormParameters formParameters, final String sessionCookie) throws IOException {
+    private HttpURLConnection postForm(final FormParameters formParameters, final String session) throws IOException {
         HttpURLConnection connection = ConnectionTools.setupConnection(formParameters.url, ConnectionTools.Method.POST);
 
-        connection.setRequestProperty("Host", this.accessParameters.general.host);
-        connection.setRequestProperty("Origin", this.accessParameters.general.origin);
-        connection.setRequestProperty("Referer", formParameters.referer);
-        connection.setRequestProperty("Cookie", sessionCookie);
+        configureConnection(connection, formParameters.referer, session);
         connection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
-        connection.setRequestProperty("Upgrade-Insecure-Requests", "1");
-
-        connection.setInstanceFollowRedirects(false);
 
         connection.connect();
 
@@ -112,6 +127,15 @@ public class Loader {
         outputStream.close();
 
         return connection;
+    }
+
+    private void configureConnection(final HttpURLConnection connection, final String referer, final String sessionCookie) {
+        connection.setRequestProperty("Host", this.accessParameters.general.host);
+        connection.setRequestProperty("Origin", this.accessParameters.general.origin);
+        connection.setRequestProperty("Referer", referer);
+        connection.setRequestProperty("Cookie", sessionCookie);
+        connection.setRequestProperty("Upgrade-Insecure-Requests", "1");
+        connection.setInstanceFollowRedirects(false);
     }
 
     public static void validateSessionCookieResponse(final int statusCode, final String contentType, final String cookie) throws ServiceException {
