@@ -4,10 +4,14 @@ import service.configuration.AccessParameters;
 import service.configuration.FormParameters;
 import service.error.*;
 import util.ConnectionTools;
+import util.account.Account;
+import util.account.AccountsParser;
 
 import java.io.IOException;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -60,7 +64,7 @@ public class Loader {
         }
     }
 
-    private String parseAccounts(final String session) throws IOException {
+    private List<Account> parseAccounts(final String session) throws IOException {
         HttpURLConnection connection = null;
 
         try {
@@ -73,7 +77,9 @@ public class Loader {
             final String contentType = connection.getHeaderField(ConnectionTools.CONTENT_TYPE);
             final String content = ConnectionTools.readStringFromConnection(connection);
 
-            return content;
+            final boolean isResponseValid = validateAccountsResponse(responseCode, contentType);
+
+            return isResponseValid ? AccountsParser.parse(content) : new ArrayList<Account>();
         } finally {
             disconnect(connection);
         }
@@ -164,6 +170,10 @@ public class Loader {
         final Matcher matcher = SESSION_COOKIE_PATTERN.matcher(cookie);
 
         return matcher.matches() ? matcher.group(1) + ";" : "";
+    }
+
+    public static boolean validateAccountsResponse(final int responseCode, final String contentType) {
+        return responseCode == 200 && "text/json".equals(contentType);
     }
 
 }
