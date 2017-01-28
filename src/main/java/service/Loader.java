@@ -73,7 +73,7 @@ public class Loader {
             final String contentType = connection.getHeaderField(ConnectionTools.CONTENT_TYPE);
             final String content = ConnectionTools.readStringFromConnection(connection);
 
-            return "";
+            return content;
         } finally {
             disconnect(connection);
         }
