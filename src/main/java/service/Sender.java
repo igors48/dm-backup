@@ -2,6 +2,7 @@ package service;
 
 import service.error.SendingException;
 import service.error.ServiceException;
+import util.account.Account;
 
 import javax.activation.DataHandler;
 import javax.activation.DataSource;
@@ -20,7 +21,8 @@ import java.util.Properties;
 import java.util.logging.Logger;
 
 import static util.Assert.guard;
-import static util.Parameter.*;
+import static util.Parameter.isValidEmail;
+import static util.Parameter.notNull;
 
 /**
  * Created by igor on 14.11.2016.
@@ -33,10 +35,10 @@ public class Sender {
     private static final String DATE_FORMAT_FOR_BODY = "yyyy-MM-dd HH:mm:ss";
     private static final String CSV = ".csv";
 
-    public void sendContent(final String sender, final String recipient, final String content) throws ServiceException {
+    public void sendContent(final String sender, final String recipient, final Content content) throws ServiceException {
         guard(isValidEmail(sender));
         guard(isValidEmail(recipient));
-        guard(isValidString(content));
+        guard(notNull(content));
 
         LOGGER.info(String.format("Sending content to [ %s ]", recipient));
 
@@ -48,9 +50,23 @@ public class Sender {
 
         final SimpleDateFormat formatForBody = new SimpleDateFormat(DATE_FORMAT_FOR_BODY);
         final String dateForBody = formatForBody.format(now);
-        final String body = "File backed up at " + dateForBody;
+        final String subject = "File backed up at " + dateForBody;
 
-        sendMail(sender, recipient, body, body, attachmentName, content);
+        final StringBuffer body = new StringBuffer("<p>" + subject + "</p>");
+
+        if (!content.accounts.isEmpty()) {
+            body.append("<ul>");
+
+            for (final Account account: content.accounts) {
+                body.append("<li>");
+                body.append(String.format("%s : %s", account.title, account.balance));
+                body.append("</li>");
+            }
+
+            body.append("</ul>");
+        }
+
+        sendMail(sender, recipient, subject, body.toString(), attachmentName, content.file);
     }
 
     public void sendException(final String recipient, final ServiceException exception) throws ServiceException {
@@ -78,7 +94,7 @@ public class Sender {
 
             final MimeBodyPart htmlPart = new MimeBodyPart();
 
-            htmlPart.setContent(String.format("<p>%s</p>", body), "text/html");
+            htmlPart.setContent(body, "text/html");
             multipart.addBodyPart(htmlPart);
 
             if (attachmentContent != null) {
