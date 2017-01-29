@@ -17,7 +17,7 @@
     <properties>
         <app.id>dm-backup</app.id>
         <app.version>1.0</app.version>
-        <appengine.version>1.9.46</appengine.version>
+        <appengine.version>1.9.48</appengine.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <maven.compiler.source>1.7</maven.compiler.source>
