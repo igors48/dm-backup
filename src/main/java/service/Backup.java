@@ -32,7 +32,7 @@ public class Backup {
         try {
             LOGGER.info("Backup started");
 
-            final String content = this.loader.load();
+            final Content content = this.loader.load();
             sendContent(content);
 
             LOGGER.info("Backup finished");
@@ -43,14 +43,14 @@ public class Backup {
         }
     }
 
-    private void sendContent(final String content) {
+    private void sendContent(final Content content) {
 
         for (final String recipient : this.recipients.contentRecipients) {
             sendContent(recipient, content);
         }
     }
 
-    private void sendContent(final String recipient, final String content) {
+    private void sendContent(final String recipient, final Content content) {
 
         try {
             this.sender.sendContent(recipients.adminRecipient, recipient, content);

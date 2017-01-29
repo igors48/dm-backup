@@ -37,12 +37,15 @@ public class Loader {
         guard(notNull(this.accessParameters = accessParameters));
     }
 
-    public String load() throws ServiceException {
+    public Content load() throws ServiceException {
 
         try {
-            String session = login(getSession());
-            parseAccounts(session);
-            return downloadFile(session);
+            final String session = login(getSession());
+
+            final List<Account> accounts = parseAccounts(session);
+            final String file = downloadFile(session);
+
+            return new Content(accounts, file);
         } catch (IOException exception) {
             throw new IoError(exception.getMessage());
         }

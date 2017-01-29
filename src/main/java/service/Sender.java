@@ -20,7 +20,8 @@ import java.util.Properties;
 import java.util.logging.Logger;
 
 import static util.Assert.guard;
-import static util.Parameter.*;
+import static util.Parameter.isValidEmail;
+import static util.Parameter.notNull;
 
 /**
  * Created by igor on 14.11.2016.
@@ -33,10 +34,10 @@ public class Sender {
     private static final String DATE_FORMAT_FOR_BODY = "yyyy-MM-dd HH:mm:ss";
     private static final String CSV = ".csv";
 
-    public void sendContent(final String sender, final String recipient, final String content) throws ServiceException {
+    public void sendContent(final String sender, final String recipient, final Content content) throws ServiceException {
         guard(isValidEmail(sender));
         guard(isValidEmail(recipient));
-        guard(isValidString(content));
+        guard(notNull(content));
 
         LOGGER.info(String.format("Sending content to [ %s ]", recipient));
 
@@ -50,7 +51,7 @@ public class Sender {
         final String dateForBody = formatForBody.format(now);
         final String body = "File backed up at " + dateForBody;
 
-        sendMail(sender, recipient, body, body, attachmentName, content);
+        sendMail(sender, recipient, body, body, attachmentName, content.file);
     }
 
     public void sendException(final String recipient, final ServiceException exception) throws ServiceException {
