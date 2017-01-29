@@ -12,6 +12,8 @@ import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -24,6 +26,8 @@ import static util.Parameter.notNull;
  * Created by igor on 14.11.2016.
  */
 public class Loader {
+
+    private static final Logger LOGGER = Logger.getLogger(Loader.class.getName());
 
     private static final Pattern SESSION_COOKIE_PATTERN = Pattern.compile("(PHPSESSID=.*);.*");
 
@@ -64,8 +68,10 @@ public class Loader {
         }
     }
 
-    private List<Account> parseAccounts(final String session) throws IOException {
+    private List<Account> parseAccounts(final String session) {
         HttpURLConnection connection = null;
+
+        final List<Account> result = new ArrayList<>();
 
         try {
             connection = ConnectionTools.setupConnection(this.accessParameters.accounts.url, ConnectionTools.Method.GET);
@@ -79,10 +85,17 @@ public class Loader {
 
             final boolean isResponseValid = validateAccountsResponse(responseCode, contentType);
 
-            return isResponseValid ? AccountsParser.parse(content) : new ArrayList<Account>();
+            if (isResponseValid) {
+                final List<Account> accounts = AccountsParser.parse(content);
+                result.addAll(accounts);
+            }
+        } catch (Exception exception) {
+            LOGGER.log(Level.SEVERE, "Error parsing acounts", exception);
         } finally {
             disconnect(connection);
         }
+
+        return result;
     }
 
     private String login(final String session) throws IOException, ServiceException {
@@ -173,7 +186,7 @@ public class Loader {
     }
 
     public static boolean validateAccountsResponse(final int responseCode, final String contentType) {
-        return responseCode == 200 && "text/json".equals(contentType);
+        return responseCode == 200 && "text/json; charset=utf-8".equals(contentType);
     }
 
 }
