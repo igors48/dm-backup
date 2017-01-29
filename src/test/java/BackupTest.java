@@ -1,11 +1,14 @@
 import org.junit.Before;
 import org.junit.Test;
 import service.Backup;
+import service.Content;
 import service.Loader;
 import service.Sender;
 import service.configuration.Recipients;
 import service.error.ServiceException;
+import util.account.Account;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 
 import static org.junit.Assert.fail;
@@ -16,7 +19,7 @@ import static org.mockito.Mockito.*;
  */
 public class BackupTest {
 
-    private static final String CONTENT = "content";
+    private static final Content CONTENT = new Content(new ArrayList<Account>(), "content");
     private static final String A_B_COM = "a@b.com";
     private static final String B_C_COM = "b@c.com";
     private static final String C_D_COM = "c@d.com";

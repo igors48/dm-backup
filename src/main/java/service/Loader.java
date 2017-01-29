@@ -4,10 +4,16 @@ import service.configuration.AccessParameters;
 import service.configuration.FormParameters;
 import service.error.*;
 import util.ConnectionTools;
+import util.account.Account;
+import util.account.AccountsParser;
 
 import java.io.IOException;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -21,6 +27,8 @@ import static util.Parameter.notNull;
  */
 public class Loader {
 
+    private static final Logger LOGGER = Logger.getLogger(Loader.class.getName());
+
     private static final Pattern SESSION_COOKIE_PATTERN = Pattern.compile("(PHPSESSID=.*);.*");
 
     private final AccessParameters accessParameters;
@@ -29,10 +37,15 @@ public class Loader {
         guard(notNull(this.accessParameters = accessParameters));
     }
 
-    public String load() throws ServiceException {
+    public Content load() throws ServiceException {
 
         try {
-            return downloadFile(login(getSession()));
+            final String session = login(getSession());
+
+            final List<Account> accounts = parseAccounts(session);
+            final String file = downloadFile(session);
+
+            return new Content(accounts, file);
         } catch (IOException exception) {
             throw new IoError(exception.getMessage());
         }
@@ -56,6 +69,36 @@ public class Loader {
         } finally {
             disconnect(connection);
         }
+    }
+
+    private List<Account> parseAccounts(final String session) {
+        HttpURLConnection connection = null;
+
+        final List<Account> result = new ArrayList<>();
+
+        try {
+            connection = ConnectionTools.setupConnection(this.accessParameters.accounts.url, ConnectionTools.Method.GET);
+            configureConnection(connection, this.accessParameters.accounts.referer, session);
+
+            connection.connect();
+
+            final int responseCode = connection.getResponseCode();
+            final String contentType = connection.getHeaderField(ConnectionTools.CONTENT_TYPE);
+            final String content = ConnectionTools.readStringFromConnection(connection);
+
+            final boolean isResponseValid = validateAccountsResponse(responseCode, contentType);
+
+            if (isResponseValid) {
+                final List<Account> accounts = AccountsParser.parse(content);
+                result.addAll(accounts);
+            }
+        } catch (Exception exception) {
+            LOGGER.log(Level.SEVERE, "Error parsing acounts", exception);
+        } finally {
+            disconnect(connection);
+        }
+
+        return result;
     }
 
     private String login(final String session) throws IOException, ServiceException {
@@ -93,17 +136,11 @@ public class Loader {
         }
     }
 
-    private HttpURLConnection postForm(final FormParameters formParameters, final String sessionCookie) throws IOException {
+    private HttpURLConnection postForm(final FormParameters formParameters, final String session) throws IOException {
         HttpURLConnection connection = ConnectionTools.setupConnection(formParameters.url, ConnectionTools.Method.POST);
 
-        connection.setRequestProperty("Host", this.accessParameters.general.host);
-        connection.setRequestProperty("Origin", this.accessParameters.general.origin);
-        connection.setRequestProperty("Referer", formParameters.referer);
-        connection.setRequestProperty("Cookie", sessionCookie);
+        configureConnection(connection, formParameters.referer, session);
         connection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
-        connection.setRequestProperty("Upgrade-Insecure-Requests", "1");
-
-        connection.setInstanceFollowRedirects(false);
 
         connection.connect();
 
@@ -112,6 +149,15 @@ public class Loader {
         outputStream.close();
 
         return connection;
+    }
+
+    private void configureConnection(final HttpURLConnection connection, final String referer, final String sessionCookie) {
+        connection.setRequestProperty("Host", this.accessParameters.general.host);
+        connection.setRequestProperty("Origin", this.accessParameters.general.origin);
+        connection.setRequestProperty("Referer", referer);
+        connection.setRequestProperty("Cookie", sessionCookie);
+        connection.setRequestProperty("Upgrade-Insecure-Requests", "1");
+        connection.setInstanceFollowRedirects(false);
     }
 
     public static void validateSessionCookieResponse(final int statusCode, final String contentType, final String cookie) throws ServiceException {
@@ -140,6 +186,10 @@ public class Loader {
         final Matcher matcher = SESSION_COOKIE_PATTERN.matcher(cookie);
 
         return matcher.matches() ? matcher.group(1) + ";" : "";
+    }
+
+    public static boolean validateAccountsResponse(final int responseCode, final String contentType) {
+        return responseCode == 200 && "text/json; charset=utf-8".equals(contentType);
     }
 
 }
