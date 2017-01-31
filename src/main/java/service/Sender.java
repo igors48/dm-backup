@@ -1,5 +1,6 @@
 package service;
 
+import com.google.appengine.api.utils.SystemProperty;
 import service.error.SendingException;
 import service.error.ServiceException;
 import util.account.Account;
@@ -93,8 +94,12 @@ public class Sender {
             final Multipart multipart = new MimeMultipart();
 
             final MimeBodyPart htmlPart = new MimeBodyPart();
+            final String applicationId = SystemProperty.applicationId.get();
 
-            htmlPart.setContent(body, "text/html");
+            String bodyWithMeta = "</hr>";
+            bodyWithMeta += "<p>" + applicationId + "</p>";
+
+            htmlPart.setContent(bodyWithMeta, "text/html");
             multipart.addBodyPart(htmlPart);
 
             if (attachmentContent != null) {
