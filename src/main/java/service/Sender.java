@@ -96,7 +96,8 @@ public class Sender {
             final MimeBodyPart htmlPart = new MimeBodyPart();
             final String applicationId = SystemProperty.applicationId.get();
 
-            String bodyWithMeta = "</hr>";
+            String bodyWithMeta = body;
+            bodyWithMeta += "</hr>";
             bodyWithMeta += "<p>" + applicationId + "</p>";
 
             htmlPart.setContent(bodyWithMeta, "text/html");
