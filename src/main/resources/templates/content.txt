@@ -1,1 +1,11 @@
-content
+<html>
+<head>
+</head>
+<body style="font-family: Geneva, Arial, Helvetica, sans-serif;">
+<h2>File backed up at [(${backupTime})]</h2>
+<ul>
+<li th:each="account : ${accounts}">[(${account.title})] : [(${account.balance})]</li>
+</ul>
+<h6>[(${serverName})]</h6>
+</body>
+</html>
