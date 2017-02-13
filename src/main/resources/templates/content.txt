@@ -1,7 +1,7 @@
-<body style="font-family: Geneva, Arial, Helvetica, sans-serif;">
+<div style="font-family: Geneva, Arial, Helvetica, sans-serif;">
 <h2>File backed up at [(${time})]</h2>
 <ul>
 <li th:each="account : ${accounts}">[(${account.title})] : [(${account.balance})]</li>
 </ul>
 <h6>[(${server})]</h6>
-</body>
+</div>
