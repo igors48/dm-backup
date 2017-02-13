@@ -19,5 +19,6 @@
         <property name="accounts.referer" value="${accounts.referer}"/>
         <property name="admin" value="${admin}"/>
         <property name="recipients" value="${recipients}"/>
+        <property name="app.version" value="${app.version}"/>
     </system-properties>
 </appengine-web-app>
