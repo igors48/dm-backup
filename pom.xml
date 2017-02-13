@@ -14,8 +14,27 @@
         <developerConnection>scm:git:git@github.com:igors48/dm-backup.git</developerConnection>
     </scm>
 
+    <profiles>
+        <profile>
+            <id>test</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <properties>
+                <app.id>dm-backup-test</app.id>
+                <properties.file>app.properties.test</properties.file>
+            </properties>
+        </profile>
+        <profile>
+            <id>prod</id>
+            <properties>
+                <app.id>dm-backup</app.id>
+                <properties.file>app.properties.prod</properties.file>
+            </properties>
+        </profile>
+    </profiles>
+
     <properties>
-        <app.id>dm-backup</app.id>
         <app.version>1.0</app.version>
         <appengine.version>1.9.48</appengine.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -32,6 +51,11 @@
 
     <dependencies>
         <!-- Compile/runtime dependencies -->
+        <dependency>
+            <groupId>org.thymeleaf</groupId>
+            <artifactId>thymeleaf</artifactId>
+            <version>3.0.3.RELEASE</version>
+        </dependency>
         <dependency>
             <groupId>commons-validator</groupId>
             <artifactId>commons-validator</artifactId>
@@ -100,7 +124,7 @@
                         </goals>
                         <configuration>
                             <files>
-                                <file>app.properties.local</file>
+                                <file>${properties.file}</file>
                             </files>
                         </configuration>
                     </execution>
