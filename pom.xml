@@ -17,9 +17,6 @@
     <profiles>
         <profile>
             <id>test</id>
-            <activation>
-                <activeByDefault>true</activeByDefault>
-            </activation>
             <properties>
                 <app.id>dm-backup-test</app.id>
                 <properties.file>app.properties.test</properties.file>
