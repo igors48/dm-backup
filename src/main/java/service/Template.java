@@ -15,26 +15,26 @@ import java.util.Locale;
  */
 public class Template {
 
-    private final TemplateEngine engine;
+    public static String formatContent(final String time, final String server, final List<Account> accounts) {
+        final Context context = new Context(Locale.ROOT);
 
-    public Template() {
-        ClassLoaderTemplateResolver templateResolver = new ClassLoaderTemplateResolver();
+        context.setVariable("backupTime", time);
+        context.setVariable("serverName", server);
+        context.setVariable("accounts", accounts);
+
+        return createEngine().process("content", context);
+    }
+
+    private static TemplateEngine createEngine() {
+        final ClassLoaderTemplateResolver templateResolver = new ClassLoaderTemplateResolver();
         templateResolver.setTemplateMode(TemplateMode.HTML);
         templateResolver.setPrefix("templates\\");
         templateResolver.setSuffix(".txt");
 
-        this.engine = new TemplateEngine();
-        this.engine.setTemplateResolver(templateResolver);
+        final TemplateEngine engine = new TemplateEngine();
+        engine.setTemplateResolver(templateResolver);
+
+        return engine;
     }
 
-    public String formatContent() {
-        final Context context = new Context(Locale.ROOT);
-        context.setVariable("backupTime", "12:34");
-        context.setVariable("serverName", "wonderserver");
-
-        List<Account> accounts = Arrays.asList(new Account("a", "b"), new Account("c", "d"));
-        context.setVariable("accounts", accounts);
-
-        return this.engine.process("content", context);
-    }
 }

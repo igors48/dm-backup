@@ -3,7 +3,6 @@ package service;
 import com.google.appengine.api.utils.SystemProperty;
 import service.error.SendingException;
 import service.error.ServiceException;
-import util.account.Account;
 
 import javax.activation.DataHandler;
 import javax.activation.DataSource;
@@ -52,22 +51,11 @@ public class Sender {
         final SimpleDateFormat formatForBody = new SimpleDateFormat(DATE_FORMAT_FOR_BODY);
         final String dateForBody = formatForBody.format(now);
         final String subject = "File backed up at " + dateForBody;
+        final String applicationId = SystemProperty.applicationId.get();
 
-        final StringBuffer body = new StringBuffer("<p>" + subject + "</p>");
+        final String body = Template.formatContent(dateForBody, applicationId, content.accounts);
 
-        if (!content.accounts.isEmpty()) {
-            body.append("<ul>");
-
-            for (final Account account: content.accounts) {
-                body.append("<li>");
-                body.append(String.format("%s : %s", account.title, account.balance));
-                body.append("</li>");
-            }
-
-            body.append("</ul>");
-        }
-
-        sendMail(sender, recipient, subject, body.toString(), attachmentName, content.file);
+        sendMail(sender, recipient, subject, body, attachmentName, content.file);
     }
 
     public void sendException(final String recipient, final ServiceException exception) throws ServiceException {
@@ -94,13 +82,7 @@ public class Sender {
             final Multipart multipart = new MimeMultipart();
 
             final MimeBodyPart htmlPart = new MimeBodyPart();
-            final String applicationId = SystemProperty.applicationId.get();
-
-            String bodyWithMeta = body;
-            bodyWithMeta += "</hr>";
-            bodyWithMeta += "<p>" + applicationId + "</p>";
-
-            htmlPart.setContent(bodyWithMeta, "text/html");
+            htmlPart.setContent(body, "text/html");
             multipart.addBodyPart(htmlPart);
 
             if (attachmentContent != null) {
