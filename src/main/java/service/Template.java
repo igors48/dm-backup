@@ -18,8 +18,8 @@ public class Template {
     public static String formatContent(final String time, final String server, final List<Account> accounts) {
         final Context context = new Context(Locale.ROOT);
 
-        context.setVariable("backupTime", time);
-        context.setVariable("serverName", server);
+        context.setVariable("time", time);
+        context.setVariable("server", server);
         context.setVariable("accounts", accounts);
 
         return createEngine().process("content", context);
