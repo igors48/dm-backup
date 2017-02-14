@@ -113,4 +113,8 @@ public class Configuration {
         return new Configuration(origin, host, loginUrl, loginReferer, loginData, downloadUrl, downloadReferer, downloadData, accountsUrl, accountsReferer, admin, recipients, appVersionAsString);
     }
 
+    public String getAppVersion() {
+        return this.appVersion;
+    }
+
 }

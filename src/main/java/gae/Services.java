@@ -17,7 +17,7 @@ public enum Services {
         final Configuration configuration = Configuration.fromSystemProperties();
 
         final Loader loader = new Loader(configuration.getAccessParameters());
-        final Sender sender = new Sender();
+        final Sender sender = new Sender(configuration.getAppVersion());
 
         return new Backup(loader, sender, configuration.getRecipients());
     }

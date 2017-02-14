@@ -21,8 +21,7 @@ import java.util.Properties;
 import java.util.logging.Logger;
 
 import static util.Assert.guard;
-import static util.Parameter.isValidEmail;
-import static util.Parameter.notNull;
+import static util.Parameter.*;
 
 /**
  * Created by igor on 14.11.2016.
@@ -34,6 +33,12 @@ public class Sender {
     private static final String DATE_FORMAT_FOR_NAME = "yyyy-MM-dd'T'HH-mm-ss";
     private static final String DATE_FORMAT_FOR_BODY = "yyyy-MM-dd HH:mm:ss";
     private static final String CSV = ".csv";
+
+    private final String version;
+
+    public Sender(final String version) {
+        guard(isValidString(this.version = version));
+    }
 
     public void sendContent(final String sender, final String recipient, final Content content) throws ServiceException {
         guard(isValidEmail(sender));
