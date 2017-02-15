@@ -3,5 +3,5 @@
 <ul>
 <li th:each="account : ${accounts}">[(${account.title})] : [(${account.balance})]</li>
 </ul>
-<h6>[(${server})] (vesrion [(${version})])</h6>
+<h6>[(${server})] (version [(${version})])</h6>
 </div>
