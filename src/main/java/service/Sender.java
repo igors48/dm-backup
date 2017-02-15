@@ -58,7 +58,7 @@ public class Sender {
         final String subject = "File backed up at " + dateForBody;
         final String applicationId = SystemProperty.applicationId.get();
 
-        final String body = Template.formatContent(dateForBody, applicationId, content.accounts);
+        final String body = Template.formatContent(dateForBody, applicationId, content.accounts, version);
 
         sendMail(sender, recipient, subject, body, attachmentName, content.file);
     }
