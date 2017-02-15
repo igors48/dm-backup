@@ -14,6 +14,17 @@
         <developerConnection>scm:git:git@github.com:igors48/dm-backup.git</developerConnection>
     </scm>
 
+    <properties>
+        <app.version>1.2</app.version>
+        <appengine.version>1.9.49</appengine.version>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+        <maven.compiler.source>1.7</maven.compiler.source>
+        <maven.compiler.target>1.7</maven.compiler.target>
+        <maven.compiler.showDeprecation>true</maven.compiler.showDeprecation>
+        <archiveClasses>true</archiveClasses>
+    </properties>
+
     <profiles>
         <profile>
             <id>test</id>
@@ -30,17 +41,6 @@
             </properties>
         </profile>
     </profiles>
-
-    <properties>
-        <app.version>1.2</app.version>
-        <appengine.version>1.9.49</appengine.version>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-        <maven.compiler.source>1.7</maven.compiler.source>
-        <maven.compiler.target>1.7</maven.compiler.target>
-        <maven.compiler.showDeprecation>true</maven.compiler.showDeprecation>
-        <archiveClasses>true</archiveClasses>
-    </properties>
 
     <prerequisites>
         <maven>3.3.9</maven>
