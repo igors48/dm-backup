@@ -4,7 +4,7 @@
     <cron>
         <url>/cron</url>
         <description>Execute cron jobs</description>
-        <schedule>every 24 hours</schedule>
+        <schedule>${cron}</schedule>
     </cron>
 
 </cronentries>

@@ -38,19 +38,19 @@ public class Backup {
         try {
             LOGGER.info("Backup started");
 
-            final String content = this.loader.load();
+            final Content content = this.loader.load();
 
-            final Action action = this.changesDetector.getActionForContent(content);
+            final Action action = this.changesDetector.getActionForContent(content.file);
             LOGGER.info(String.format("Action [ %s ]", action));
 
             switch (action) {
                 case NO_ACTION:
                     break;
                 case SAVE:
-                    storeContent(content);
+                    storeContent(content.file);
                     break;
                 case UPDATE_LAST:
-                    updateLast(content);
+                    updateLast(content.file);
                     break;
                 case SEND:
                     sendContent(content);
@@ -88,14 +88,14 @@ public class Backup {
         }
     }
 
-    private void sendContent(final String content) {
+    private void sendContent(final Content content) {
 
         for (final String recipient : this.recipients.contentRecipients) {
             sendContent(recipient, content);
         }
     }
 
-    private void sendContent(final String recipient, final String content) {
+    private void sendContent(final String recipient, final Content content) {
 
         try {
             this.sender.sendContent(recipients.adminRecipient, recipient, content);

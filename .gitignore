@@ -7,3 +7,5 @@ target
 *.rar
 
 app.properties.local
+app.properties.prod
+app.properties.test

@@ -3,7 +3,7 @@
     <application>${app.id}</application>
     <version>${buildNumber}</version>
     <threadsafe>true</threadsafe>
-    
+
     <system-properties>
         <property name="java.util.logging.config.file" value="WEB-INF/logging.properties"/>
 
@@ -15,7 +15,10 @@
         <property name="download.url" value="${download.url}"/>
         <property name="download.referer" value="${download.referer}"/>
         <property name="download.data" value="${download.data}"/>
+        <property name="accounts.url" value="${accounts.url}"/>
+        <property name="accounts.referer" value="${accounts.referer}"/>
         <property name="admin" value="${admin}"/>
         <property name="recipients" value="${recipients}"/>
+        <property name="app.version" value="${app.version}"/>
     </system-properties>
 </appengine-web-app>

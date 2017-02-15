@@ -1,5 +1,6 @@
 package service;
 
+import com.google.appengine.api.utils.SystemProperty;
 import service.error.SendingException;
 import service.error.ServiceException;
 
@@ -33,10 +34,16 @@ public class Sender {
     private static final String DATE_FORMAT_FOR_BODY = "yyyy-MM-dd HH:mm:ss";
     private static final String CSV = ".csv";
 
-    public void sendContent(final String sender, final String recipient, final String content) throws ServiceException {
+    private final String version;
+
+    public Sender(final String version) {
+        guard(isValidString(this.version = version));
+    }
+
+    public void sendContent(final String sender, final String recipient, final Content content) throws ServiceException {
         guard(isValidEmail(sender));
         guard(isValidEmail(recipient));
-        guard(isValidString(content));
+        guard(notNull(content));
 
         LOGGER.info(String.format("Sending content to [ %s ]", recipient));
 
@@ -48,9 +55,12 @@ public class Sender {
 
         final SimpleDateFormat formatForBody = new SimpleDateFormat(DATE_FORMAT_FOR_BODY);
         final String dateForBody = formatForBody.format(now);
-        final String body = "File backed up at " + dateForBody;
+        final String subject = "File backed up at " + dateForBody;
+        final String applicationId = SystemProperty.applicationId.get();
 
-        sendMail(sender, recipient, body, body, attachmentName, content);
+        final String body = Template.formatContent(dateForBody, applicationId, content.accounts, version);
+
+        sendMail(sender, recipient, subject, body, attachmentName, content.file);
     }
 
     public void sendException(final String recipient, final ServiceException exception) throws ServiceException {
@@ -77,8 +87,7 @@ public class Sender {
             final Multipart multipart = new MimeMultipart();
 
             final MimeBodyPart htmlPart = new MimeBodyPart();
-
-            htmlPart.setContent(String.format("<p>%s</p>", body), "text/html");
+            htmlPart.setContent(body, "text/html");
             multipart.addBodyPart(htmlPart);
 
             if (attachmentContent != null) {

@@ -37,7 +37,7 @@ public enum Dependencies {
 
             configuration = Configuration.fromSystemProperties();
             loader = new Loader(configuration.getAccessParameters());
-            sender = new Sender();
+            sender = new Sender(configuration.getAppVersion());
             transactions = GaeTransactions.INSTANCE;
             snapshotRepository = new GaeSnapshotRepository(SnapshotConverter.SNAPSHOT_CONVERTER);
             timestampRepository = new GaeTimestampRepository(TimestampConverter.TIMESTAMP_CONVERTER);
