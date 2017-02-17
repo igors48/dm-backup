@@ -11,12 +11,10 @@ public class BackupSendTest extends BackupTestBase {
 
     @Test
     public void whenContentReceivedThenItSendsToChangesDetector() throws Exception {
-        when(loader.load()).thenReturn(CONTENT);
+        this.backup.execute();
 
-        backup.execute();
-
-        verify(loader).load();
-        verifyNoMoreInteractions(loader);
+        verify(this.loader).load();
+        verifyNoMoreInteractions(this.loader);
 
         verify(changesDetector).getActionForContent(CONTENT.file);
         verifyNoMoreInteractions(changesDetector);
@@ -24,64 +22,61 @@ public class BackupSendTest extends BackupTestBase {
 
     @Test
     public void whenContentChangesDetectedThenContentSendsToAllRecipients() throws Exception {
-        when(loader.load()).thenReturn(CONTENT);
-        when(changesDetector.getActionForContent(CONTENT.file)).thenReturn(Action.SEND);
+        when(this.changesDetector.getActionForContent(CONTENT.file)).thenReturn(Action.SEND);
 
-        backup.execute();
+        this.backup.execute();
 
-        verify(sender).sendContent(A_B_COM, B_C_COM, CONTENT);
-        verify(sender).sendContent(A_B_COM, C_D_COM, CONTENT);
-        verifyNoMoreInteractions(sender);
+        verify(this.sender).sendContent(A_B_COM, B_C_COM, CONTENT);
+        verify(this.sender).sendContent(A_B_COM, C_D_COM, CONTENT);
+        verifyNoMoreInteractions(this.sender);
     }
 
     @Test
     public void whenContentChangesNotDetectedThenContentNotSent() throws Exception {
-        when(loader.load()).thenReturn(CONTENT);
-        when(changesDetector.getActionForContent(CONTENT.file)).thenReturn(Action.NO_ACTION);
+        when(this.changesDetector.getActionForContent(CONTENT.file)).thenReturn(Action.NO_ACTION);
 
-        backup.execute();
+        this.backup.execute();
 
         verifyZeroInteractions(sender);
     }
 
     @Test
     public void whenContentCannotBeSentThenErrorSentToErrorRecipient() throws Exception {
-        when(loader.load()).thenReturn(CONTENT);
         when(this.changesDetector.getActionForContent(CONTENT.file)).thenReturn(Action.SEND);
         doThrow(this.serviceException).when(sender).sendContent(A_B_COM, B_C_COM, CONTENT);
 
-        backup.execute();
+        this.backup.execute();
 
-        verify(loader).load();
-        verifyNoMoreInteractions(loader);
+        verify(this.loader).load();
+        verifyNoMoreInteractions(this.loader);
 
-        verify(sender).sendContent(A_B_COM, B_C_COM, CONTENT);
-        verify(sender).sendException(A_B_COM, this.serviceException);
-        verify(sender).sendContent(A_B_COM, C_D_COM, CONTENT);
-        verifyNoMoreInteractions(sender);
+        verify(this.sender).sendContent(A_B_COM, B_C_COM, CONTENT);
+        verify(this.sender).sendException(A_B_COM, this.serviceException);
+        verify(this.sender).sendContent(A_B_COM, C_D_COM, CONTENT);
+        verifyNoMoreInteractions(this.sender);
     }
 
     @Test
     public void whenContentNotReceivedThenErrorSentToErrorRecipient() throws Exception {
-        when(loader.load()).thenThrow(this.serviceException);
+        when(this.loader.load()).thenThrow(this.serviceException);
 
-        backup.execute();
+        this.backup.execute();
 
-        verify(loader).load();
-        verifyNoMoreInteractions(loader);
+        verify(this.loader).load();
+        verifyNoMoreInteractions(this.loader);
 
-        verify(sender).sendException(A_B_COM, this.serviceException);
-        verifyNoMoreInteractions(sender);
+        verify(this.sender).sendException(A_B_COM, this.serviceException);
+        verifyNoMoreInteractions(this.sender);
     }
 
     @Test
     public void whenErrorCanNotBeSentThenNoExceptionThrown() throws Exception {
 
         try {
-            when(loader.load()).thenThrow(this.serviceException);
-            doThrow(this.serviceException).when(sender).sendException(A_B_COM, this.serviceException);
+            when(this.loader.load()).thenThrow(this.serviceException);
+            doThrow(this.serviceException).when(this.sender).sendException(A_B_COM, this.serviceException);
 
-            backup.execute();
+            this.backup.execute();
         } catch (Exception exception) {
             fail();
         }
