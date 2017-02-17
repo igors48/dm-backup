@@ -1,12 +1,5 @@
-import org.junit.Before;
 import org.junit.Test;
-import service.*;
-import service.configuration.Recipients;
-import service.error.ServiceException;
-import util.account.Account;
-
-import java.util.ArrayList;
-import java.util.Arrays;
+import service.Action;
 
 import static org.junit.Assert.fail;
 import static org.mockito.Mockito.*;
@@ -14,35 +7,7 @@ import static org.mockito.Mockito.*;
 /**
  * Created by igor on 14.11.2016.
  */
-public class BackupTest {
-
-    private static final Content CONTENT = new Content(new ArrayList<Account>(), "content");
-    private static final String A_B_COM = "a@b.com";
-    private static final String B_C_COM = "b@c.com";
-    private static final String C_D_COM = "c@d.com";
-
-    private Loader loader;
-    private Sender sender;
-    private ChangesDetector changesDetector;
-    private Transactions transactions;
-    private Backup backup;
-    private ServiceException serviceException;
-
-    @Before
-    public void setUp() throws Exception {
-        this.loader = mock(Loader.class);
-        this.sender = mock(Sender.class);
-        this.changesDetector = mock(ChangesDetector.class);
-        this.transactions = mock(Transactions.class);
-
-        this.serviceException = mock(ServiceException.class);
-
-        final Recipients recipients = new Recipients(A_B_COM, Arrays.asList(B_C_COM, C_D_COM));
-
-        when(this.changesDetector.getActionForContent(CONTENT.file)).thenReturn(Action.NO_ACTION);
-
-        this.backup = new Backup(this.loader, this.sender, this.changesDetector, recipients, transactions);
-    }
+public class BackupSendTest extends BackupTestBase {
 
     @Test
     public void whenContentReceivedThenItSendsToChangesDetector() throws Exception {

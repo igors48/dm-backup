@@ -29,6 +29,7 @@ public enum Dependencies {
     private static TimestampRepository timestampRepository;
     private static TimeService timeService;
     private static ChangesDetector changesDetector;
+    private static ContentStore contentStore;
     private static Backup backup;
 
     static {
@@ -42,8 +43,9 @@ public enum Dependencies {
             snapshotRepository = new GaeSnapshotRepository(SnapshotConverter.SNAPSHOT_CONVERTER);
             timestampRepository = new GaeTimestampRepository(TimestampConverter.TIMESTAMP_CONVERTER);
             timeService = GaeTimeService.INSTANCE;
+            contentStore = new ContentStore();
             changesDetector = new ChangesDetector(snapshotRepository, timestampRepository, timeService, configuration.getWaitTimeMillis(), transactions);
-            backup = new Backup(loader, sender, changesDetector, configuration.getRecipients(), transactions);
+            backup = new Backup(loader, sender, changesDetector, configuration.getRecipients(), contentStore, transactions);
 
         } catch (Exception exception) {
             LOGGER.log(Level.SEVERE, "Application initialization error", exception);

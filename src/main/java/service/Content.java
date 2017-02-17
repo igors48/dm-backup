@@ -12,6 +12,7 @@ import static util.Parameter.notNull;
  * Created by igor on 29.01.2017.
  */
 public class Content {
+
     public final List<Account> accounts;
     public final String file;
 

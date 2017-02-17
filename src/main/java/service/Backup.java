@@ -23,13 +23,15 @@ public class Backup {
     private final Sender sender;
     private final ChangesDetector changesDetector;
     private final Recipients recipients;
+    private final ContentStore contentStore;
     private final Transactions transactions;
 
-    public Backup(final Loader loader, final Sender sender, final ChangesDetector changesDetector, final Recipients recipients, final Transactions transactions) {
+    public Backup(final Loader loader, final Sender sender, final ChangesDetector changesDetector, final Recipients recipients, final ContentStore contentStore, final Transactions transactions) {
         guard(notNull(this.loader = loader));
         guard(notNull(this.sender = sender));
         guard(notNull(this.changesDetector = changesDetector));
         guard(notNull(this.recipients = recipients));
+        guard(notNull(this.contentStore = contentStore));
         guard(notNull(this.transactions = transactions));
     }
 
@@ -47,16 +49,15 @@ public class Backup {
                 case NO_ACTION:
                     break;
                 case SAVE:
-                    storeContent(content.file);
+                    storeContent(content);
                     break;
                 case UPDATE_LAST:
-                    updateLast(content.file);
+                    updateLast(content);
                     break;
                 case SEND:
                     sendContent(content);
                     break;
             }
-            ;
 
             LOGGER.info("Backup finished");
         } catch (ServiceException exception) {
@@ -66,22 +67,28 @@ public class Backup {
         }
     }
 
-    private void updateLast(final String content) {
+    private void updateLast(final Content content) {
         Transaction transaction = null;
 
         try {
             transaction = this.transactions.beginOne();
+
+            this.contentStore.updateLast(content);
+
             transaction.commit();
         } finally {
             rollbackIfActive(transaction);
         }
     }
 
-    private void storeContent(final String content) {
+    private void storeContent(final Content content) {
         Transaction transaction = null;
 
         try {
             transaction = this.transactions.beginOne();
+
+            this.contentStore.store(content);
+
             transaction.commit();
         } finally {
             rollbackIfActive(transaction);
