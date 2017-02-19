@@ -8,7 +8,7 @@ import static org.mockito.Mockito.*;
 /**
  * Created by igor on 17.02.2017.
  */
-public class BackupContentStoreTest extends BackupTestBase {
+public class BackupSnapshotStoreTest extends BackupTestBase {
 
     @Test
     public void whenActionIsSaveThenContentStored() {
@@ -16,8 +16,8 @@ public class BackupContentStoreTest extends BackupTestBase {
 
         this.backup.execute();
 
-        verify(this.contentStore).store(CONTENT);
-        verifyNoMoreInteractions(this.contentStore);
+        verify(this.snapshotStore).store(CONTENT);
+        verifyNoMoreInteractions(this.snapshotStore);
         assertEquals(TransactionState.COMMITTED, this.transactionStub.getState());
     }
 
@@ -27,8 +27,8 @@ public class BackupContentStoreTest extends BackupTestBase {
 
         this.backup.execute();
 
-        verify(this.contentStore).updateLast(CONTENT);
-        verifyNoMoreInteractions(this.contentStore);
+        verify(this.snapshotStore).updateLast(CONTENT);
+        verifyNoMoreInteractions(this.snapshotStore);
         assertEquals(TransactionState.COMMITTED, this.transactionStub.getState());
     }
 
@@ -38,7 +38,7 @@ public class BackupContentStoreTest extends BackupTestBase {
 
         this.backup.execute();
 
-        verifyZeroInteractions(this.contentStore);
+        verifyZeroInteractions(this.snapshotStore);
     }
 
     @Test
@@ -47,7 +47,7 @@ public class BackupContentStoreTest extends BackupTestBase {
 
         this.backup.execute();
 
-        verifyZeroInteractions(this.contentStore);
+        verifyZeroInteractions(this.snapshotStore);
     }
 
     @Test
@@ -55,7 +55,7 @@ public class BackupContentStoreTest extends BackupTestBase {
 
         try {
             when(this.changesDetector.getActionForContent(CONTENT.file)).thenReturn(Action.SAVE);
-            doThrow(new RuntimeException()).when(this.contentStore).store(CONTENT);
+            doThrow(new RuntimeException()).when(this.snapshotStore).store(CONTENT);
 
             this.backup.execute();
 
@@ -70,7 +70,7 @@ public class BackupContentStoreTest extends BackupTestBase {
 
         try {
             when(this.changesDetector.getActionForContent(CONTENT.file)).thenReturn(Action.UPDATE_LAST);
-            doThrow(new RuntimeException()).when(this.contentStore).updateLast(CONTENT);
+            doThrow(new RuntimeException()).when(this.snapshotStore).updateLast(CONTENT);
 
             this.backup.execute();
 

@@ -24,7 +24,7 @@ public class BackupTestBase {
     protected ChangesDetector changesDetector;
     protected Backup backup;
     protected ServiceException serviceException;
-    protected ContentStore contentStore;
+    protected SnapshotStore snapshotStore;
     protected TransactionStub transactionStub;
     private Transactions transactions;
 
@@ -33,7 +33,7 @@ public class BackupTestBase {
         this.loader = mock(Loader.class);
         this.sender = mock(Sender.class);
         this.changesDetector = mock(ChangesDetector.class);
-        this.contentStore = mock(ContentStore.class);
+        this.snapshotStore = mock(SnapshotStore.class);
         this.transactions = mock(Transactions.class);
         this.transactionStub = new TransactionStub();
 
@@ -45,6 +45,6 @@ public class BackupTestBase {
         when(loader.load()).thenReturn(CONTENT);
         when(this.changesDetector.getActionForContent(CONTENT.file)).thenReturn(Action.NO_ACTION);
 
-        this.backup = new Backup(this.loader, this.sender, this.changesDetector, recipients, this.contentStore, transactions);
+        this.backup = new Backup(this.loader, this.sender, this.changesDetector, recipients, this.snapshotStore, transactions);
     }
 }

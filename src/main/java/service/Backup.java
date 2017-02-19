@@ -23,15 +23,15 @@ public class Backup {
     private final Sender sender;
     private final ChangesDetector changesDetector;
     private final Recipients recipients;
-    private final ContentStore contentStore;
+    private final SnapshotStore snapshotStore;
     private final Transactions transactions;
 
-    public Backup(final Loader loader, final Sender sender, final ChangesDetector changesDetector, final Recipients recipients, final ContentStore contentStore, final Transactions transactions) {
+    public Backup(final Loader loader, final Sender sender, final ChangesDetector changesDetector, final Recipients recipients, final SnapshotStore snapshotStore, final Transactions transactions) {
         guard(notNull(this.loader = loader));
         guard(notNull(this.sender = sender));
         guard(notNull(this.changesDetector = changesDetector));
         guard(notNull(this.recipients = recipients));
-        guard(notNull(this.contentStore = contentStore));
+        guard(notNull(this.snapshotStore = snapshotStore));
         guard(notNull(this.transactions = transactions));
     }
 
@@ -73,7 +73,7 @@ public class Backup {
         try {
             transaction = this.transactions.beginOne();
 
-            this.contentStore.updateLast(content);
+            this.snapshotStore.updateLast(content);
 
             transaction.commit();
         } finally {
@@ -87,7 +87,7 @@ public class Backup {
         try {
             transaction = this.transactions.beginOne();
 
-            this.contentStore.store(content);
+            this.snapshotStore.store(content);
 
             transaction.commit();
         } finally {
