@@ -214,7 +214,7 @@ public class ConfigurationTest {
 
             fail();
         } catch (Exception exception) {
-            assertEquals(new InvalidConfigurationParameter("waitTimeMillis", WRONG), exception);
+            assertEquals(new InvalidConfigurationParameter("wait.time.millis", WRONG), exception);
         }
     }
 
