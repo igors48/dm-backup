@@ -20,6 +20,6 @@
         <property name="admin" value="${admin}"/>
         <property name="recipients" value="${recipients}"/>
         <property name="app.version" value="${app.version}"/>
-        <property name="waitTimeMillis" value="${waitTimeMillis}"/>
+        <property name="wait.time.millis" value="${wait.time.millis}"/>
     </system-properties>
 </appengine-web-app>

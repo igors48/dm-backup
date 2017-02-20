@@ -81,8 +81,8 @@ public class Configuration {
             this.recipients.add(recipient);
         }
 
-        final long waitTimeMillis = convert(waitTimeMillisAsString, new InvalidConfigurationParameter("waitTimeMillis", waitTimeMillisAsString));
-        guard(isPositive(this.waitTimeMillis = waitTimeMillis), new InvalidConfigurationParameter("waitTimeMillis", String.valueOf(waitTimeMillis)));
+        final long waitTimeMillis = convert(waitTimeMillisAsString, new InvalidConfigurationParameter("wait.time.millis", waitTimeMillisAsString));
+        guard(isPositive(this.waitTimeMillis = waitTimeMillis), new InvalidConfigurationParameter("wait.time.millis", String.valueOf(waitTimeMillis)));
 
         guard(isValidString(this.appVersion = appVersion), new InvalidConfigurationParameter("app.version", appVersion));
     }
