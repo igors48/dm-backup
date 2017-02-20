@@ -7,7 +7,7 @@ import java.util.List;
  */
 public interface SnapshotRepository {
 
-    String loadLatestSnapshot();
+    Snapshot loadLatestSnapshot();
 
     List<Snapshot> loadAll();
 

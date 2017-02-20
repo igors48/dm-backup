@@ -2,10 +2,12 @@ package gae.repository.snapshot;
 
 import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.Key;
+import com.google.appengine.repackaged.com.google.gson.Gson;
 import gae.repository.Converter;
 import gae.repository.EntityFactory;
 import gae.repository.GaeDatastoreTools;
 import gae.repository.Kind;
+import service.Content;
 import service.Snapshot;
 
 import java.util.HashMap;
@@ -22,6 +24,8 @@ public class SnapshotConverter extends Converter<Snapshot> {
 
     public static final SnapshotConverter SNAPSHOT_CONVERTER = SnapshotConverter.create();
 
+    private static final Gson GSON = new Gson();
+
     private static final int VERSION = 1;
 
     private static final String UUID_KEY = "uuid";
@@ -36,7 +40,9 @@ public class SnapshotConverter extends Converter<Snapshot> {
 
             entity.setProperty(UUID_KEY, data.uuid.toString());
             entity.setProperty(TIMESTAMP_KEY, data.timestamp);
-            entity.setProperty(CONTENT_KEY, data.content);
+
+            final String contentAsString = GSON.toJson(data.content);
+            entity.setProperty(CONTENT_KEY, contentAsString);
         }
 
     }
@@ -49,7 +55,8 @@ public class SnapshotConverter extends Converter<Snapshot> {
 
             final UUID uuid = UUID.fromString((String) entity.getProperty(UUID_KEY));
             final long timestamp = (long) entity.getProperty(TIMESTAMP_KEY);
-            final String content = (String) entity.getProperty(CONTENT_KEY);
+            final String contentAsString = (String) entity.getProperty(CONTENT_KEY);
+            final Content content = GSON.fromJson(contentAsString, Content.class);
 
             return new Snapshot(uuid, timestamp, content);
         }

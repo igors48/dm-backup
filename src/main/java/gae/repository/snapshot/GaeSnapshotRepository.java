@@ -24,7 +24,7 @@ public class GaeSnapshotRepository implements SnapshotRepository {
     }
 
     @Override
-    public String loadLatestSnapshot() {
+    public Snapshot loadLatestSnapshot() {
         final List<Entity> entities = GaeDatastoreTools.loadEntities(Kind.SNAPSHOT);
 
         Snapshot latest = null;
@@ -37,7 +37,7 @@ public class GaeSnapshotRepository implements SnapshotRepository {
             }
         }
 
-        return latest == null ? "" : latest.content;
+        return latest;
     }
 
     @Override

@@ -33,8 +33,9 @@ public class ChangesDetector {
         try {
             transaction = this.transactions.beginOne();
 
-            final String latestSnapshot = this.snapshotRepository.loadLatestSnapshot();
-            final boolean contentChanged = isContentChanged(latestSnapshot, content);
+            final Snapshot latestSnapshot = this.snapshotRepository.loadLatestSnapshot();
+            final String latestContent = latestSnapshot.content.file;
+            final boolean contentChanged = isContentChanged(latestContent, content);
 
             final Action action = contentChanged ? updateStoredTimestamp() : checkWaitPeriodFinished();
 

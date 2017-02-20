@@ -1,5 +1,9 @@
 import org.junit.Before;
 import service.*;
+import util.account.Account;
+
+import java.util.ArrayList;
+import java.util.UUID;
 
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -17,6 +21,8 @@ public class ChangesDetectorTestBase {
     protected long waitInMillis;
     protected Transactions transactions;
     protected TransactionStub transactionStub;
+    protected Content content;
+    protected Snapshot snapshot;
 
     protected ChangesDetector changesDetector;
 
@@ -30,7 +36,10 @@ public class ChangesDetectorTestBase {
         this.transactionStub = new TransactionStub();
 
         when(this.transactions.beginOne()).thenReturn(this.transactionStub);
-        when(this.snapshotRepository.loadLatestSnapshot()).thenReturn("a");
+
+        this.content = new Content(new ArrayList<Account>(), "a");
+        this.snapshot = new Snapshot(UUID.randomUUID(), 48, content);
+        when(this.snapshotRepository.loadLatestSnapshot()).thenReturn(this.snapshot);
         when(this.timeService.currentTimestamp()).thenReturn(CURRENT_TIMESTAMP);
 
         this.changesDetector = new ChangesDetector(this.snapshotRepository, this.timestampRepository, this.timeService, this.waitInMillis, this.transactions);

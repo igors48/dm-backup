@@ -13,12 +13,30 @@ import static util.Parameter.notNull;
  */
 public class Content {
 
-    public final List<Account> accounts;
-    public final String file;
+    public List<Account> accounts;
+    public String file;
 
     public Content(final List<Account> accounts, final String file) {
         guard(notNull(this.accounts = accounts));
         guard(isValidString(this.file = file));
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Content content = (Content) o;
+
+        if (!accounts.equals(content.accounts)) return false;
+        return file.equals(content.file);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = accounts.hashCode();
+        result = 31 * result + file.hashCode();
+        return result;
     }
 
 }

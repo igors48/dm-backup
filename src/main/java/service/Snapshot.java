@@ -3,22 +3,24 @@ package service;
 import java.util.UUID;
 
 import static util.Assert.guard;
-import static util.Parameter.*;
+import static util.Parameter.isPositive;
+import static util.Parameter.notNull;
 
 /**
  * Created by igor on 29.11.2016.
  */
 public class Snapshot {
 
-    public final UUID uuid;
-    public final long timestamp;
-    public final String content;
+    public UUID uuid;
+    public long timestamp;
+    public Content content;
 
-    public Snapshot(final UUID uuid, final long timestamp, final String content) {
+    public Snapshot(final UUID uuid, final long timestamp, final Content content) {
         guard(notNull(this.uuid = uuid));
         guard(isPositive(this.timestamp = timestamp));
-        guard(isValidString(this.content = content));
+        guard(notNull(this.content = content));
     }
+
 
     @Override
     public boolean equals(Object o) {
@@ -39,5 +41,4 @@ public class Snapshot {
         result = 31 * result + content.hashCode();
         return result;
     }
-
 }
