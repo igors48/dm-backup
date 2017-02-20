@@ -1,12 +1,15 @@
 package gae.repository.snapshot;
 
 import com.google.appengine.api.datastore.Entity;
+import com.google.appengine.repackaged.com.google.datastore.v1.Datastore;
 import gae.repository.Converter;
+import gae.repository.GaeDatastore;
 import gae.repository.GaeDatastoreTools;
 import gae.repository.Kind;
 import service.Snapshot;
 import service.SnapshotRepository;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static util.Assert.guard;
@@ -42,17 +45,30 @@ public class GaeSnapshotRepository implements SnapshotRepository {
 
     @Override
     public List<Snapshot> loadAll() {
-        return null;
+        final List<Snapshot> result = new ArrayList<>();
+
+        final List<Entity> entities = GaeDatastoreTools.loadEntities(Kind.SNAPSHOT);
+
+        for (final Entity entity : entities) {
+            final Snapshot snapshot = this.converter.convert(entity);
+            result.add(snapshot);
+        }
+
+        return result;
     }
 
     @Override
     public void storeAll(final List<Snapshot> snapshots) {
-
+        this.clear();
     }
 
     @Override
     public void clear() {
+        final List<Entity> entities = GaeDatastoreTools.loadEntities(Kind.SNAPSHOT);
 
+        for (final Entity entity : entities) {
+            GaeDatastore.INSTANCE.getDatastoreService().delete(entity.getKey());
+        }
     }
 
 }
