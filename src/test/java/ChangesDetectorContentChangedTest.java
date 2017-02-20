@@ -11,6 +11,15 @@ import static org.mockito.Mockito.when;
 public class ChangesDetectorContentChangedTest extends ChangesDetectorTestBase {
 
     @Test
+    public void whenNoPreviousSnapshotThenContentUpdated() throws Exception {
+        when(this.snapshotRepository.loadLatestSnapshot()).thenReturn(null);
+
+        final Action action = this.changesDetector.getActionForContent("b");
+
+        assertEquals(Action.UPDATE_LAST, action);
+    }
+
+    @Test
     public void whenContentChangedThenTimestampUpdated() throws Exception {
         this.changesDetector.getActionForContent("b");
 
