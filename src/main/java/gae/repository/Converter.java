@@ -38,7 +38,10 @@ public class Converter<T> {
     }
 
     public T convert(final Entity entity) {
-        guard(notNull(entity));
+
+        if (entity == null) {
+            return null;
+        }
 
         final Integer version = (Integer) entity.getProperty(VERSION_KEY);
         final Reader<T> reader = this.readers.get(version);
