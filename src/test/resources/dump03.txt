@@ -1,0 +1,5 @@
+﻿zm_dump_2011,1487701845,,,"4,0",
+
+
+date,categoryName,payee,comment,outcomeAccountName,outcome,outcomeCurrencyShortTitle,incomeAccountName,income,incomeCurrencyShortTitle,createdDate,changedDate
+2012-12-29,,"Борщь Николай",,Долги,"2,00",UAH,Саша,"2,00",UAH,"2013-02-06 14:14:37","2013-02-06 14:14:37"
