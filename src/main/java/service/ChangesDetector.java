@@ -2,6 +2,10 @@ package service;
 
 import com.google.appengine.api.datastore.Transaction;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 import static util.Assert.guard;
 import static util.Parameter.*;
 import static util.TransactionTools.rollbackIfActive;
@@ -83,8 +87,28 @@ public class ChangesDetector {
         return stored == null ? Action.SAVE : Action.UPDATE_LAST;
     }
 
-    private boolean isContentChanged(final String oldContent, final String newContent) {
-        return !(oldContent.equals(newContent));
+    public static boolean isContentChanged(final String oldContent, final String newContent) {
+        guard(isValidString(oldContent));
+        guard(isValidString(newContent));
+
+        final String oldOne = removeFirstLine(oldContent);
+        final String newOne = removeFirstLine(newContent);
+
+        return !(oldOne.equals(newOne));
     }
+
+    private static String removeFirstLine(final String content) {
+        final List<String> oldLines = new ArrayList<>(Arrays.asList(content.split("\\r?\\n")));
+        oldLines.remove(0);
+
+        final StringBuilder buffer = new StringBuilder();
+
+        for (final String current : oldLines) {
+            buffer.append(current);
+        }
+
+        return buffer.toString();
+    }
+
 
 }

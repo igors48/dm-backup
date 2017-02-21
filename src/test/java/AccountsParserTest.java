@@ -18,7 +18,7 @@ public class AccountsParserTest {
 
     @Test
     public void smoke() throws Exception {
-        final ClassLoader classLoader = getClass().getClassLoader();
+        final ClassLoader classLoader = this.getClass().getClassLoader();
         final File file = new File(classLoader.getResource("data.json").getFile());
         final String data = new String(readAllBytes(file.toPath()));
 

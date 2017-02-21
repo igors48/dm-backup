@@ -21,7 +21,7 @@ public class ChangesDetectorContentChangedTest extends ChangesDetectorTestBase {
 
     @Test
     public void whenContentChangedThenTimestampUpdated() throws Exception {
-        this.changesDetector.getActionForContent("b");
+        this.changesDetector.getActionForContent("b\r\na");
 
         verify(this.timestampRepository).store(CURRENT_TIMESTAMP);
     }
@@ -30,7 +30,7 @@ public class ChangesDetectorContentChangedTest extends ChangesDetectorTestBase {
     public void whenNoPreviouslyStoredTimeStampThenContentSaved() throws Exception {
         when(this.timestampRepository.load()).thenReturn(null);
 
-        final Action action = this.changesDetector.getActionForContent("b");
+        final Action action = this.changesDetector.getActionForContent("b\r\na");
 
         assertEquals(Action.SAVE, action);
     }
@@ -39,7 +39,7 @@ public class ChangesDetectorContentChangedTest extends ChangesDetectorTestBase {
     public void whenPreviouslyStoredTimeStampExistsThenContentUpdated() throws Exception {
         when(this.timestampRepository.load()).thenReturn(48L);
 
-        final Action action = this.changesDetector.getActionForContent("b");
+        final Action action = this.changesDetector.getActionForContent("b\r\na");
 
         assertEquals(Action.UPDATE_LAST, action);
     }
