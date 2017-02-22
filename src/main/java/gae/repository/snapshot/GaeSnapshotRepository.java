@@ -59,7 +59,13 @@ public class GaeSnapshotRepository implements SnapshotRepository {
 
     @Override
     public void storeAll(final List<Snapshot> snapshots) {
+        guard(notNull(snapshots));
         this.clear();
+
+        for (final Snapshot snapshot: snapshots) {
+            final Entity entity = this.converter.convert(snapshot);
+            GaeDatastore.INSTANCE.getDatastoreService().put(entity);
+        }
     }
 
     @Override
