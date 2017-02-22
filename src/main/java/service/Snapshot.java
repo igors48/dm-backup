@@ -1,5 +1,6 @@
 package service;
 
+import java.util.Comparator;
 import java.util.UUID;
 
 import static util.Assert.guard;
@@ -11,6 +12,8 @@ import static util.Parameter.notNull;
  */
 public class Snapshot {
 
+    public static final SnapshotTimestampComparator TIMESTAMP_COMPARATOR = new SnapshotTimestampComparator();
+
     public UUID uuid;
     public long timestamp;
     public Content content;
@@ -20,7 +23,6 @@ public class Snapshot {
         guard(isPositive(this.timestamp = timestamp));
         guard(notNull(this.content = content));
     }
-
 
     @Override
     public boolean equals(Object o) {
@@ -41,4 +43,20 @@ public class Snapshot {
         result = 31 * result + content.hashCode();
         return result;
     }
+
+    private static class SnapshotTimestampComparator implements Comparator<Snapshot> {
+
+        @Override
+        public int compare(Snapshot first, Snapshot second) {
+            final long firstTimestamp = first.timestamp;
+            final long secondTimestamp = second.timestamp;
+
+            if (firstTimestamp == secondTimestamp) {
+                return 0;
+            }
+
+            return firstTimestamp > secondTimestamp ? 1 : -1;
+        }
+    }
+
 }

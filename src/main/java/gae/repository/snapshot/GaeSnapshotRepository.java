@@ -1,7 +1,6 @@
 package gae.repository.snapshot;
 
 import com.google.appengine.api.datastore.Entity;
-import com.google.appengine.repackaged.com.google.datastore.v1.Datastore;
 import gae.repository.Converter;
 import gae.repository.GaeDatastore;
 import gae.repository.GaeDatastoreTools;
@@ -10,6 +9,7 @@ import service.Snapshot;
 import service.SnapshotRepository;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import static util.Assert.guard;
@@ -28,19 +28,11 @@ public class GaeSnapshotRepository implements SnapshotRepository {
 
     @Override
     public Snapshot loadLatestSnapshot() {
-        final List<Entity> entities = GaeDatastoreTools.loadEntities(Kind.SNAPSHOT);
+        final List<Snapshot> snapshots = this.loadAll();
 
-        Snapshot latest = null;
+        final int count = snapshots.size();
 
-        for (final Entity entity : entities) {
-            final Snapshot snapshot = this.converter.convert(entity);
-
-            if ((latest == null) || (snapshot.timestamp > latest.timestamp)) {
-                latest = snapshot;
-            }
-        }
-
-        return latest;
+        return count == 0 ? null : snapshots.get(count - 1);
     }
 
     @Override
@@ -54,6 +46,8 @@ public class GaeSnapshotRepository implements SnapshotRepository {
             result.add(snapshot);
         }
 
+        Collections.sort(result, Snapshot.TIMESTAMP_COMPARATOR);
+
         return result;
     }
 
@@ -62,7 +56,7 @@ public class GaeSnapshotRepository implements SnapshotRepository {
         guard(notNull(snapshots));
         this.clear();
 
-        for (final Snapshot snapshot: snapshots) {
+        for (final Snapshot snapshot : snapshots) {
             final Entity entity = this.converter.convert(snapshot);
             GaeDatastore.INSTANCE.getDatastoreService().put(entity);
         }
