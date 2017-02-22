@@ -54,6 +54,7 @@ public class GaeSnapshotRepository implements SnapshotRepository {
     @Override
     public void storeAll(final List<Snapshot> snapshots) {
         guard(notNull(snapshots));
+
         this.clear();
 
         for (final Snapshot snapshot : snapshots) {

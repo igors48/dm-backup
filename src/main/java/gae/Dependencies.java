@@ -21,6 +21,8 @@ public enum Dependencies {
 
     private static final Logger LOGGER = Logger.getLogger(Dependencies.class.getName());
 
+    private static final int SNAPSHOTS_STORE_CAPACITY = 10; //TODO move to properties
+
     private static Configuration configuration;
     private static Loader loader;
     private static Sender sender;
@@ -43,7 +45,7 @@ public enum Dependencies {
             snapshotRepository = new GaeSnapshotRepository(SnapshotConverter.SNAPSHOT_CONVERTER);
             timestampRepository = new GaeTimestampRepository(TimestampConverter.TIMESTAMP_CONVERTER);
             timeService = GaeTimeService.INSTANCE;
-            snapshotStore = new SnapshotStore(snapshotRepository, timeService);
+            snapshotStore = new SnapshotStore(SNAPSHOTS_STORE_CAPACITY, snapshotRepository, timeService);
             changesDetector = new ChangesDetector(snapshotRepository, timestampRepository, timeService, configuration.getWaitTimeMillis(), transactions);
             backup = new Backup(loader, sender, changesDetector, configuration.getRecipients(), snapshotStore, transactions);
 
