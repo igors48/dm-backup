@@ -1,3 +1,4 @@
+import org.junit.Before;
 import org.junit.Test;
 import service.SnapshotRepository;
 import service.SnapshotStore;
@@ -12,12 +13,17 @@ public class SnapshotStoreTests {
     private SnapshotRepository snapshotRepository;
     private TimeService timeService;
 
-    @Test
-    public void smoke() throws Exception {
+    @Before
+    public void setUp() throws Exception {
         this.snapshotRepository = new SnapshotRepositoryStub();
         this.timeService = new TimeServiceStub();
 
         this.snapshotStore = new SnapshotStore(2, this.snapshotRepository, this.timeService);
+    }
+
+    @Test
+    public void when() throws Exception {
+        // get content from TestData
     }
 
 }
