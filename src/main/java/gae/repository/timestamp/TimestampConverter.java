@@ -45,7 +45,7 @@ public class TimestampConverter extends Converter<Long> {
 
     }
 
-    private TimestampConverter(final int version, final Map<Integer, gae.repository.Reader<Long>> readers, final gae.repository.Writer<Long> writer, final EntityFactory<Long> entityFactory) {
+    private TimestampConverter(final int version, final Map<Long, gae.repository.Reader<Long>> readers, final gae.repository.Writer<Long> writer, final EntityFactory<Long> entityFactory) {
         super(version, readers, writer, entityFactory);
     }
 
@@ -65,8 +65,8 @@ public class TimestampConverter extends Converter<Long> {
     public static TimestampConverter create(final EntityFactory<Long> entityFactory) {
         guard(notNull(entityFactory));
 
-        final Map<Integer, gae.repository.Reader<Long>> readers = new HashMap<>();
-        readers.put(1, new Reader());
+        final Map<Long, gae.repository.Reader<Long>> readers = new HashMap<>();
+        readers.put(1L, new Reader());
 
         return new TimestampConverter(VERSION, readers, new Writer(), entityFactory);
     }

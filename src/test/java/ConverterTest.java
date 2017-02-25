@@ -18,7 +18,7 @@ import static org.junit.Assert.assertEquals;
  */
 public class ConverterTest {
 
-    private static final int VERSION = 2;
+    private static final long VERSION = 2;
     private static final Key SAMPLE_KEY = KeyFactory.stringToKey("ag9zfnJzcy1jb2xsZWN0b3JyHQsSEEZlZWRIZWFkZXJFbnRpdHkYgICAgIi0vwgM");
     private static final String PROPERTY_KEY = "property";
     private static final int INT_FROM_DUMMY_READER = 42;
@@ -48,9 +48,9 @@ public class ConverterTest {
             }
         };
 
-        final Map<Integer, Reader<Integer>> readers = new HashMap<>();
-        readers.put(1, reader01);
-        readers.put(2, reader02);
+        final Map<Long, Reader<Integer>> readers = new HashMap<>();
+        readers.put(1L, reader01);
+        readers.put(2L, reader02);
 
         final EntityFactory<Integer> entityFactory = new EntityFactory<Integer>() {
             @Override
@@ -65,7 +65,7 @@ public class ConverterTest {
     @Test
     public void versionIdAddedToEntity() throws Exception {
         final Entity converted = this.converter.convert(48);
-        final int version = (int) converted.getProperty(Converter.VERSION_KEY);
+        final long version = (long) converted.getProperty(Converter.VERSION_KEY);
 
         assertEquals(VERSION, version);
     }
@@ -83,7 +83,7 @@ public class ConverterTest {
     public void readerChoosenByEntityVersion() throws Exception {
         final Entity converted = this.converter.convert(84);
 
-        converted.setProperty(Converter.VERSION_KEY, 1);
+        converted.setProperty(Converter.VERSION_KEY, 1L);
 
         final int restored = this.converter.convert(converted);
 

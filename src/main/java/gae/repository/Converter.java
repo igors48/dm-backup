@@ -14,12 +14,12 @@ public class Converter<T> {
 
     public static final String VERSION_KEY = "_version_";
 
-    private final int version;
-    private final Map<Integer, Reader<T>> readers;
+    private final long version;
+    private final Map<Long, Reader<T>> readers;
     private final Writer<T> writer;
     private final EntityFactory<T> entityFactory;
 
-    public Converter(final int version, final Map<Integer, Reader<T>> readers, final Writer<T> writer, final EntityFactory<T> entityFactory) {
+    public Converter(final long version, final Map<Long, Reader<T>> readers, final Writer<T> writer, final EntityFactory<T> entityFactory) {
         this.version = version;
         guard(validReaders(this.readers = readers));
         guard(notNull(this.writer = writer));
@@ -43,7 +43,7 @@ public class Converter<T> {
             return null;
         }
 
-        final Integer version = ((Long) entity.getProperty(VERSION_KEY)).intValue();
+        final Long version = (Long) entity.getProperty(VERSION_KEY);
         final Reader<T> reader = this.readers.get(version);
 
         return reader.read(entity);

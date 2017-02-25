@@ -27,7 +27,7 @@ public class SnapshotConverter extends Converter<Snapshot> {
 
     private static final Gson GSON = new Gson();
 
-    private static final int VERSION = 1;
+    private static final long VERSION = 1;
 
     private static final String UUID_KEY = "uuid";
     private static final String TIMESTAMP_KEY = "timestamp";
@@ -66,7 +66,7 @@ public class SnapshotConverter extends Converter<Snapshot> {
 
     }
 
-    private SnapshotConverter(final int version, final Map<Integer, gae.repository.Reader<Snapshot>> readers, final gae.repository.Writer<Snapshot> writer, final EntityFactory<Snapshot> entityFactory) {
+    private SnapshotConverter(final long version, final Map<Long, gae.repository.Reader<Snapshot>> readers, final gae.repository.Writer<Snapshot> writer, final EntityFactory<Snapshot> entityFactory) {
         super(version, readers, writer, entityFactory);
     }
 
@@ -86,7 +86,7 @@ public class SnapshotConverter extends Converter<Snapshot> {
     public static SnapshotConverter create(final EntityFactory<Snapshot> entityFactory) {
         guard(notNull(entityFactory));
 
-        final Map<Integer, gae.repository.Reader<Snapshot>> readers = new HashMap<>();
+        final Map<Long, gae.repository.Reader<Snapshot>> readers = new HashMap<>();
         readers.put(VERSION, new Reader());
 
         return new SnapshotConverter(VERSION, readers, new Writer(), entityFactory);
