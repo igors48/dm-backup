@@ -55,7 +55,7 @@ public class SnapshotStore {
     private List<Snapshot> checkCapacity(final List<Snapshot> list) {
         final int size = list.size();
 
-        return size > this.capacity ? list.subList(size - capacity, size - 1) : list;
+        return size > this.capacity ? list.subList(size - capacity, size) : list;
     }
 
     private Snapshot createFor(final Content content) {

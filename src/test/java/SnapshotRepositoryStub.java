@@ -25,11 +25,11 @@ public class SnapshotRepositoryStub implements SnapshotRepository {
     public List<Snapshot> loadAll() {
         Collections.sort(this.snapshots, Snapshot.TIMESTAMP_COMPARATOR);
 
-        return this.snapshots;
+        return new ArrayList<>(this.snapshots);
     }
 
     @Override
-    public void storeAll(List<Snapshot> snapshots) {
+    public void storeAll(final List<Snapshot> snapshots) {
         this.snapshots.clear();
         this.snapshots.addAll(snapshots);
     }

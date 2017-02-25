@@ -8,8 +8,12 @@ import java.util.ArrayList;
  */
 public class TestData {
 
+    public static Content createContent(final String file) {
+        return new Content(createAccounts(), file);
+    }
+
     public static Content createContent() {
-        return new Content(createAccounts(), "a");
+        return createContent("a");
     }
 
     public static ArrayList<Account> createAccounts() {
@@ -21,7 +25,7 @@ public class TestData {
         return accounts;
     }
 
-    public static Account createAccount(String title, String balance) {
+    public static Account createAccount(final String title, final String balance) {
         return new Account(title, balance);
     }
 
