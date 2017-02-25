@@ -43,7 +43,7 @@ public class Converter<T> {
             return null;
         }
 
-        final Integer version = (Integer) entity.getProperty(VERSION_KEY);
+        final Integer version = ((Long) entity.getProperty(VERSION_KEY)).intValue();
         final Reader<T> reader = this.readers.get(version);
 
         return reader.read(entity);
