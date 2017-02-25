@@ -16,6 +16,8 @@ public class Content {
     public List<Account> accounts;
     public String file;
 
+    private Content(){}
+
     public Content(final List<Account> accounts, final String file) {
         guard(notNull(this.accounts = accounts));
         guard(isValidString(this.file = file));
