@@ -3,7 +3,7 @@ package gae.repository.snapshot;
 import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.Text;
-import com.google.appengine.repackaged.com.google.gson.Gson;
+import com.google.gson.Gson;
 import gae.repository.Converter;
 import gae.repository.EntityFactory;
 import gae.repository.GaeDatastoreTools;
