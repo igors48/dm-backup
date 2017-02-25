@@ -20,6 +20,7 @@ import java.util.regex.Pattern;
 import static util.Assert.guard;
 import static util.ConnectionTools.UTF_8;
 import static util.ConnectionTools.disconnect;
+import static util.Parameter.isValidString;
 import static util.Parameter.notNull;
 
 /**
@@ -169,7 +170,7 @@ public class Loader {
     public static void validateContentResponse(final int statusCode, final String contentType, final String content) throws ServiceException {
         guard(statusCode == 200, new WrongResponseCode(200, statusCode));
         guard(contentType.contains("text/csv"), new WrongContentType(contentType));
-        guard(!(content == null || content.isEmpty()), new InvalidContent(content));
+        guard(isValidString(content), new InvalidContent(content));
     }
 
     public static void validateLoginResponse(final int statusCode, final String contentType) throws ServiceException {

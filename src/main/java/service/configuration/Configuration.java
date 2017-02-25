@@ -32,6 +32,7 @@ public class Configuration {
     private static final String ADMIN = "admin";
     private static final String RECIPIENTS = "recipients";
 
+    private static final String WAIT_TIME_MILLIS = "wait.time.millis";
     private static final String APP_VERSION = "app.version";
 
     private final String origin;
@@ -51,9 +52,11 @@ public class Configuration {
     private final String admin;
     private final List<String> recipients;
 
+    private final long waitTimeMillis;
+
     private final String appVersion;
 
-    public Configuration(final String origin, final String host, final String loginUrl, final String loginReferer, final String loginData, final String downloadUrl, final String downloadReferer, final String downloadData, final String accountsUrl, final String accountsReferer, final String admin, final List<String> recipients, final String appVersion) throws ServiceException {
+    public Configuration(final String origin, final String host, final String loginUrl, final String loginReferer, final String loginData, final String downloadUrl, final String downloadReferer, final String downloadData, final String accountsUrl, final String accountsReferer, final String admin, final List<String> recipients, final String waitTimeMillisAsString, final String appVersion) throws ServiceException {
         guard(isValidUrl(this.origin = origin), new InvalidConfigurationParameter("origin", origin));
         guard(isValidDomain(this.host = host), new InvalidConfigurationParameter("host", host));
 
@@ -78,6 +81,9 @@ public class Configuration {
             this.recipients.add(recipient);
         }
 
+        final long waitTimeMillis = convert(waitTimeMillisAsString, new InvalidConfigurationParameter("wait.time.millis", waitTimeMillisAsString));
+        guard(isPositive(this.waitTimeMillis = waitTimeMillis), new InvalidConfigurationParameter("wait.time.millis", String.valueOf(waitTimeMillis)));
+
         guard(isValidString(this.appVersion = appVersion), new InvalidConfigurationParameter("app.version", appVersion));
     }
 
@@ -94,6 +100,22 @@ public class Configuration {
         return new Recipients(this.admin, this.recipients);
     }
 
+    public long getWaitTimeMillis() {
+        return this.waitTimeMillis;
+    }
+
+    public String getAppVersion() {
+        return this.appVersion;
+    }
+
+    private long convert(final String value, final ServiceException exception) throws ServiceException {
+        try {
+            return Long.valueOf(value);
+        } catch (Exception e) {
+            throw exception;
+        }
+    }
+
     public static Configuration fromSystemProperties() throws ServiceException {
         final String origin = System.getProperty(ORIGIN);
         final String host = System.getProperty(HOST);
@@ -108,13 +130,11 @@ public class Configuration {
         final String admin = System.getProperty(ADMIN);
         final String recipientsAsString = System.getProperty(RECIPIENTS);
         final List<String> recipients = Arrays.asList(recipientsAsString.split(";"));
+
+        final String waitTimeMillis = System.getProperty(WAIT_TIME_MILLIS);
         final String appVersionAsString = System.getProperty(APP_VERSION);
 
-        return new Configuration(origin, host, loginUrl, loginReferer, loginData, downloadUrl, downloadReferer, downloadData, accountsUrl, accountsReferer, admin, recipients, appVersionAsString);
-    }
-
-    public String getAppVersion() {
-        return this.appVersion;
+        return new Configuration(origin, host, loginUrl, loginReferer, loginData, downloadUrl, downloadReferer, downloadData, accountsUrl, accountsReferer, admin, recipients, waitTimeMillis, appVersionAsString);
     }
 
 }

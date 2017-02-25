@@ -8,8 +8,10 @@ import static util.Parameter.isValidString;
  */
 public class Account {
 
-    public final String title;
-    public final String balance;
+    public String title;
+    public String balance;
+
+    private Account(){}
 
     public Account(final String title, final String balance) {
         guard(isValidString(this.title = title));
