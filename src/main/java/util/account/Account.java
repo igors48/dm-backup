@@ -11,6 +11,8 @@ public class Account {
     public String title;
     public String balance;
 
+    private Account(){}
+
     public Account(final String title, final String balance) {
         guard(isValidString(this.title = title));
         guard(isValidString(this.balance = balance));
