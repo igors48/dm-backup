@@ -1,6 +1,6 @@
-import org.junit.Before;
 import org.junit.Test;
-import service.*;
+import service.Content;
+import service.Snapshot;
 
 import java.util.List;
 
@@ -9,21 +9,7 @@ import static org.junit.Assert.assertEquals;
 /**
  * Created by igor on 22.02.2017.
  */
-public class SnapshotStoreStoreTests {
-
-    private static final int MAXIMUM_CAPACITY = 2;
-
-    private SnapshotStore snapshotStore;
-    private SnapshotRepository snapshotRepository;
-    private TimeService timeService;
-
-    @Before
-    public void setUp() throws Exception {
-        this.snapshotRepository = new SnapshotRepositoryStub();
-        this.timeService = new TimeServiceStub();
-
-        this.snapshotStore = new SnapshotStore(MAXIMUM_CAPACITY, this.snapshotRepository, this.timeService);
-    }
+public class SnapshotStoreStoreTests extends SnapshotStoreTestBase {
 
     @Test
     public void whenContentStoredThenItIsStoredInRepository() {
