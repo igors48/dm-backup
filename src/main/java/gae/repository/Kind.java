@@ -8,7 +8,8 @@ public enum Kind {
 
     ROOT("Root"),
     TIMESTAMP("Timestamp"),
-    SNAPSHOT("Snapshot");
+    CHANGE("Change"),
+    DAILY("Daily");
 
     public final String value;
 

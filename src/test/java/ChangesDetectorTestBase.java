@@ -38,7 +38,7 @@ public class ChangesDetectorTestBase {
         when(this.transactions.beginOne()).thenReturn(this.transactionStub);
 
         this.content = new Content(new ArrayList<Account>(), "a");
-        this.snapshot = new Snapshot(UUID.randomUUID(), 48, content);
+        this.snapshot = new Snapshot(UUID.randomUUID(), Type.CHANGE, 48, content);
         when(this.snapshotRepository.loadLatestSnapshot()).thenReturn(this.snapshot);
         when(this.timeService.currentTimestamp()).thenReturn(CURRENT_TIMESTAMP);
 

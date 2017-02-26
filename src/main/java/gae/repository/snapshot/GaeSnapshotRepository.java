@@ -39,7 +39,7 @@ public class GaeSnapshotRepository implements SnapshotRepository {
     public List<Snapshot> loadAll() {
         final List<Snapshot> result = new ArrayList<>();
 
-        final List<Entity> entities = GaeDatastoreTools.loadEntities(Kind.SNAPSHOT);
+        final List<Entity> entities = GaeDatastoreTools.loadEntities(Kind.CHANGE);
 
         for (final Entity entity : entities) {
             final Snapshot snapshot = this.converter.convert(entity);
@@ -65,7 +65,7 @@ public class GaeSnapshotRepository implements SnapshotRepository {
 
     @Override
     public void clear() {
-        final List<Entity> entities = GaeDatastoreTools.loadEntities(Kind.SNAPSHOT);
+        final List<Entity> entities = GaeDatastoreTools.loadEntities(Kind.CHANGE);
 
         for (final Entity entity : entities) {
             GaeDatastore.INSTANCE.getDatastoreService().delete(entity.getKey());

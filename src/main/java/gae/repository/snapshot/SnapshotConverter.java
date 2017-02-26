@@ -10,6 +10,7 @@ import gae.repository.GaeDatastoreTools;
 import gae.repository.Kind;
 import service.Content;
 import service.Snapshot;
+import service.Type;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -31,6 +32,7 @@ public class SnapshotConverter extends Converter<Snapshot> {
 
     private static final String UUID_KEY = "uuid";
     private static final String TIMESTAMP_KEY = "timestamp";
+    private static final String TYPE_KEY = "type";
     private static final String CONTENT_KEY = "content";
 
     private static class Writer implements gae.repository.Writer<Snapshot> {
@@ -40,6 +42,7 @@ public class SnapshotConverter extends Converter<Snapshot> {
             guard(notNull(data));
 
             entity.setProperty(UUID_KEY, data.uuid.toString());
+            entity.setProperty(TYPE_KEY, data.type.toString());
             entity.setProperty(TIMESTAMP_KEY, data.timestamp);
 
             final String contentAsString = GSON.toJson(data.content);
@@ -56,12 +59,13 @@ public class SnapshotConverter extends Converter<Snapshot> {
             guard(notNull(entity));
 
             final UUID uuid = UUID.fromString((String) entity.getProperty(UUID_KEY));
+            final Type type = Type.valueOf((String) entity.getProperty(TYPE_KEY));
             final long timestamp = (long) entity.getProperty(TIMESTAMP_KEY);
             final Text contentAsText = (Text) entity.getProperty(CONTENT_KEY);
             final String contentAsString = contentAsText.getValue();
             final Content content = GSON.fromJson(contentAsString, Content.class);
 
-            return new Snapshot(uuid, timestamp, content);
+            return new Snapshot(uuid, type, timestamp, content);
         }
 
     }
@@ -74,9 +78,9 @@ public class SnapshotConverter extends Converter<Snapshot> {
         final EntityFactory<Snapshot> entityFactory = new EntityFactory<Snapshot>() {
             @Override
             public Entity createFor(final Snapshot data) {
-                final Key key = GaeDatastoreTools.createEntityKey(data.uuid.toString(), Kind.SNAPSHOT);
+                final Key key = GaeDatastoreTools.createEntityKey(data.uuid.toString(), Kind.CHANGE);
 
-                return new Entity(Kind.SNAPSHOT.value, key);
+                return new Entity(Kind.CHANGE.value, key);
             }
         };
 

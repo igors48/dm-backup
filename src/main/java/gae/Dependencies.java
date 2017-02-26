@@ -45,7 +45,7 @@ public enum Dependencies {
             snapshotRepository = new GaeSnapshotRepository(SnapshotConverter.SNAPSHOT_CONVERTER);
             timestampRepository = new GaeTimestampRepository(TimestampConverter.TIMESTAMP_CONVERTER);
             timeService = GaeTimeService.INSTANCE;
-            snapshotStore = new SnapshotStore(SNAPSHOTS_STORE_CAPACITY, snapshotRepository, timeService);
+            snapshotStore = new SnapshotStore(SNAPSHOTS_STORE_CAPACITY, Type.CHANGE, snapshotRepository, timeService);
             changesDetector = new ChangesDetector(snapshotRepository, timestampRepository, timeService, configuration.getWaitTimeMillis(), transactions);
             backup = new Backup(loader, sender, changesDetector, configuration.getRecipients(), snapshotStore, transactions);
 

@@ -8,6 +8,7 @@ import org.junit.Before;
 import org.junit.Test;
 import service.Content;
 import service.Snapshot;
+import service.Type;
 
 import java.util.UUID;
 
@@ -27,7 +28,7 @@ public class SnapshotConverterTest {
         final EntityFactory<Snapshot> entityFactory = new EntityFactory<Snapshot>() {
             @Override
             public Entity createFor(final Snapshot data) {
-                return new Entity(Kind.SNAPSHOT.value, SAMPLE_KEY);
+                return new Entity(Kind.CHANGE.value, SAMPLE_KEY);
             }
         };
 
@@ -37,7 +38,7 @@ public class SnapshotConverterTest {
     @Test
     public void smoke() throws Exception {
         final Content content = TestData.createContent();
-        final Snapshot original = new Snapshot(UUID.randomUUID(), 48, content);
+        final Snapshot original = new Snapshot(UUID.randomUUID(), Type.CHANGE, 48, content);
         final Entity converted = this.converter.convert(original);
         final Snapshot restored = this.converter.convert(converted);
 
