@@ -71,6 +71,18 @@ public class Backup {
 
     public void dailyBackup() {
 
+        try {
+            LOGGER.info("Backup started");
+
+            final Content content = this.loader.load();
+            sendContent(content);
+
+            LOGGER.info("Backup finished");
+        } catch (ServiceException exception) {
+            LOGGER.log(Level.SEVERE, "Backup failed", exception);
+
+            sendError(exception);
+        }
     }
 
     private void updateLast(final Content content) {
