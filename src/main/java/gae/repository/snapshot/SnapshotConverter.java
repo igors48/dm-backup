@@ -92,7 +92,7 @@ public class SnapshotConverter extends Converter<Snapshot> {
         final EntityFactory<Snapshot> entityFactory = new EntityFactory<Snapshot>() {
             @Override
             public Entity createFor(final Snapshot data) {
-                final Key key = GaeDatastoreTools.createEntityKey(data.uuid.toString(), Kind.CHANGE);
+                final Key key = GaeDatastoreTools.createEntityKey(data.uuid.toString(), Kind.DAILY);
 
                 return new Entity(Kind.DAILY.value, key);
             }
