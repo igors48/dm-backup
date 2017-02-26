@@ -14,7 +14,7 @@ public class BackupSnapshotStoreTest extends BackupTestBase {
     public void whenActionIsSaveThenContentStored() {
         when(this.changesDetector.getActionForContent(CONTENT.file)).thenReturn(Action.SAVE);
 
-        this.backup.execute();
+        this.backup.checkChanges();
 
         verify(this.snapshotStore).store(CONTENT);
         verifyNoMoreInteractions(this.snapshotStore);
@@ -25,7 +25,7 @@ public class BackupSnapshotStoreTest extends BackupTestBase {
     public void whenActionIsUpdateThenContentUpdated() {
         when(this.changesDetector.getActionForContent(CONTENT.file)).thenReturn(Action.UPDATE_LAST);
 
-        this.backup.execute();
+        this.backup.checkChanges();
 
         verify(this.snapshotStore).updateLast(CONTENT);
         verifyNoMoreInteractions(this.snapshotStore);
@@ -36,7 +36,7 @@ public class BackupSnapshotStoreTest extends BackupTestBase {
     public void whenActionIsSendThenNoContentActions() {
         when(this.changesDetector.getActionForContent(CONTENT.file)).thenReturn(Action.SEND);
 
-        this.backup.execute();
+        this.backup.checkChanges();
 
         verifyZeroInteractions(this.snapshotStore);
     }
@@ -45,7 +45,7 @@ public class BackupSnapshotStoreTest extends BackupTestBase {
     public void whenNoActionThenNoContentActions() {
         when(this.changesDetector.getActionForContent(CONTENT.file)).thenReturn(Action.NO_ACTION);
 
-        this.backup.execute();
+        this.backup.checkChanges();
 
         verifyZeroInteractions(this.snapshotStore);
     }
@@ -57,7 +57,7 @@ public class BackupSnapshotStoreTest extends BackupTestBase {
             when(this.changesDetector.getActionForContent(CONTENT.file)).thenReturn(Action.SAVE);
             doThrow(new RuntimeException()).when(this.snapshotStore).store(CONTENT);
 
-            this.backup.execute();
+            this.backup.checkChanges();
 
             fail();
         } catch (Exception e) {
@@ -72,7 +72,7 @@ public class BackupSnapshotStoreTest extends BackupTestBase {
             when(this.changesDetector.getActionForContent(CONTENT.file)).thenReturn(Action.UPDATE_LAST);
             doThrow(new RuntimeException()).when(this.snapshotStore).updateLast(CONTENT);
 
-            this.backup.execute();
+            this.backup.checkChanges();
 
             fail();
         } catch (Exception e) {

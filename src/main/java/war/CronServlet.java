@@ -17,7 +17,7 @@ public class CronServlet extends HttpServlet {
     public void doGet(final HttpServletRequest request, final HttpServletResponse response) throws IOException {
 
         try {
-            Dependencies.GET.backupService().execute();
+            Dependencies.GET.backupService().checkChanges();
         } catch (Throwable throwable) {
             LOGGER.log(Level.SEVERE, "Unexpected error", throwable);
         }

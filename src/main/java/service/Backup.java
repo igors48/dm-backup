@@ -23,22 +23,24 @@ public class Backup {
     private final Sender sender;
     private final ChangesDetector changesDetector;
     private final Recipients recipients;
-    private final SnapshotStore snapshotStore;
+    private final SnapshotStore changesSnapshotStore;
+    private final SnapshotStore dailySnapshotStore;
     private final Transactions transactions;
 
-    public Backup(final Loader loader, final Sender sender, final ChangesDetector changesDetector, final Recipients recipients, final SnapshotStore snapshotStore, final Transactions transactions) {
+    public Backup(final Loader loader, final Sender sender, final ChangesDetector changesDetector, final Recipients recipients, final SnapshotStore changesSnapshotStore, final SnapshotStore dailySnapshotStore, final Transactions transactions) {
         guard(notNull(this.loader = loader));
         guard(notNull(this.sender = sender));
         guard(notNull(this.changesDetector = changesDetector));
         guard(notNull(this.recipients = recipients));
-        guard(notNull(this.snapshotStore = snapshotStore));
+        guard(notNull(this.changesSnapshotStore = changesSnapshotStore));
+        guard(notNull(this.dailySnapshotStore = dailySnapshotStore));
         guard(notNull(this.transactions = transactions));
     }
 
-    public void execute() {
+    public void checkChanges() {
 
         try {
-            LOGGER.info("Backup started");
+            LOGGER.info("Check changes started");
 
             final Content content = this.loader.load();
 
@@ -59,12 +61,16 @@ public class Backup {
                     break;
             }
 
-            LOGGER.info("Backup finished");
+            LOGGER.info("Check changes finished");
         } catch (ServiceException exception) {
-            LOGGER.log(Level.SEVERE, "Backup failed", exception);
+            LOGGER.log(Level.SEVERE, "Check changes failed", exception);
 
             sendError(exception);
         }
+    }
+
+    public void dailyBackup() {
+
     }
 
     private void updateLast(final Content content) {
@@ -73,7 +79,7 @@ public class Backup {
         try {
             transaction = this.transactions.beginOne();
 
-            this.snapshotStore.updateLast(content);
+            this.changesSnapshotStore.updateLast(content);
 
             transaction.commit();
         } finally {
@@ -87,7 +93,7 @@ public class Backup {
         try {
             transaction = this.transactions.beginOne();
 
-            this.snapshotStore.store(content);
+            this.changesSnapshotStore.store(content);
 
             transaction.commit();
         } finally {
