@@ -27,11 +27,13 @@ public enum Dependencies {
     private static Loader loader;
     private static Sender sender;
     private static Transactions transactions;
-    private static SnapshotRepository snapshotRepository;
+    private static SnapshotRepository changesSnapshotRepository;
+    private static SnapshotRepository dailySnapshotRepository;
     private static TimestampRepository timestampRepository;
     private static TimeService timeService;
     private static ChangesDetector changesDetector;
-    private static SnapshotStore snapshotStore;
+    private static SnapshotStore changesSnapshotStore;
+    private static SnapshotStore dailySnapshotStore;
     private static Backup backup;
 
     static {
@@ -42,12 +44,14 @@ public enum Dependencies {
             loader = new Loader(configuration.getAccessParameters());
             sender = new Sender(configuration.getAppVersion());
             transactions = GaeTransactions.INSTANCE;
-            snapshotRepository = new GaeSnapshotRepository(SnapshotConverter.SNAPSHOT_CONVERTER);
+            changesSnapshotRepository = new GaeSnapshotRepository(SnapshotConverter.CHANGES_SNAPSHOT_CONVERTER);
+            dailySnapshotRepository = new GaeSnapshotRepository(SnapshotConverter.DAILY_SNAPSHOT_CONVERTER);
             timestampRepository = new GaeTimestampRepository(TimestampConverter.TIMESTAMP_CONVERTER);
             timeService = GaeTimeService.INSTANCE;
-            snapshotStore = new SnapshotStore(SNAPSHOTS_STORE_CAPACITY, Type.CHANGE, snapshotRepository, timeService);
-            changesDetector = new ChangesDetector(snapshotRepository, timestampRepository, timeService, configuration.getWaitTimeMillis(), transactions);
-            backup = new Backup(loader, sender, changesDetector, configuration.getRecipients(), snapshotStore, transactions);
+            changesSnapshotStore = new SnapshotStore(SNAPSHOTS_STORE_CAPACITY, Type.CHANGE, changesSnapshotRepository, timeService);
+            dailySnapshotStore = new SnapshotStore(SNAPSHOTS_STORE_CAPACITY, Type.DAILY, dailySnapshotRepository, timeService);
+            changesDetector = new ChangesDetector(changesSnapshotRepository, timestampRepository, timeService, configuration.getWaitTimeMillis(), transactions);
+            backup = new Backup(loader, sender, changesDetector, configuration.getRecipients(), changesSnapshotStore, dailySnapshotStore, transactions);
 
         } catch (Exception exception) {
             LOGGER.log(Level.SEVERE, "Application initialization error", exception);

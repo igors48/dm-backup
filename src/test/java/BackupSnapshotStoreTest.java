@@ -16,8 +16,8 @@ public class BackupSnapshotStoreTest extends BackupTestBase {
 
         this.backup.checkChanges();
 
-        verify(this.snapshotStore).store(CONTENT);
-        verifyNoMoreInteractions(this.snapshotStore);
+        verify(this.changesSnapshotStore).store(CONTENT);
+        verifyNoMoreInteractions(this.changesSnapshotStore);
         assertEquals(TransactionState.COMMITTED, this.transactionStub.getState());
     }
 
@@ -27,8 +27,8 @@ public class BackupSnapshotStoreTest extends BackupTestBase {
 
         this.backup.checkChanges();
 
-        verify(this.snapshotStore).updateLast(CONTENT);
-        verifyNoMoreInteractions(this.snapshotStore);
+        verify(this.changesSnapshotStore).updateLast(CONTENT);
+        verifyNoMoreInteractions(this.changesSnapshotStore);
         assertEquals(TransactionState.COMMITTED, this.transactionStub.getState());
     }
 
@@ -38,7 +38,7 @@ public class BackupSnapshotStoreTest extends BackupTestBase {
 
         this.backup.checkChanges();
 
-        verifyZeroInteractions(this.snapshotStore);
+        verifyZeroInteractions(this.changesSnapshotStore);
     }
 
     @Test
@@ -47,7 +47,7 @@ public class BackupSnapshotStoreTest extends BackupTestBase {
 
         this.backup.checkChanges();
 
-        verifyZeroInteractions(this.snapshotStore);
+        verifyZeroInteractions(this.changesSnapshotStore);
     }
 
     @Test
@@ -55,7 +55,7 @@ public class BackupSnapshotStoreTest extends BackupTestBase {
 
         try {
             when(this.changesDetector.getActionForContent(CONTENT.file)).thenReturn(Action.SAVE);
-            doThrow(new RuntimeException()).when(this.snapshotStore).store(CONTENT);
+            doThrow(new RuntimeException()).when(this.changesSnapshotStore).store(CONTENT);
 
             this.backup.checkChanges();
 
@@ -70,7 +70,7 @@ public class BackupSnapshotStoreTest extends BackupTestBase {
 
         try {
             when(this.changesDetector.getActionForContent(CONTENT.file)).thenReturn(Action.UPDATE_LAST);
-            doThrow(new RuntimeException()).when(this.snapshotStore).updateLast(CONTENT);
+            doThrow(new RuntimeException()).when(this.changesSnapshotStore).updateLast(CONTENT);
 
             this.backup.checkChanges();
 

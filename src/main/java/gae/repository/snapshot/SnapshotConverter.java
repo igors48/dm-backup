@@ -24,7 +24,8 @@ import static util.Parameter.notNull;
  */
 public class SnapshotConverter extends Converter<Snapshot> {
 
-    public static final SnapshotConverter SNAPSHOT_CONVERTER = SnapshotConverter.create();
+    public static final SnapshotConverter CHANGES_SNAPSHOT_CONVERTER = SnapshotConverter.createForChanges();
+    public static final SnapshotConverter DAILY_SNAPSHOT_CONVERTER = SnapshotConverter.createForDaily();
 
     private static final Gson GSON = new Gson();
 
@@ -74,13 +75,26 @@ public class SnapshotConverter extends Converter<Snapshot> {
         super(version, readers, writer, entityFactory);
     }
 
-    private static SnapshotConverter create() {
+    private static SnapshotConverter createForChanges() {
         final EntityFactory<Snapshot> entityFactory = new EntityFactory<Snapshot>() {
             @Override
             public Entity createFor(final Snapshot data) {
                 final Key key = GaeDatastoreTools.createEntityKey(data.uuid.toString(), Kind.CHANGE);
 
                 return new Entity(Kind.CHANGE.value, key);
+            }
+        };
+
+        return create(entityFactory);
+    }
+
+    private static SnapshotConverter createForDaily() {
+        final EntityFactory<Snapshot> entityFactory = new EntityFactory<Snapshot>() {
+            @Override
+            public Entity createFor(final Snapshot data) {
+                final Key key = GaeDatastoreTools.createEntityKey(data.uuid.toString(), Kind.CHANGE);
+
+                return new Entity(Kind.DAILY.value, key);
             }
         };
 
