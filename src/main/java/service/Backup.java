@@ -75,6 +75,7 @@ public class Backup {
             LOGGER.info("Backup started");
 
             final Content content = this.loader.load();
+            this.dailySnapshotStore.store(content);
             sendContent(content);
 
             LOGGER.info("Backup finished");

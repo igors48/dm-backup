@@ -23,6 +23,19 @@ public class BackupDailyTest extends BackupTestBase {
     }
 
     @Test
+    public void whenContentReceivedThenItStores() throws Exception {
+        when(loader.load()).thenReturn(CONTENT);
+
+        backup.dailyBackup();
+
+        verify(loader).load();
+        verifyNoMoreInteractions(loader);
+
+        verify(dailySnapshotStore).store(CONTENT);
+        verifyNoMoreInteractions(dailySnapshotStore);
+    }
+
+    @Test
     public void whenContentCannotBeSentThenErrorSentToErrorRecipient() throws Exception {
         when(loader.load()).thenReturn(CONTENT);
 
