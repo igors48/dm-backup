@@ -90,4 +90,14 @@ public class ConverterTest {
         assertEquals(INT_FROM_DUMMY_READER, restored);
     }
 
+    @Test
+    public void whenReadableTimestampAddedItIsPutInEntity() throws Exception {
+        final Entity entity = this.converter.convert(84);
+        Converter.addReadableTimeStamp(1488305961538L, entity);
+
+        final String property = (String) entity.getProperty(Converter.READABLE_TIMESTAMP_KEY);
+
+        assertEquals("2017-02-28 20:19:21", property);
+    }
+
 }

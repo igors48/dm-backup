@@ -15,9 +15,9 @@ import static util.Parameter.notNull;
 public class Converter<T> {
 
     public static final String VERSION_KEY = "_version_";
+    public static final String READABLE_TIMESTAMP_KEY = "readable_timestamp";
 
     private static final String READABLE_DATE_FORMAT = "yyyy-MM-dd HH:mm:ss";
-    private static final String READABLE_TIMESTAMP_KEY = "readable_timestamp";
 
     private final long version;
     private final Map<Long, Reader<T>> readers;
