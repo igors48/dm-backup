@@ -14,10 +14,10 @@ public class BackupSnapshotStoreTest extends BackupTestBase {
     public void whenActionIsSaveThenContentStored() {
         when(this.changesDetector.getActionForContent(CONTENT.file)).thenReturn(Action.SAVE);
 
-        this.backup.execute();
+        this.backup.checkChanges();
 
-        verify(this.snapshotStore).store(CONTENT);
-        verifyNoMoreInteractions(this.snapshotStore);
+        verify(this.changesSnapshotStore).store(CONTENT);
+        verifyNoMoreInteractions(this.changesSnapshotStore);
         assertEquals(TransactionState.COMMITTED, this.transactionStub.getState());
     }
 
@@ -25,10 +25,10 @@ public class BackupSnapshotStoreTest extends BackupTestBase {
     public void whenActionIsUpdateThenContentUpdated() {
         when(this.changesDetector.getActionForContent(CONTENT.file)).thenReturn(Action.UPDATE_LAST);
 
-        this.backup.execute();
+        this.backup.checkChanges();
 
-        verify(this.snapshotStore).updateLast(CONTENT);
-        verifyNoMoreInteractions(this.snapshotStore);
+        verify(this.changesSnapshotStore).updateLast(CONTENT);
+        verifyNoMoreInteractions(this.changesSnapshotStore);
         assertEquals(TransactionState.COMMITTED, this.transactionStub.getState());
     }
 
@@ -36,18 +36,18 @@ public class BackupSnapshotStoreTest extends BackupTestBase {
     public void whenActionIsSendThenNoContentActions() {
         when(this.changesDetector.getActionForContent(CONTENT.file)).thenReturn(Action.SEND);
 
-        this.backup.execute();
+        this.backup.checkChanges();
 
-        verifyZeroInteractions(this.snapshotStore);
+        verifyZeroInteractions(this.changesSnapshotStore);
     }
 
     @Test
     public void whenNoActionThenNoContentActions() {
         when(this.changesDetector.getActionForContent(CONTENT.file)).thenReturn(Action.NO_ACTION);
 
-        this.backup.execute();
+        this.backup.checkChanges();
 
-        verifyZeroInteractions(this.snapshotStore);
+        verifyZeroInteractions(this.changesSnapshotStore);
     }
 
     @Test
@@ -55,9 +55,9 @@ public class BackupSnapshotStoreTest extends BackupTestBase {
 
         try {
             when(this.changesDetector.getActionForContent(CONTENT.file)).thenReturn(Action.SAVE);
-            doThrow(new RuntimeException()).when(this.snapshotStore).store(CONTENT);
+            doThrow(new RuntimeException()).when(this.changesSnapshotStore).store(CONTENT);
 
-            this.backup.execute();
+            this.backup.checkChanges();
 
             fail();
         } catch (Exception e) {
@@ -70,9 +70,9 @@ public class BackupSnapshotStoreTest extends BackupTestBase {
 
         try {
             when(this.changesDetector.getActionForContent(CONTENT.file)).thenReturn(Action.UPDATE_LAST);
-            doThrow(new RuntimeException()).when(this.snapshotStore).updateLast(CONTENT);
+            doThrow(new RuntimeException()).when(this.changesSnapshotStore).updateLast(CONTENT);
 
-            this.backup.execute();
+            this.backup.checkChanges();
 
             fail();
         } catch (Exception e) {

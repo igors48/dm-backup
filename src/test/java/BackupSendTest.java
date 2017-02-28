@@ -11,7 +11,7 @@ public class BackupSendTest extends BackupTestBase {
 
     @Test
     public void whenContentReceivedThenItSendsToChangesDetector() throws Exception {
-        this.backup.execute();
+        this.backup.checkChanges();
 
         verify(this.loader).load();
         verifyNoMoreInteractions(this.loader);
@@ -24,7 +24,7 @@ public class BackupSendTest extends BackupTestBase {
     public void whenContentChangesDetectedThenContentSendsToAllRecipients() throws Exception {
         when(this.changesDetector.getActionForContent(CONTENT.file)).thenReturn(Action.SEND);
 
-        this.backup.execute();
+        this.backup.checkChanges();
 
         verify(this.sender).sendContent(A_B_COM, B_C_COM, CONTENT);
         verify(this.sender).sendContent(A_B_COM, C_D_COM, CONTENT);
@@ -35,7 +35,7 @@ public class BackupSendTest extends BackupTestBase {
     public void whenContentChangesNotDetectedThenContentNotSent() throws Exception {
         when(this.changesDetector.getActionForContent(CONTENT.file)).thenReturn(Action.NO_ACTION);
 
-        this.backup.execute();
+        this.backup.checkChanges();
 
         verifyZeroInteractions(sender);
     }
@@ -45,7 +45,7 @@ public class BackupSendTest extends BackupTestBase {
         when(this.changesDetector.getActionForContent(CONTENT.file)).thenReturn(Action.SEND);
         doThrow(this.serviceException).when(sender).sendContent(A_B_COM, B_C_COM, CONTENT);
 
-        this.backup.execute();
+        this.backup.checkChanges();
 
         verify(this.loader).load();
         verifyNoMoreInteractions(this.loader);
@@ -60,7 +60,7 @@ public class BackupSendTest extends BackupTestBase {
     public void whenContentNotReceivedThenErrorSentToErrorRecipient() throws Exception {
         when(this.loader.load()).thenThrow(this.serviceException);
 
-        this.backup.execute();
+        this.backup.checkChanges();
 
         verify(this.loader).load();
         verifyNoMoreInteractions(this.loader);
@@ -76,7 +76,7 @@ public class BackupSendTest extends BackupTestBase {
             when(this.loader.load()).thenThrow(this.serviceException);
             doThrow(this.serviceException).when(this.sender).sendException(A_B_COM, this.serviceException);
 
-            this.backup.execute();
+            this.backup.checkChanges();
         } catch (Exception exception) {
             fail();
         }

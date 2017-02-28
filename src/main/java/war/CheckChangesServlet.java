@@ -9,15 +9,15 @@ import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class CronServlet extends HttpServlet {
+public class CheckChangesServlet extends HttpServlet {
 
-    private static final Logger LOGGER = Logger.getLogger(CronServlet.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(CheckChangesServlet.class.getName());
 
     @Override
     public void doGet(final HttpServletRequest request, final HttpServletResponse response) throws IOException {
 
         try {
-            Dependencies.GET.backupService().execute();
+            Dependencies.GET.backupService().checkChanges();
         } catch (Throwable throwable) {
             LOGGER.log(Level.SEVERE, "Unexpected error", throwable);
         }

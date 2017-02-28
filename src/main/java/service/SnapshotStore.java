@@ -13,11 +13,13 @@ import static util.Parameter.notNull;
 public class SnapshotStore {
 
     private final int capacity;
+    private final Type type;
     private final SnapshotRepository snapshotRepository;
     private final TimeService timeService;
 
-    public SnapshotStore(final int capacity, final SnapshotRepository snapshotRepository, final TimeService timeService) {
+    public SnapshotStore(final int capacity, final Type type, final SnapshotRepository snapshotRepository, final TimeService timeService) {
         guard(isPositive(this.capacity = capacity));
+        guard(notNull(this.type = type));
         guard(notNull(this.snapshotRepository = snapshotRepository));
         guard(notNull(this.timeService = timeService));
     }
@@ -62,7 +64,7 @@ public class SnapshotStore {
         final UUID uuid = UUID.randomUUID();
         final long timestamp = this.timeService.currentTimestamp();
 
-        return new Snapshot(uuid, timestamp, content);
+        return new Snapshot(uuid, type, timestamp, content);
     }
 
 }

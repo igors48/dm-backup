@@ -2,6 +2,8 @@ package gae.repository;
 
 import com.google.appengine.api.datastore.Entity;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Map;
 
 import static util.Assert.guard;
@@ -13,6 +15,9 @@ import static util.Parameter.notNull;
 public class Converter<T> {
 
     public static final String VERSION_KEY = "_version_";
+    public static final String READABLE_TIMESTAMP_KEY = "readable_timestamp";
+
+    private static final String READABLE_DATE_FORMAT = "yyyy-MM-dd HH:mm:ss";
 
     private final long version;
     private final Map<Long, Reader<T>> readers;
@@ -47,6 +52,14 @@ public class Converter<T> {
         final Reader<T> reader = this.readers.get(version);
 
         return reader.read(entity);
+    }
+
+    public static void addReadableTimeStamp(final long timestamp, final Entity entity) {
+        final SimpleDateFormat readableTimestampFormat = new SimpleDateFormat(READABLE_DATE_FORMAT);
+        final Date date = new Date(timestamp);
+        final String readableTimeStamp = readableTimestampFormat.format(date);
+
+        entity.setProperty(READABLE_TIMESTAMP_KEY, readableTimeStamp);
     }
 
     private static boolean validReaders(final Map readers) {

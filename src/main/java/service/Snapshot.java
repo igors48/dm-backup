@@ -15,11 +15,13 @@ public class Snapshot {
     public static final SnapshotTimestampComparator TIMESTAMP_COMPARATOR = new SnapshotTimestampComparator();
 
     public UUID uuid;
+    public Type type;
     public long timestamp;
     public Content content;
 
-    public Snapshot(final UUID uuid, final long timestamp, final Content content) {
+    public Snapshot(final UUID uuid, final Type type, final long timestamp, final Content content) {
         guard(notNull(this.uuid = uuid));
+        guard(notNull(this.type = type));
         guard(isPositive(this.timestamp = timestamp));
         guard(notNull(this.content = content));
     }
@@ -33,12 +35,14 @@ public class Snapshot {
 
         if (timestamp != snapshot.timestamp) return false;
         if (!uuid.equals(snapshot.uuid)) return false;
+        if (type != snapshot.type) return false;
         return content.equals(snapshot.content);
     }
 
     @Override
     public int hashCode() {
         int result = uuid.hashCode();
+        result = 31 * result + type.hashCode();
         result = 31 * result + (int) (timestamp ^ (timestamp >>> 32));
         result = 31 * result + content.hashCode();
         return result;

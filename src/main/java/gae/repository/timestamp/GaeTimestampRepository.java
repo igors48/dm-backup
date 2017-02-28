@@ -25,14 +25,15 @@ public class GaeTimestampRepository implements TimestampRepository {
 
     @Override
     public void store(final long timestamp) {
-        this.converter.convert(timestamp);
+        final Entity entity = this.converter.convert(timestamp);
+        GaeDatastore.INSTANCE.getDatastoreService().put(entity);
     }
 
     @Override
     public Long load() {
-        final Entity entity = GaeDatastoreTools.loadEntity(Kind.TIMESTAMP.value, Kind.TIMESTAMP, false);
+        final List<Entity> entities = GaeDatastoreTools.loadEntities(Kind.TIMESTAMP);
 
-        return this.converter.convert(entity);
+        return entities.isEmpty() ? null : this.converter.convert(entities.get(0));
     }
 
     @Override
