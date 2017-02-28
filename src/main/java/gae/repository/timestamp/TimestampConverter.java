@@ -30,6 +30,8 @@ public class TimestampConverter extends Converter<Long> {
             guard(notNull(data));
 
             entity.setProperty(TIMESTAMP_KEY, data);
+
+            addReadableTimeStamp(data, entity);
         }
 
     }

@@ -49,6 +49,8 @@ public class SnapshotConverter extends Converter<Snapshot> {
             final String contentAsString = GSON.toJson(data.content);
             final Text contentAsText = new Text(contentAsString);
             entity.setProperty(CONTENT_KEY, contentAsText);
+
+            addReadableTimeStamp(data.timestamp, entity);
         }
 
     }
