@@ -31,9 +31,9 @@ public class GaeTimestampRepository implements TimestampRepository {
 
     @Override
     public Long load() {
-        final Entity entity = GaeDatastoreTools.loadEntity(Kind.TIMESTAMP.value, Kind.TIMESTAMP, false);
+        final List<Entity> entities = GaeDatastoreTools.loadEntities(Kind.TIMESTAMP);
 
-        return this.converter.convert(entity);
+        return entities.isEmpty() ? null : this.converter.convert(entities.get(0));
     }
 
     @Override
