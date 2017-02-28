@@ -25,7 +25,8 @@ public class GaeTimestampRepository implements TimestampRepository {
 
     @Override
     public void store(final long timestamp) {
-        this.converter.convert(timestamp);
+        final Entity entity = this.converter.convert(timestamp);
+        GaeDatastore.INSTANCE.getDatastoreService().put(entity);
     }
 
     @Override
