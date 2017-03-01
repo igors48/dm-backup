@@ -57,7 +57,7 @@ public class Backup {
                     updateLast(content);
                     break;
                 case SEND:
-                    sendContent(content);
+                    sendChangedContent(content);
                     break;
             }
 
@@ -76,7 +76,7 @@ public class Backup {
 
             final Content content = this.loader.load();
             this.dailySnapshotStore.store(content);
-            sendContent(content);
+            sendDailyBackup(content);
 
             LOGGER.info("Backup finished");
         } catch (ServiceException exception) {
@@ -114,19 +114,37 @@ public class Backup {
         }
     }
 
-    private void sendContent(final Content content) {
+    private void sendChangedContent(final Content content) {
 
         for (final String recipient : this.recipients.contentRecipients) {
-            sendContent(recipient, content);
+            sendChangedContent(recipient, content);
         }
     }
 
-    private void sendContent(final String recipient, final Content content) {
+    private void sendDailyBackup(final Content content) {
+
+        for (final String recipient : this.recipients.contentRecipients) {
+            sendDailyBackup(recipient, content);
+        }
+    }
+
+    private void sendDailyBackup(final String recipient, final Content content) {
 
         try {
-            this.sender.sendContent(recipients.adminRecipient, recipient, content);
+            this.sender.sendDailyBackup(recipients.adminRecipient, recipient, content);
         } catch (ServiceException exception) {
-            LOGGER.log(Level.SEVERE, format("Sending content to [ %s ] failed", recipient), exception);
+            LOGGER.log(Level.SEVERE, format("Sending daily backup content to [ %s ] failed", recipient), exception);
+
+            this.sendError(exception);
+        }
+    }
+
+    private void sendChangedContent(final String recipient, final Content content) {
+
+        try {
+            this.sender.sendChangedContent(recipients.adminRecipient, recipient, content);
+        } catch (ServiceException exception) {
+            LOGGER.log(Level.SEVERE, format("Sending changed content to [ %s ] failed", recipient), exception);
 
             this.sendError(exception);
         }

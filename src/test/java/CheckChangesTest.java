@@ -7,7 +7,7 @@ import static org.mockito.Mockito.*;
 /**
  * Created by igor on 14.11.2016.
  */
-public class BackupSendTest extends BackupTestBase {
+public class CheckChangesTest extends BackupTestBase {
 
     @Test
     public void whenContentReceivedThenItSendsToChangesDetector() throws Exception {
@@ -26,8 +26,8 @@ public class BackupSendTest extends BackupTestBase {
 
         this.backup.checkChanges();
 
-        verify(this.sender).sendContent(A_B_COM, B_C_COM, CONTENT);
-        verify(this.sender).sendContent(A_B_COM, C_D_COM, CONTENT);
+        verify(this.sender).sendChangedContent(A_B_COM, B_C_COM, CONTENT);
+        verify(this.sender).sendChangedContent(A_B_COM, C_D_COM, CONTENT);
         verifyNoMoreInteractions(this.sender);
     }
 
@@ -43,16 +43,16 @@ public class BackupSendTest extends BackupTestBase {
     @Test
     public void whenContentCannotBeSentThenErrorSentToErrorRecipient() throws Exception {
         when(this.changesDetector.getActionForContent(CONTENT.file)).thenReturn(Action.SEND);
-        doThrow(this.serviceException).when(sender).sendContent(A_B_COM, B_C_COM, CONTENT);
+        doThrow(this.serviceException).when(sender).sendChangedContent(A_B_COM, B_C_COM, CONTENT);
 
         this.backup.checkChanges();
 
         verify(this.loader).load();
         verifyNoMoreInteractions(this.loader);
 
-        verify(this.sender).sendContent(A_B_COM, B_C_COM, CONTENT);
+        verify(this.sender).sendChangedContent(A_B_COM, B_C_COM, CONTENT);
         verify(this.sender).sendException(A_B_COM, this.serviceException);
-        verify(this.sender).sendContent(A_B_COM, C_D_COM, CONTENT);
+        verify(this.sender).sendChangedContent(A_B_COM, C_D_COM, CONTENT);
         verifyNoMoreInteractions(this.sender);
     }
 

@@ -40,7 +40,23 @@ public class Sender {
         guard(isValidString(this.version = version));
     }
 
-    public void sendContent(final String sender, final String recipient, final Content content) throws ServiceException {
+    public void sendDailyBackup(final String sender, final String recipient, final Content content) throws ServiceException {
+        guard(isValidEmail(sender));
+        guard(isValidEmail(recipient));
+        guard(notNull(content));
+
+        LOGGER.info(String.format("Sending daily backup to [ %s ]", recipient));
+    }
+
+    public void sendChangedContent(final String sender, final String recipient, final Content content) throws ServiceException {
+        guard(isValidEmail(sender));
+        guard(isValidEmail(recipient));
+        guard(notNull(content));
+
+        LOGGER.info(String.format("Sending changed content to [ %s ]", recipient));
+    }
+
+    private void sendContent(final String sender, final String recipient, final Content content) throws ServiceException {
         guard(isValidEmail(sender));
         guard(isValidEmail(recipient));
         guard(notNull(content));
