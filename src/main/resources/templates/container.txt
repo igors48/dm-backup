@@ -13,7 +13,7 @@
 
     <tr>
         <td bgcolor="#70bbd9">
-            <h2>[(${caption})] [(${time})]</h2>
+            [(${caption})] [(${time})]
         </td>
     </tr>
 
@@ -27,7 +27,7 @@
 
     <tr>
         <td bgcolor="#ee4c50" style="padding: 30px 30px 30px 30px;">
-            <h6>[(${server})] (version [(${version})])</h6>
+            [(${server})] (version [(${version})])
         </td>
     </tr>
 
