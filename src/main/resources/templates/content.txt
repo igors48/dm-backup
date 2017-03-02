@@ -1,4 +1,1 @@
-<ul>
-<li th:each="account : ${accounts}">[(${account.title})] : [(${account.balance})]</li>
-</ul>
-
+<tr><td th:each="account : ${accounts}">[(${account.title})] : [(${account.balance})]</td></tr>
