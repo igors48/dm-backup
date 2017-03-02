@@ -1,0 +1,5 @@
+<div style="font-family: Geneva, Arial, Helvetica, sans-serif;">
+<h2>[(${caption})] [(${time})]</h2>
+[(${content})]
+<h6>[(${server})] (version [(${version})])</h6>
+</div>
