@@ -1,4 +1,4 @@
 <tr style="color: #153643; font-family: Arial, sans-serif; font-size: 16px;" th:each="account : ${accounts}">
-<td>[(${account.title})]</td>
-<td>[(${account.balance})]</td>
+<td style="padding: 5px; border: 1px solid #cccccc;">[(${account.title})]</td>
+<td style="padding: 5px; border: 1px solid #cccccc;">[(${account.balance})]</td>
 </tr>
