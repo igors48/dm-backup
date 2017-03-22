@@ -6,7 +6,7 @@ import static org.mockito.Mockito.*;
 /**
  * Created by igor on 26.02.2017.
  */
-public class BackupDailyTest extends BackupTestBase {
+public class DailyBackupTest extends BackupTestBase {
 
     @Test
     public void whenContentReceivedThenItSendsToAllRecipients() throws Exception {
@@ -17,8 +17,8 @@ public class BackupDailyTest extends BackupTestBase {
         verify(loader).load();
         verifyNoMoreInteractions(loader);
 
-        verify(sender).sendContent(A_B_COM, B_C_COM, CONTENT);
-        verify(sender).sendContent(A_B_COM, C_D_COM, CONTENT);
+        verify(sender).sendDailyBackup(A_B_COM, B_C_COM, CONTENT);
+        verify(sender).sendDailyBackup(A_B_COM, C_D_COM, CONTENT);
         verifyNoMoreInteractions(sender);
     }
 
@@ -39,16 +39,16 @@ public class BackupDailyTest extends BackupTestBase {
     public void whenContentCannotBeSentThenErrorSentToErrorRecipient() throws Exception {
         when(loader.load()).thenReturn(CONTENT);
 
-        doThrow(this.serviceException).when(sender).sendContent(A_B_COM, B_C_COM, CONTENT);
+        doThrow(this.serviceException).when(sender).sendDailyBackup(A_B_COM, B_C_COM, CONTENT);
 
         backup.dailyBackup();
 
         verify(loader).load();
         verifyNoMoreInteractions(loader);
 
-        verify(sender).sendContent(A_B_COM, B_C_COM, CONTENT);
+        verify(sender).sendDailyBackup(A_B_COM, B_C_COM, CONTENT);
         verify(sender).sendException(A_B_COM, this.serviceException);
-        verify(sender).sendContent(A_B_COM, C_D_COM, CONTENT);
+        verify(sender).sendDailyBackup(A_B_COM, C_D_COM, CONTENT);
         verifyNoMoreInteractions(sender);
     }
 

@@ -40,12 +40,31 @@ public class Sender {
         guard(isValidString(this.version = version));
     }
 
-    public void sendContent(final String sender, final String recipient, final Content content) throws ServiceException {
+    public void sendDailyBackup(final String sender, final String recipient, final Content content) throws ServiceException {
         guard(isValidEmail(sender));
         guard(isValidEmail(recipient));
         guard(notNull(content));
 
-        LOGGER.info(String.format("Sending content to [ %s ]", recipient));
+        LOGGER.info(String.format("Sending daily backup to [ %s ]", recipient));
+
+        this.sendContent("Daily backup", sender, recipient, content);
+    }
+
+    public void sendChangedContent(final String sender, final String recipient, final Content content) throws ServiceException {
+        guard(isValidEmail(sender));
+        guard(isValidEmail(recipient));
+        guard(notNull(content));
+
+        LOGGER.info(String.format("Sending changed content to [ %s ]", recipient));
+
+        this.sendContent("Changed content", sender, recipient, content);
+    }
+
+    private void sendContent(final String caption, final String sender, final String recipient, final Content content) throws ServiceException {
+        guard(notNull(caption));
+        guard(isValidEmail(sender));
+        guard(isValidEmail(recipient));
+        guard(notNull(content));
 
         final Date now = new Date();
 
@@ -55,10 +74,10 @@ public class Sender {
 
         final SimpleDateFormat formatForBody = new SimpleDateFormat(DATE_FORMAT_FOR_BODY);
         final String dateForBody = formatForBody.format(now);
-        final String subject = "File backed up at " + dateForBody;
+        final String subject = caption + " " + dateForBody;
         final String applicationId = SystemProperty.applicationId.get();
 
-        final String body = Template.formatContent(dateForBody, applicationId, content.accounts, version);
+        final String body = Template.formatContent(caption, dateForBody, applicationId, content.accounts, version);
 
         sendMail(sender, recipient, subject, body, attachmentName, content.file);
     }
