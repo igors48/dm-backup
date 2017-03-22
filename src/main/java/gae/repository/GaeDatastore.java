@@ -12,7 +12,7 @@ public enum GaeDatastore {
 
     private final DatastoreService datastoreService;
 
-    private GaeDatastore() {
+    GaeDatastore() {
         this.datastoreService = DatastoreServiceFactory.getDatastoreService();
     }
 
