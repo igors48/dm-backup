@@ -24,11 +24,11 @@ public class GaeDatastoreTools {
         return KeyFactory.createKey(ROOT_KEY, kind.value, uuid);
     }
 
-    public static Entity loadEntity(final String uuid, final Kind kind, final boolean keysOnly) {
+/*    public static Entity loadEntity(final String uuid, final Kind kind, final boolean keysOnly) {
         return loadEntity(uuid, Kind.ROOT, kind, keysOnly);
     }
-
-    public static Entity loadEntity(final String uuid, final Kind rootKind, final Kind kind, final boolean keysOnly) {
+*/
+/*    public static Entity loadEntity(final String uuid, final Kind rootKind, final Kind kind, final boolean keysOnly) {
         guard(notNull(uuid));
         guard(notNull(rootKind));
         guard(notNull(kind));
@@ -37,7 +37,7 @@ public class GaeDatastoreTools {
 
         return preparedQuery.asSingleEntity();
     }
-
+*/
     public static List<Entity> loadEntities(final Kind kind) {
         guard(notNull(kind));
 
@@ -47,11 +47,11 @@ public class GaeDatastoreTools {
         return preparedQuery.asList(withLimit(MAX_VALUE));
     }
 
-    public static void deleteEntity(final String uuid, final Kind kind) {
+/*    public static void deleteEntity(final String uuid, final Kind kind) {
         deleteEntity(uuid, Kind.ROOT, kind);
     }
-
-    public static void deleteEntity(final String uuid, final Kind rootKind, final Kind kind) {
+*/
+/*    public static void deleteEntity(final String uuid, final Kind rootKind, final Kind kind) {
         guard(notNull(uuid));
         guard(notNull(rootKind));
         guard(notNull(kind));
@@ -62,8 +62,8 @@ public class GaeDatastoreTools {
             GaeDatastore.INSTANCE.getDatastoreService().delete(victim.getKey());
         }
     }
-
-    private static PreparedQuery prepareQuery(final String uuid, final Kind rootKind, final Kind kind, final boolean keysOnly) {
+*/
+/*    private static PreparedQuery prepareQuery(final String uuid, final Kind rootKind, final Kind kind, final boolean keysOnly) {
         final Key rootKey = createEntityKey(uuid, rootKind);
         final Query query = new Query(kind.value).setAncestor(rootKey);
 
@@ -73,7 +73,7 @@ public class GaeDatastoreTools {
 
         return GaeDatastore.INSTANCE.getDatastoreService().prepare(query);
     }
-
+*/
     private GaeDatastoreTools() {
         // empty
     }

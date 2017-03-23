@@ -20,15 +20,21 @@ public class Converter<T> {
     private static final String READABLE_DATE_FORMAT = "yyyy-MM-dd HH:mm:ss";
 
     private final long version;
+    private final Kind kind;
     private final Map<Long, Reader<T>> readers;
     private final Writer<T> writer;
     private final EntityFactory<T> entityFactory;
 
-    public Converter(final long version, final Map<Long, Reader<T>> readers, final Writer<T> writer, final EntityFactory<T> entityFactory) {
+    public Converter(final long version, final Kind kind, final Map<Long, Reader<T>> readers, final Writer<T> writer, final EntityFactory<T> entityFactory) {
         this.version = version;
+        guard(notNull(this.kind = kind));
         guard(validReaders(this.readers = readers));
         guard(notNull(this.writer = writer));
         guard(notNull(this.entityFactory = entityFactory));
+    }
+
+    public Kind getKind() {
+        return this.kind;
     }
 
     public Entity convert(final T data) {

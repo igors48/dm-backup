@@ -73,8 +73,8 @@ public class SnapshotConverter extends Converter<Snapshot> {
 
     }
 
-    private SnapshotConverter(final long version, final Map<Long, gae.repository.Reader<Snapshot>> readers, final gae.repository.Writer<Snapshot> writer, final EntityFactory<Snapshot> entityFactory) {
-        super(version, readers, writer, entityFactory);
+    private SnapshotConverter(final long version, final Kind kind, final Map<Long, gae.repository.Reader<Snapshot>> readers, final gae.repository.Writer<Snapshot> writer, final EntityFactory<Snapshot> entityFactory) {
+        super(version, kind, readers, writer, entityFactory);
     }
 
     private static SnapshotConverter createForChanges() {
@@ -87,7 +87,7 @@ public class SnapshotConverter extends Converter<Snapshot> {
             }
         };
 
-        return create(entityFactory);
+        return create(Kind.CHANGE, entityFactory);
     }
 
     private static SnapshotConverter createForDaily() {
@@ -100,16 +100,17 @@ public class SnapshotConverter extends Converter<Snapshot> {
             }
         };
 
-        return create(entityFactory);
+        return create(Kind.DAILY, entityFactory);
     }
 
-    public static SnapshotConverter create(final EntityFactory<Snapshot> entityFactory) {
+    public static SnapshotConverter create(final Kind kind, final EntityFactory<Snapshot> entityFactory) {
+        guard(notNull(kind));
         guard(notNull(entityFactory));
 
         final Map<Long, gae.repository.Reader<Snapshot>> readers = new HashMap<>();
         readers.put(VERSION, new Reader());
 
-        return new SnapshotConverter(VERSION, readers, new Writer(), entityFactory);
+        return new SnapshotConverter(VERSION, kind, readers, new Writer(), entityFactory);
     }
 
 }

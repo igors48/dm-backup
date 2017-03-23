@@ -5,7 +5,7 @@ package service;
  */
 public interface TimestampRepository {
 
-    void store(long timestamp);
+    void store(Long timestamp);
 
     Long load();
 
