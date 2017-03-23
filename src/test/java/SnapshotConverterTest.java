@@ -32,7 +32,7 @@ public class SnapshotConverterTest {
             }
         };
 
-        this.converter = SnapshotConverter.create(entityFactory);
+        this.converter = SnapshotConverter.create(Kind.CHANGE, entityFactory);
     }
 
     @Test

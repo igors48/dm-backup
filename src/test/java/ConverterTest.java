@@ -1,10 +1,7 @@
 import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.KeyFactory;
-import gae.repository.Converter;
-import gae.repository.EntityFactory;
-import gae.repository.Reader;
-import gae.repository.Writer;
+import gae.repository.*;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -59,7 +56,7 @@ public class ConverterTest {
             }
         };
 
-        this.converter = new Converter<>(VERSION, readers, writer, entityFactory);
+        this.converter = new Converter<>(VERSION, Kind.ROOT, readers, writer, entityFactory);
     }
 
     @Test
