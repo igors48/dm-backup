@@ -8,6 +8,7 @@ import com.google.appengine.api.datastore.DatastoreServiceFactory;
  */
 public enum GaeDatastore {
 
+    //TODO consider move to dependencies
     INSTANCE;
 
     private final DatastoreService datastoreService;

@@ -1,5 +1,6 @@
 package gae.repository.snapshot;
 
+import com.google.appengine.api.datastore.DatastoreService;
 import gae.repository.Converter;
 import gae.repository.Repository;
 import service.Snapshot;
@@ -13,8 +14,8 @@ import java.util.List;
  */
 public class GaeSnapshotRepository extends Repository<Snapshot> implements SnapshotRepository {
 
-    public GaeSnapshotRepository(final Converter<Snapshot> converter) {
-        super(converter);
+    public GaeSnapshotRepository(final DatastoreService service, final Converter<Snapshot> converter) {
+        super(service, converter);
     }
 
     @Override

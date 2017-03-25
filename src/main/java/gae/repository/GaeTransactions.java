@@ -8,6 +8,7 @@ import service.Transactions;
  */
 public enum GaeTransactions implements Transactions {
 
+    //TODO consider move to dependencies
     INSTANCE;
 
     @Override

@@ -1,5 +1,6 @@
 package gae;
 
+import gae.repository.GaeDatastore;
 import gae.repository.GaeTransactions;
 import gae.repository.snapshot.GaeSnapshotRepository;
 import gae.repository.snapshot.SnapshotConverter;
@@ -44,9 +45,9 @@ public enum Dependencies {
             loader = new Loader(configuration.getAccessParameters());
             sender = new Sender(configuration.getAppVersion());
             transactions = GaeTransactions.INSTANCE;
-            changesSnapshotRepository = new GaeSnapshotRepository(SnapshotConverter.CHANGES_SNAPSHOT_CONVERTER);
-            dailySnapshotRepository = new GaeSnapshotRepository(SnapshotConverter.DAILY_SNAPSHOT_CONVERTER);
-            timestampRepository = new GaeTimestampRepository(TimestampConverter.TIMESTAMP_CONVERTER);
+            changesSnapshotRepository = new GaeSnapshotRepository(GaeDatastore.INSTANCE.getDatastoreService(), SnapshotConverter.CHANGES_SNAPSHOT_CONVERTER);
+            dailySnapshotRepository = new GaeSnapshotRepository(GaeDatastore.INSTANCE.getDatastoreService(), SnapshotConverter.DAILY_SNAPSHOT_CONVERTER);
+            timestampRepository = new GaeTimestampRepository(GaeDatastore.INSTANCE.getDatastoreService(), TimestampConverter.TIMESTAMP_CONVERTER);
             timeService = GaeTimeService.INSTANCE;
             changesSnapshotStore = new SnapshotStore(SNAPSHOTS_STORE_CAPACITY, Type.CHANGE, changesSnapshotRepository, timeService);
             dailySnapshotStore = new SnapshotStore(SNAPSHOTS_STORE_CAPACITY, Type.DAILY, dailySnapshotRepository, timeService);

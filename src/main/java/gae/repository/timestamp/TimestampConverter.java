@@ -4,8 +4,8 @@ import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.Key;
 import gae.repository.Converter;
 import gae.repository.EntityFactory;
-import gae.repository.GaeDatastoreTools;
 import gae.repository.Kind;
+import gae.repository.Repository;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -55,7 +55,7 @@ public class TimestampConverter extends Converter<Long> {
         final EntityFactory<Long> entityFactory = new EntityFactory<Long>() {
             @Override
             public Entity createFor(final Long data) {
-                final Key key = GaeDatastoreTools.createEntityKey(Kind.TIMESTAMP.value, Kind.TIMESTAMP);
+                final Key key = Repository.createEntityKey(Kind.TIMESTAMP.value, Kind.TIMESTAMP);
 
                 return new Entity(Kind.TIMESTAMP.value, key);
             }
