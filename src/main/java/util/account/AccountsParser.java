@@ -42,6 +42,7 @@ public class AccountsParser {
                 }
             }
         } catch (IOException e) {
+            //TODO WTF?
             e.printStackTrace();
         }
 
