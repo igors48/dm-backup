@@ -1,7 +1,4 @@
-<div style="font-family: Geneva, Arial, Helvetica, sans-serif;">
-<h2>File backed up at [(${time})]</h2>
-<ul>
-<li th:each="account : ${accounts}">[(${account.title})] : [(${account.balance})]</li>
-</ul>
-<h6>[(${server})]</h6>
-</div>
+<tr style="color: #153643; font-family: Arial, sans-serif; font-size: 16px;" th:each="account : ${accounts}">
+<td style="padding: 5px; border: 1px solid #cccccc;">[(${account.title})]</td>
+<td style="padding: 5px; border: 1px solid #cccccc;">[(${account.balance})]</td>
+</tr>

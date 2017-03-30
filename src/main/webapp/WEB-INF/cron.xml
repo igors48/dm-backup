@@ -2,9 +2,15 @@
 <cronentries>
 
     <cron>
-        <url>/cron</url>
-        <description>Execute cron jobs</description>
-        <schedule>${cron}</schedule>
+        <url>/check-changes</url>
+        <description>Checking for changes</description>
+        <schedule>${cron.checking}</schedule>
+    </cron>
+
+    <cron>
+        <url>/daily-backup</url>
+        <description>Daily backup</description>
+        <schedule>${cron.daily}</schedule>
     </cron>
 
 </cronentries>

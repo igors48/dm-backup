@@ -21,8 +21,7 @@ import java.util.Properties;
 import java.util.logging.Logger;
 
 import static util.Assert.guard;
-import static util.Parameter.isValidEmail;
-import static util.Parameter.notNull;
+import static util.Parameter.*;
 
 /**
  * Created by igor on 14.11.2016.
@@ -35,12 +34,37 @@ public class Sender {
     private static final String DATE_FORMAT_FOR_BODY = "yyyy-MM-dd HH:mm:ss";
     private static final String CSV = ".csv";
 
-    public void sendContent(final String sender, final String recipient, final Content content) throws ServiceException {
+    private final String version;
+
+    public Sender(final String version) {
+        guard(isValidString(this.version = version));
+    }
+
+    public void sendDailyBackup(final String sender, final String recipient, final Content content) throws ServiceException {
         guard(isValidEmail(sender));
         guard(isValidEmail(recipient));
         guard(notNull(content));
 
-        LOGGER.info(String.format("Sending content to [ %s ]", recipient));
+        LOGGER.info(String.format("Sending daily backup to [ %s ]", recipient));
+
+        this.sendContent("Daily backup", sender, recipient, content);
+    }
+
+    public void sendChangedContent(final String sender, final String recipient, final Content content) throws ServiceException {
+        guard(isValidEmail(sender));
+        guard(isValidEmail(recipient));
+        guard(notNull(content));
+
+        LOGGER.info(String.format("Sending changed content to [ %s ]", recipient));
+
+        this.sendContent("Changed content", sender, recipient, content);
+    }
+
+    private void sendContent(final String caption, final String sender, final String recipient, final Content content) throws ServiceException {
+        guard(notNull(caption));
+        guard(isValidEmail(sender));
+        guard(isValidEmail(recipient));
+        guard(notNull(content));
 
         final Date now = new Date();
 
@@ -50,10 +74,10 @@ public class Sender {
 
         final SimpleDateFormat formatForBody = new SimpleDateFormat(DATE_FORMAT_FOR_BODY);
         final String dateForBody = formatForBody.format(now);
-        final String subject = "File backed up at " + dateForBody;
+        final String subject = caption + " " + dateForBody;
         final String applicationId = SystemProperty.applicationId.get();
 
-        final String body = Template.formatContent(dateForBody, applicationId, content.accounts);
+        final String body = Template.formatContent(caption, dateForBody, applicationId, content.accounts, version);
 
         sendMail(sender, recipient, subject, body, attachmentName, content.file);
     }

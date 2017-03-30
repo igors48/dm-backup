@@ -3,7 +3,7 @@
     <application>${app.id}</application>
     <version>${buildNumber}</version>
     <threadsafe>true</threadsafe>
-    
+
     <system-properties>
         <property name="java.util.logging.config.file" value="WEB-INF/logging.properties"/>
 
@@ -19,5 +19,7 @@
         <property name="accounts.referer" value="${accounts.referer}"/>
         <property name="admin" value="${admin}"/>
         <property name="recipients" value="${recipients}"/>
+        <property name="app.version" value="${app.version}"/>
+        <property name="wait.time.millis" value="${wait.time.millis}"/>
     </system-properties>
 </appengine-web-app>
