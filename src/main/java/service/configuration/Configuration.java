@@ -57,23 +57,23 @@ public class Configuration {
     private final String appVersion;
 
     public Configuration(final String origin, final String host, final String loginUrl, final String loginReferer, final String loginData, final String downloadUrl, final String downloadReferer, final String downloadData, final String accountsUrl, final String accountsReferer, final String admin, final List<String> recipients, final String waitTimeMillisAsString, final String appVersion) throws ServiceException {
-        guard(isValidUrl(this.origin = origin), new InvalidConfigurationParameter("origin", origin));
-        guard(isValidDomain(this.host = host), new InvalidConfigurationParameter("host", host));
+        guard(isValidUrl(this.origin = origin), new InvalidConfigurationParameter(ORIGIN, origin));
+        guard(isValidDomain(this.host = host), new InvalidConfigurationParameter(HOST, host));
 
-        guard(isValidUrl(this.loginUrl = loginUrl), new InvalidConfigurationParameter("loginUrl", loginUrl));
-        guard(isValidUrl(this.loginReferer = loginReferer), new InvalidConfigurationParameter("loginReferer", loginReferer));
-        guard(isValidFormData(this.loginData = loginData), new InvalidConfigurationParameter("loginData", loginData));
+        guard(isValidUrl(this.loginUrl = loginUrl), new InvalidConfigurationParameter(LOGIN_URL, loginUrl));
+        guard(isValidUrl(this.loginReferer = loginReferer), new InvalidConfigurationParameter(LOGIN_REFERER, loginReferer));
+        guard(isValidFormData(this.loginData = loginData), new InvalidConfigurationParameter(LOGIN_DATA, loginData));
 
-        guard(isValidUrl(this.downloadUrl = downloadUrl), new InvalidConfigurationParameter("downloadUrl", downloadUrl));
-        guard(isValidUrl(this.downloadReferer = downloadReferer), new InvalidConfigurationParameter("downloadReferer", downloadReferer));
-        guard(isValidFormData(this.downloadData = downloadData), new InvalidConfigurationParameter("downloadData", downloadData));
+        guard(isValidUrl(this.downloadUrl = downloadUrl), new InvalidConfigurationParameter(DOWNLOAD_URL, downloadUrl));
+        guard(isValidUrl(this.downloadReferer = downloadReferer), new InvalidConfigurationParameter(DOWNLOAD_REFERER, downloadReferer));
+        guard(isValidFormData(this.downloadData = downloadData), new InvalidConfigurationParameter(DOWNLOAD_DATA, downloadData));
 
-        guard(isValidUrl(this.accountsUrl = accountsUrl), new InvalidConfigurationParameter("accountsUrl", accountsUrl));
-        guard(isValidUrl(this.accountsReferer = accountsReferer), new InvalidConfigurationParameter("accountsReferer", accountsReferer));
+        guard(isValidUrl(this.accountsUrl = accountsUrl), new InvalidConfigurationParameter(ACCOUNTS_URL, accountsUrl));
+        guard(isValidUrl(this.accountsReferer = accountsReferer), new InvalidConfigurationParameter(ACCOUNTS_REFERER, accountsReferer));
 
-        guard(isValidEmail(this.admin = admin), new InvalidConfigurationParameter("admin", admin));
+        guard(isValidEmail(this.admin = admin), new InvalidConfigurationParameter(ADMIN, admin));
 
-        guard(notNull(recipients), new InvalidConfigurationParameter("recipients", "null"));
+        guard(notNull(recipients), new InvalidConfigurationParameter(RECIPIENTS, "null"));
         this.recipients = new ArrayList<>();
 
         for (final String recipient : recipients) {
@@ -81,10 +81,10 @@ public class Configuration {
             this.recipients.add(recipient);
         }
 
-        final long waitTimeMillis = convert(waitTimeMillisAsString, new InvalidConfigurationParameter("wait.time.millis", waitTimeMillisAsString));
-        guard(isPositive(this.waitTimeMillis = waitTimeMillis), new InvalidConfigurationParameter("wait.time.millis", String.valueOf(waitTimeMillis)));
+        final long waitTimeMillis = convert(waitTimeMillisAsString, new InvalidConfigurationParameter(WAIT_TIME_MILLIS, waitTimeMillisAsString));
+        guard(isPositive(this.waitTimeMillis = waitTimeMillis), new InvalidConfigurationParameter(WAIT_TIME_MILLIS, String.valueOf(waitTimeMillis)));
 
-        guard(isValidString(this.appVersion = appVersion), new InvalidConfigurationParameter("app.version", appVersion));
+        guard(isValidString(this.appVersion = appVersion), new InvalidConfigurationParameter(APP_VERSION, appVersion));
     }
 
     public AccessParameters getAccessParameters() {
