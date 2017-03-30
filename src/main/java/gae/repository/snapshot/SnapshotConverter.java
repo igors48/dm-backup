@@ -6,8 +6,8 @@ import com.google.appengine.api.datastore.Text;
 import com.google.gson.Gson;
 import gae.repository.Converter;
 import gae.repository.EntityFactory;
-import gae.repository.GaeDatastoreTools;
 import gae.repository.Kind;
+import gae.repository.Repository;
 import service.Content;
 import service.Snapshot;
 import service.Type;
@@ -81,7 +81,7 @@ public class SnapshotConverter extends Converter<Snapshot> {
         final EntityFactory<Snapshot> entityFactory = new EntityFactory<Snapshot>() {
             @Override
             public Entity createFor(final Snapshot data) {
-                final Key key = GaeDatastoreTools.createEntityKey(data.uuid.toString(), Kind.CHANGE);
+                final Key key = Repository.createEntityKey(data.uuid.toString(), Kind.CHANGE);
 
                 return new Entity(Kind.CHANGE.value, key);
             }
@@ -94,7 +94,7 @@ public class SnapshotConverter extends Converter<Snapshot> {
         final EntityFactory<Snapshot> entityFactory = new EntityFactory<Snapshot>() {
             @Override
             public Entity createFor(final Snapshot data) {
-                final Key key = GaeDatastoreTools.createEntityKey(data.uuid.toString(), Kind.DAILY);
+                final Key key = Repository.createEntityKey(data.uuid.toString(), Kind.DAILY);
 
                 return new Entity(Kind.DAILY.value, key);
             }

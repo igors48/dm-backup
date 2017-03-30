@@ -1,5 +1,6 @@
 package gae.repository.timestamp;
 
+import com.google.appengine.api.datastore.DatastoreService;
 import gae.repository.Converter;
 import gae.repository.Repository;
 import service.TimestampRepository;
@@ -11,8 +12,8 @@ import java.util.List;
  */
 public class GaeTimestampRepository extends Repository<Long> implements TimestampRepository {
 
-    public GaeTimestampRepository(final Converter<Long> converter) {
-        super(converter);
+    public GaeTimestampRepository(final DatastoreService service, final Converter<Long> converter) {
+        super(service, converter);
     }
 
     @Override
