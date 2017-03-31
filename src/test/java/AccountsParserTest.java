@@ -1,6 +1,7 @@
 import org.junit.Test;
 import util.account.Account;
 import util.account.AccountsParser;
+import util.account.ParsedAccount;
 
 import java.io.File;
 import java.util.HashMap;
@@ -8,8 +9,7 @@ import java.util.List;
 import java.util.Map;
 
 import static java.nio.file.Files.readAllBytes;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
+import static org.junit.Assert.*;
 
 /**
  * Created by igor on 28.01.2017.
@@ -43,6 +43,26 @@ public class AccountsParserTest {
         allOk.put(AccountsParser.TITLE, AccountsParser.TITLE);
         allOk.put(AccountsParser.BALANCE, AccountsParser.BALANCE);
         assertEquals(new Account(AccountsParser.TITLE, AccountsParser.BALANCE), AccountsParser.parse(allOk));
+    }
+
+    @Test
+    public void whenAllValuesOkThenParsedAccountIsValid() throws Exception {
+        final Account account = new Account("a", "2.3");
+        final ParsedAccount parsedAccount = ParsedAccount.create(account);
+
+        assertEquals(account.title, parsedAccount.title);
+        assertEquals(2.3f, parsedAccount.balance, 0.01f);
+        assertTrue(parsedAccount.valid);
+    }
+
+    @Test
+    public void whenBalanceNotParseableThenParsedAccountIsNotValid() throws Exception {
+        final Account account = new Account("a", "2,3");
+        final ParsedAccount parsedAccount = ParsedAccount.create(account);
+
+        assertEquals(account.title, parsedAccount.title);
+        assertEquals(0.0f, parsedAccount.balance, 0.01f);
+        assertFalse(parsedAccount.valid);
     }
 
 }

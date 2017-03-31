@@ -15,25 +15,26 @@ import static util.Parameter.*;
  */
 public class Configuration {
 
-    private static final String ORIGIN = "origin";
-    private static final String HOST = "host";
+    public static final String ORIGIN = "origin";
+    public static final String HOST = "host";
 
-    private static final String LOGIN_URL = "login.url";
-    private static final String LOGIN_REFERER = "login.referer";
-    private static final String LOGIN_DATA = "login.data";
+    public static final String LOGIN_URL = "login.url";
+    public static final String LOGIN_REFERER = "login.referer";
+    public static final String LOGIN_DATA = "login.data";
 
-    private static final String DOWNLOAD_URL = "download.url";
-    private static final String DOWNLOAD_REFERER = "download.referer";
-    private static final String DOWNLOAD_DATA = "download.data";
+    public static final String DOWNLOAD_URL = "download.url";
+    public static final String DOWNLOAD_REFERER = "download.referer";
+    public static final String DOWNLOAD_DATA = "download.data";
 
-    private static final String ACCOUNTS_URL = "accounts.url";
-    private static final String ACCOUNTS_REFERER = "accounts.referer";
+    public static final String ACCOUNTS_URL = "accounts.url";
+    public static final String ACCOUNTS_REFERER = "accounts.referer";
 
-    private static final String ADMIN = "admin";
-    private static final String RECIPIENTS = "recipients";
+    public static final String ADMIN = "admin";
+    public static final String RECIPIENTS = "recipients";
+    public static final String RECIPIENT = "recipient";
 
-    private static final String WAIT_TIME_MILLIS = "wait.time.millis";
-    private static final String APP_VERSION = "app.version";
+    public static final String WAIT_TIME_MILLIS = "wait.time.millis";
+    public static final String APP_VERSION = "app.version";
 
     private final String origin;
     private final String host;
@@ -77,7 +78,7 @@ public class Configuration {
         this.recipients = new ArrayList<>();
 
         for (final String recipient : recipients) {
-            guard(isValidEmail(recipient), new InvalidConfigurationParameter("recipient", recipient));
+            guard(isValidEmail(recipient), new InvalidConfigurationParameter(RECIPIENT, recipient));
             this.recipients.add(recipient);
         }
 

@@ -8,7 +8,10 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
+import static java.lang.String.format;
 import static util.Assert.guard;
 import static util.Parameter.isValidString;
 import static util.Parameter.notNull;
@@ -17,6 +20,8 @@ import static util.Parameter.notNull;
  * Created by igor on 28.01.2017.
  */
 public class AccountsParser {
+
+    private static final Logger LOGGER = Logger.getLogger(AccountsParser.class.getName());
 
     public static final String TITLE = "title";
     public static final String BALANCE = "balance";
@@ -42,8 +47,7 @@ public class AccountsParser {
                 }
             }
         } catch (IOException e) {
-            //TODO WTF?
-            e.printStackTrace();
+            LOGGER.log(Level.SEVERE, "Error while parsing accounts", e);
         }
 
         return result;
@@ -56,6 +60,8 @@ public class AccountsParser {
         final String balance = (String) data.get(BALANCE);
 
         final boolean isValid = isValidString(title) && isValidString(balance);
+
+        LOGGER.log(Level.SEVERE, format("Invalid account [ %s ] [ %s ]", title, balance));
 
         return isValid ? new Account(title, balance) : null;
     }
