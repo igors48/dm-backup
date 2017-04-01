@@ -4,10 +4,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -66,4 +63,48 @@ public class AccountsParser {
         return isValid ? new Account(title, balance) : null;
     }
 
+    public static List<ComparisonResult> compare(final List<ParsedAccount> before, final List<ParsedAccount> after) {
+        guard(notNull(before));
+        guard(notNull(after));
+
+        final List<ParsedAccount> afterCopy = new ArrayList<>(after);
+
+        final List<ComparisonResult> result = new ArrayList<>();
+
+        for (final ParsedAccount oldAccount : before) {
+            final String title = oldAccount.title;
+            final ParsedAccount newAccount = find(title, afterCopy);
+
+            if (newAccount == null) {
+                final ComparisonResult removedItem = new ComparisonResult(title, oldAccount.balance, null);
+                result.add(removedItem);
+            } else {
+                final ComparisonResult updatedItem = new ComparisonResult(title, oldAccount.balance, newAccount.balance);
+                result.add(updatedItem);
+
+                afterCopy.remove(newAccount);
+            }
+        }
+
+        for (final ParsedAccount remain : afterCopy) {
+            final ComparisonResult addedItem = new ComparisonResult(remain.title, null, remain.balance);
+            result.add(addedItem);
+        }
+
+        Collections.sort(result);
+
+        return result;
+    }
+
+    private static ParsedAccount find(final String title, final List<ParsedAccount> accounts) {
+
+        for (final ParsedAccount account : accounts) {
+
+            if (title.equals(account.title)) {
+                return account;
+            }
+        }
+
+        return null;
+    }
 }

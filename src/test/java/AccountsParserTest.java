@@ -9,7 +9,8 @@ import java.util.List;
 import java.util.Map;
 
 import static java.nio.file.Files.readAllBytes;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 
 /**
  * Created by igor on 28.01.2017.
@@ -52,7 +53,6 @@ public class AccountsParserTest {
 
         assertEquals(account.title, parsedAccount.title);
         assertEquals(2.3f, parsedAccount.balance, 0.01f);
-        assertTrue(parsedAccount.valid);
     }
 
     @Test
@@ -61,8 +61,7 @@ public class AccountsParserTest {
         final ParsedAccount parsedAccount = ParsedAccount.create(account);
 
         assertEquals(account.title, parsedAccount.title);
-        assertEquals(0.0f, parsedAccount.balance, 0.01f);
-        assertFalse(parsedAccount.valid);
+        assertNull(parsedAccount.balance);
     }
 
 }
