@@ -58,7 +58,9 @@ public class AccountsParser {
 
         final boolean isValid = isValidString(title) && isValidString(balance);
 
-        LOGGER.log(Level.SEVERE, format("Invalid account [ %s ] [ %s ]", title, balance));
+        if (!isValid) {
+            LOGGER.log(Level.SEVERE, format("Invalid account [ %s ] [ %s ]", title, balance));
+        }
 
         return isValid ? new Account(title, balance) : null;
     }
