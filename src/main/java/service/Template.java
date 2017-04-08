@@ -37,7 +37,8 @@ public class Template {
         final TemplateEngine engine = createEngine();
 
         if (previousAccounts.isEmpty()) {
-            context.setVariable("accounts", accounts);
+            final List<ParsedAccount> parsedAccounts = ParsedAccount.createList(accounts);
+            context.setVariable("accounts", parsedAccounts);
 
             final String content = engine.process("content", context);
             context.setVariable("content", content);

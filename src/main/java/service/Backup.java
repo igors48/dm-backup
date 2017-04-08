@@ -47,7 +47,7 @@ public class Backup {
             final Content content = this.loader.load();
 
             final Action action = this.changesDetector.getActionForContent(content.file);
-            LOGGER.info(String.format("Action [ %s ]", action));
+            LOGGER.info(String.format("Action [ %s ]", action.type));
 
             switch (action.type) {
                 case NO_ACTION:
