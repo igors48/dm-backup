@@ -1,5 +1,7 @@
 package util.account;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -20,6 +22,19 @@ public class ParsedAccount {
     public ParsedAccount(final String title, final Float balance) {
         guard(notNull(this.title = title));
         this.balance = balance;
+    }
+
+    public static List<ParsedAccount> createList(final List<Account> accounts) {
+        guard(notNull(accounts));
+
+        List<ParsedAccount> result = new ArrayList<>();
+
+        for (final Account account : accounts) {
+            final ParsedAccount parsedAccount = create(account);
+            result.add(parsedAccount);
+        }
+
+        return result;
     }
 
     public static ParsedAccount create(final Account account) {

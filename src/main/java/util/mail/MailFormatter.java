@@ -31,9 +31,10 @@ public class MailFormatter {
         final String time = "2017-03-02 20:15:08";
         final String server = "dm-backup";
         final List<Account> accounts = createAccounts();
+        final List<Account> previousAccounts = createAccounts();
         final String version = "1.2";
 
-        final String content = Template.formatContent(caption, time, server, accounts, version);
+        final String content = Template.formatContent(caption, time, server, accounts, previousAccounts, version);
 
         try (PrintWriter out = new PrintWriter("C:\\Igor\\temp\\test.html")) {
             out.println(content);

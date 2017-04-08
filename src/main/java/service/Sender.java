@@ -17,6 +17,7 @@ import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
 import javax.mail.util.ByteArrayDataSource;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Properties;
@@ -49,7 +50,7 @@ public class Sender {
 
         LOGGER.info(String.format("Sending daily backup to [ %s ]", recipient));
 
-        this.sendContent("Daily backup", sender, recipient, content);
+        this.sendContent("Daily backup", sender, recipient, content, new ArrayList<Account>());
     }
 
     public void sendChangedContent(final String sender, final String recipient, final Content content, List<Account> previousAccounts) throws ServiceException {
@@ -60,14 +61,15 @@ public class Sender {
 
         LOGGER.info(String.format("Sending changed content to [ %s ]", recipient));
 
-        this.sendContent("Changed content", sender, recipient, content);
+        this.sendContent("Changed content", sender, recipient, content, previousAccounts);
     }
 
-    private void sendContent(final String caption, final String sender, final String recipient, final Content content) throws ServiceException {
+    private void sendContent(final String caption, final String sender, final String recipient, final Content content, final List<Account> previousAccounts) throws ServiceException {
         guard(notNull(caption));
         guard(isValidEmail(sender));
         guard(isValidEmail(recipient));
         guard(notNull(content));
+        guard(notNull(previousAccounts));
 
         final Date now = new Date();
 
@@ -80,7 +82,7 @@ public class Sender {
         final String subject = caption + " " + dateForBody;
         final String applicationId = SystemProperty.applicationId.get();
 
-        final String body = Template.formatContent(caption, dateForBody, applicationId, content.accounts, version);
+        final String body = Template.formatContent(caption, dateForBody, applicationId, content.accounts, previousAccounts, version);
 
         sendMail(sender, recipient, subject, body, attachmentName, content.file);
     }
