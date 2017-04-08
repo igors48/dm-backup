@@ -37,6 +37,11 @@ public class Template {
         final TemplateEngine engine = createEngine();
 
         if (previousAccounts.isEmpty()) {
+            context.setVariable("accounts", accounts);
+
+            final String content = engine.process("content", context);
+            context.setVariable("content", content);
+        } else {
             final List<ParsedAccount> before = ParsedAccount.createList(previousAccounts);
             final List<ParsedAccount> after = ParsedAccount.createList(accounts);
             final List<ComparisonResult> difference = AccountsParser.compare(before, after);
@@ -44,11 +49,6 @@ public class Template {
             context.setVariable("differences", difference);
 
             final String content = engine.process("changed-content", context);
-            context.setVariable("content", content);
-        } else {
-            context.setVariable("accounts", accounts);
-
-            final String content = engine.process("content", context);
             context.setVariable("content", content);
         }
 
