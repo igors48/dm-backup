@@ -3,6 +3,7 @@ package service;
 import com.google.appengine.api.utils.SystemProperty;
 import service.error.SendingException;
 import service.error.ServiceException;
+import util.account.Account;
 
 import javax.activation.DataHandler;
 import javax.activation.DataSource;
@@ -17,6 +18,7 @@ import javax.mail.internet.MimeMultipart;
 import javax.mail.util.ByteArrayDataSource;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 import java.util.Properties;
 import java.util.logging.Logger;
 
@@ -50,10 +52,11 @@ public class Sender {
         this.sendContent("Daily backup", sender, recipient, content);
     }
 
-    public void sendChangedContent(final String sender, final String recipient, final Content content) throws ServiceException {
+    public void sendChangedContent(final String sender, final String recipient, final Content content, List<Account> previousAccounts) throws ServiceException {
         guard(isValidEmail(sender));
         guard(isValidEmail(recipient));
         guard(notNull(content));
+        guard(notNull(previousAccounts));
 
         LOGGER.info(String.format("Sending changed content to [ %s ]", recipient));
 

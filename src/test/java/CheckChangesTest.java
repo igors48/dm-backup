@@ -1,5 +1,8 @@
 import org.junit.Test;
 import service.Action;
+import util.account.Account;
+
+import java.util.ArrayList;
 
 import static org.junit.Assert.fail;
 import static org.mockito.Mockito.*;
@@ -26,8 +29,8 @@ public class CheckChangesTest extends BackupTestBase {
 
         this.backup.checkChanges();
 
-        verify(this.sender).sendChangedContent(A_B_COM, B_C_COM, CONTENT);
-        verify(this.sender).sendChangedContent(A_B_COM, C_D_COM, CONTENT);
+        verify(this.sender).sendChangedContent(A_B_COM, B_C_COM, CONTENT, new ArrayList<Account>());
+        verify(this.sender).sendChangedContent(A_B_COM, C_D_COM, CONTENT, new ArrayList<Account>());
         verifyNoMoreInteractions(this.sender);
     }
 
@@ -43,16 +46,16 @@ public class CheckChangesTest extends BackupTestBase {
     @Test
     public void whenContentCannotBeSentThenErrorSentToErrorRecipient() throws Exception {
         when(this.changesDetector.getActionForContent(CONTENT.file)).thenReturn(Action.send(CONTENT.accounts));
-        doThrow(this.serviceException).when(sender).sendChangedContent(A_B_COM, B_C_COM, CONTENT);
+        doThrow(this.serviceException).when(sender).sendChangedContent(A_B_COM, B_C_COM, CONTENT, new ArrayList<Account>());
 
         this.backup.checkChanges();
 
         verify(this.loader).load();
         verifyNoMoreInteractions(this.loader);
 
-        verify(this.sender).sendChangedContent(A_B_COM, B_C_COM, CONTENT);
+        verify(this.sender).sendChangedContent(A_B_COM, B_C_COM, CONTENT, new ArrayList<Account>());
         verify(this.sender).sendException(A_B_COM, this.serviceException);
-        verify(this.sender).sendChangedContent(A_B_COM, C_D_COM, CONTENT);
+        verify(this.sender).sendChangedContent(A_B_COM, C_D_COM, CONTENT, new ArrayList<Account>());
         verifyNoMoreInteractions(this.sender);
     }
 
