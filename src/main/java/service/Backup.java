@@ -47,7 +47,7 @@ public class Backup {
             final Action action = this.changesDetector.getActionForContent(content.file);
             LOGGER.info(String.format("Action [ %s ]", action));
 
-            switch (action) {
+            switch (action.type) {
                 case NO_ACTION:
                     break;
                 case SAVE:

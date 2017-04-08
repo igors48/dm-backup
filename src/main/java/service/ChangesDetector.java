@@ -63,7 +63,7 @@ public class ChangesDetector {
         final Long stored = this.timestampRepository.load();
 
         if (stored == null) {
-            return Action.NO_ACTION;
+            return new Action(Action.Type.NO_ACTION);
         }
 
         final long current = this.timeService.currentTimestamp();
@@ -72,10 +72,10 @@ public class ChangesDetector {
         if (delta > this.waitInMillis) {
             this.timestampRepository.clear();
 
-            return Action.SEND;
+            return new Action(Action.Type.SEND);
         }
 
-        return Action.NO_ACTION;
+        return new Action(Action.Type.NO_ACTION);
     }
 
     private Action updateStoredTimestamp() {
@@ -84,7 +84,7 @@ public class ChangesDetector {
         final long timestamp = this.timeService.currentTimestamp();
         this.timestampRepository.store(timestamp);
 
-        return stored == null ? Action.SAVE : Action.UPDATE_LAST;
+        return stored == null ? new Action(Action.Type.SAVE) : new Action(Action.Type.UPDATE_LAST);
     }
 
     public static boolean isContentChanged(final String oldContent, final String newContent) {

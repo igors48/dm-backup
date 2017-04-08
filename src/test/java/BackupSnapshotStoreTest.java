@@ -12,7 +12,7 @@ public class BackupSnapshotStoreTest extends BackupTestBase {
 
     @Test
     public void whenActionIsSaveThenContentStored() {
-        when(this.changesDetector.getActionForContent(CONTENT.file)).thenReturn(Action.SAVE);
+        when(this.changesDetector.getActionForContent(CONTENT.file)).thenReturn(new Action(Action.Type.SAVE));
 
         this.backup.checkChanges();
 
@@ -23,7 +23,7 @@ public class BackupSnapshotStoreTest extends BackupTestBase {
 
     @Test
     public void whenActionIsUpdateThenContentUpdated() {
-        when(this.changesDetector.getActionForContent(CONTENT.file)).thenReturn(Action.UPDATE_LAST);
+        when(this.changesDetector.getActionForContent(CONTENT.file)).thenReturn(new Action(Action.Type.UPDATE_LAST));
 
         this.backup.checkChanges();
 
@@ -34,7 +34,7 @@ public class BackupSnapshotStoreTest extends BackupTestBase {
 
     @Test
     public void whenActionIsSendThenNoContentActions() {
-        when(this.changesDetector.getActionForContent(CONTENT.file)).thenReturn(Action.SEND);
+        when(this.changesDetector.getActionForContent(CONTENT.file)).thenReturn(new Action(Action.Type.SEND));
 
         this.backup.checkChanges();
 
@@ -43,7 +43,7 @@ public class BackupSnapshotStoreTest extends BackupTestBase {
 
     @Test
     public void whenNoActionThenNoContentActions() {
-        when(this.changesDetector.getActionForContent(CONTENT.file)).thenReturn(Action.NO_ACTION);
+        when(this.changesDetector.getActionForContent(CONTENT.file)).thenReturn(new Action(Action.Type.NO_ACTION));
 
         this.backup.checkChanges();
 
@@ -54,7 +54,7 @@ public class BackupSnapshotStoreTest extends BackupTestBase {
     public void whenActionIsSaveAndContentStoreFailedThenTransactionRolledBack() {
 
         try {
-            when(this.changesDetector.getActionForContent(CONTENT.file)).thenReturn(Action.SAVE);
+            when(this.changesDetector.getActionForContent(CONTENT.file)).thenReturn(new Action(Action.Type.SAVE));
             doThrow(new RuntimeException()).when(this.changesSnapshotStore).store(CONTENT);
 
             this.backup.checkChanges();
@@ -69,7 +69,7 @@ public class BackupSnapshotStoreTest extends BackupTestBase {
     public void whenActionIsUpdateAndContentStoreFailedThenTransactionRolledBack() {
 
         try {
-            when(this.changesDetector.getActionForContent(CONTENT.file)).thenReturn(Action.UPDATE_LAST);
+            when(this.changesDetector.getActionForContent(CONTENT.file)).thenReturn(new Action(Action.Type.UPDATE_LAST));
             doThrow(new RuntimeException()).when(this.changesSnapshotStore).updateLast(CONTENT);
 
             this.backup.checkChanges();

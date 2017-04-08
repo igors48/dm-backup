@@ -15,7 +15,7 @@ public class ChangesDetectorContentNotChangedTest extends ChangesDetectorTestBas
 
         final Action action = this.changesDetector.getActionForContent("a");
 
-        assertEquals(Action.NO_ACTION, action);
+        assertEquals(new Action(Action.Type.NO_ACTION), action);
     }
 
     @Test
@@ -24,7 +24,7 @@ public class ChangesDetectorContentNotChangedTest extends ChangesDetectorTestBas
 
         final Action action = this.changesDetector.getActionForContent("a");
 
-        assertEquals(Action.NO_ACTION, action);
+        assertEquals(new Action(Action.Type.NO_ACTION), action);
     }
 
 }
