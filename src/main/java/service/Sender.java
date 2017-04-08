@@ -84,7 +84,7 @@ public class Sender {
 
         final String body = Template.formatContent(caption, dateForBody, applicationId, content.accounts, previousAccounts, version);
 
-        sendMail(sender, recipient, subject, body, attachmentName, content.file);
+        sendMail(sender, applicationId, recipient, subject, body, attachmentName, content.file);
     }
 
     public void sendException(final String recipient, final ServiceException exception) throws ServiceException {
@@ -93,17 +93,19 @@ public class Sender {
 
         LOGGER.info(String.format("Sending error message to [ %s ]", recipient));
 
-        sendMail(recipient, recipient, "Backup error", exception.toString(), null, null);
+        final String applicationId = SystemProperty.applicationId.get();
+
+        sendMail(recipient, applicationId, recipient, "Backup error", exception.toString(), null, null);
     }
 
-    private static void sendMail(final String sender, final String recipient, final String subject, final String body, final String attachmentName, final String attachmentContent) throws ServiceException {
+    private static void sendMail(final String sender, final String senderName, final String recipient, final String subject, final String body, final String attachmentName, final String attachmentContent) throws ServiceException {
 
         try {
             final Properties props = new Properties();
             final Session session = Session.getDefaultInstance(props, null);
 
             final Message message = new MimeMessage(session);
-            message.setFrom(new InternetAddress(sender));
+            message.setFrom(new InternetAddress(sender, senderName));
             message.addRecipient(Message.RecipientType.TO, new InternetAddress(recipient));
 
             message.setSubject(subject);
