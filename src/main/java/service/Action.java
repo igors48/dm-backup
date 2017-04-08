@@ -1,5 +1,10 @@
 package service;
 
+import util.account.Account;
+
+import java.util.ArrayList;
+import java.util.List;
+
 import static util.Assert.guard;
 import static util.Parameter.notNull;
 
@@ -8,10 +13,22 @@ import static util.Parameter.notNull;
  */
 public class Action {
 
-    public final Type type;
+    public static final Action NO_ACTION = new Action(Type.NO_ACTION, new ArrayList<Account>());
+    public static final Action SAVE = new Action(Type.SAVE, new ArrayList<Account>());
+    public static final Action UPDATE_LAST = new Action(Type.UPDATE_LAST, new ArrayList<Account>());
 
-    public Action(final Type type) {
+    public final Type type;
+    public final List<Account> accounts;
+
+    private Action(final Type type, final List<Account> accounts) {
         guard(notNull(this.type = type));
+        guard(notNull(this.accounts = accounts));
+    }
+
+    public static Action send(final List<Account> accounts) {
+        guard(notNull(accounts));
+
+        return new Action(Type.SEND, accounts);
     }
 
     @Override
@@ -21,12 +38,15 @@ public class Action {
 
         Action action = (Action) o;
 
-        return type == action.type;
+        if (type != action.type) return false;
+        return accounts.equals(action.accounts);
     }
 
     @Override
     public int hashCode() {
-        return type.hashCode();
+        int result = type.hashCode();
+        result = 31 * result + accounts.hashCode();
+        return result;
     }
 
     public enum Type {

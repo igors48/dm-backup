@@ -22,7 +22,7 @@ public class CheckChangesTest extends BackupTestBase {
 
     @Test
     public void whenContentChangesDetectedThenContentSendsToAllRecipients() throws Exception {
-        when(this.changesDetector.getActionForContent(CONTENT.file)).thenReturn(new Action(Action.Type.SEND));
+        when(this.changesDetector.getActionForContent(CONTENT.file)).thenReturn(Action.send(CONTENT.accounts));
 
         this.backup.checkChanges();
 
@@ -33,7 +33,7 @@ public class CheckChangesTest extends BackupTestBase {
 
     @Test
     public void whenContentChangesNotDetectedThenContentNotSent() throws Exception {
-        when(this.changesDetector.getActionForContent(CONTENT.file)).thenReturn(new Action(Action.Type.NO_ACTION));
+        when(this.changesDetector.getActionForContent(CONTENT.file)).thenReturn(Action.NO_ACTION);
 
         this.backup.checkChanges();
 
@@ -42,7 +42,7 @@ public class CheckChangesTest extends BackupTestBase {
 
     @Test
     public void whenContentCannotBeSentThenErrorSentToErrorRecipient() throws Exception {
-        when(this.changesDetector.getActionForContent(CONTENT.file)).thenReturn(new Action(Action.Type.SEND));
+        when(this.changesDetector.getActionForContent(CONTENT.file)).thenReturn(Action.send(CONTENT.accounts));
         doThrow(this.serviceException).when(sender).sendChangedContent(A_B_COM, B_C_COM, CONTENT);
 
         this.backup.checkChanges();

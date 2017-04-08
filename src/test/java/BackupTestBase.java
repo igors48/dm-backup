@@ -45,7 +45,7 @@ public class BackupTestBase {
 
         when(this.transactions.beginOne()).thenReturn(this.transactionStub);
         when(loader.load()).thenReturn(CONTENT);
-        when(this.changesDetector.getActionForContent(CONTENT.file)).thenReturn(new Action(Action.Type.NO_ACTION));
+        when(this.changesDetector.getActionForContent(CONTENT.file)).thenReturn(Action.NO_ACTION);
 
         this.backup = new Backup(this.loader, this.sender, this.changesDetector, recipients, this.changesSnapshotStore, this.dailySnapshotStore, transactions);
     }

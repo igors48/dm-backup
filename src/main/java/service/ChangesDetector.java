@@ -1,6 +1,7 @@
 package service;
 
 import com.google.appengine.api.datastore.Transaction;
+import util.account.Account;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -38,6 +39,7 @@ public class ChangesDetector {
             transaction = this.transactions.beginOne();
 
             final Snapshot latestSnapshot = this.changesSnapshotRepository.loadLatestSnapshot();
+            final List<Account> accounts = latestSnapshot == null ? new ArrayList<Account>() : latestSnapshot.content.accounts;
 
             final boolean contentChanged;
 
@@ -49,7 +51,7 @@ public class ChangesDetector {
                 contentChanged = isContentChanged(latestContent, content);
             }
 
-            final Action action = contentChanged ? updateStoredTimestamp() : checkWaitPeriodFinished();
+            final Action action = contentChanged ? createActionForChangedContent() : createActionForNotChangedContent(accounts);
 
             transaction.commit();
 
@@ -59,11 +61,11 @@ public class ChangesDetector {
         }
     }
 
-    private Action checkWaitPeriodFinished() {
+    private Action createActionForNotChangedContent(final List<Account> accounts) {
         final Long stored = this.timestampRepository.load();
 
         if (stored == null) {
-            return new Action(Action.Type.NO_ACTION);
+            return Action.NO_ACTION;
         }
 
         final long current = this.timeService.currentTimestamp();
@@ -72,19 +74,19 @@ public class ChangesDetector {
         if (delta > this.waitInMillis) {
             this.timestampRepository.clear();
 
-            return new Action(Action.Type.SEND);
+            return Action.send(accounts);
         }
 
-        return new Action(Action.Type.NO_ACTION);
+        return Action.NO_ACTION;
     }
 
-    private Action updateStoredTimestamp() {
+    private Action createActionForChangedContent() {
         final Long stored = this.timestampRepository.load();
 
         final long timestamp = this.timeService.currentTimestamp();
         this.timestampRepository.store(timestamp);
 
-        return stored == null ? new Action(Action.Type.SAVE) : new Action(Action.Type.UPDATE_LAST);
+        return stored == null ? Action.SAVE : Action.UPDATE_LAST;
     }
 
     public static boolean isContentChanged(final String oldContent, final String newContent) {

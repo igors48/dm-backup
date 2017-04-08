@@ -16,7 +16,7 @@ public class ChangesDetectorContentChangedTest extends ChangesDetectorTestBase {
 
         final Action action = this.changesDetector.getActionForContent("b");
 
-        assertEquals(new Action(Action.Type.UPDATE_LAST), action);
+        assertEquals(Action.UPDATE_LAST, action);
     }
 
     @Test
@@ -32,7 +32,7 @@ public class ChangesDetectorContentChangedTest extends ChangesDetectorTestBase {
 
         final Action action = this.changesDetector.getActionForContent("b\r\na");
 
-        assertEquals(new Action(Action.Type.SAVE), action);
+        assertEquals(Action.SAVE, action);
     }
 
     @Test
@@ -41,7 +41,7 @@ public class ChangesDetectorContentChangedTest extends ChangesDetectorTestBase {
 
         final Action action = this.changesDetector.getActionForContent("b\r\na");
 
-        assertEquals(new Action(Action.Type.UPDATE_LAST), action);
+        assertEquals(Action.UPDATE_LAST, action);
     }
 
 }
