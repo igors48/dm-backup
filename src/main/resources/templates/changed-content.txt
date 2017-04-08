@@ -8,8 +8,8 @@
 
 <tr style="color: #153643; font-family: Arial, sans-serif; font-size: 16px;" th:each="difference : ${differences}">
     <td style="padding: 5px; border: 1px solid #cccccc;">[(${difference.title})]</td>
-    <td style="padding: 5px; border: 1px solid #cccccc;">[(${difference.before})]</td>
-    <td style="padding: 5px; border: 1px solid #cccccc;">[(${difference.after})]</td>
+    <td style="padding: 5px; border: 1px solid #cccccc;">[(${#numbers.formatDecimal(difference.before, 0, 'DEFAULT', 2, 'DEFAULT')})]</td>
+    <td style="padding: 5px; border: 1px solid #cccccc;">[(${#numbers.formatDecimal(difference.after, 0, 'DEFAULT', 2, 'DEFAULT')})]</td>
 </tr>
 
 </table>
