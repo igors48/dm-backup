@@ -1,6 +1,7 @@
 import org.junit.Test;
 import util.account.Account;
 import util.account.AccountsParser;
+import util.account.ParsedAccount;
 
 import java.io.File;
 import java.util.HashMap;
@@ -43,6 +44,24 @@ public class AccountsParserTest {
         allOk.put(AccountsParser.TITLE, AccountsParser.TITLE);
         allOk.put(AccountsParser.BALANCE, AccountsParser.BALANCE);
         assertEquals(new Account(AccountsParser.TITLE, AccountsParser.BALANCE), AccountsParser.parse(allOk));
+    }
+
+    @Test
+    public void whenAllValuesOkThenParsedAccountIsValid() throws Exception {
+        final Account account = new Account("a", "2.3");
+        final ParsedAccount parsedAccount = ParsedAccount.create(account);
+
+        assertEquals(account.title, parsedAccount.title);
+        assertEquals(2.3f, parsedAccount.balance, 0.01f);
+    }
+
+    @Test
+    public void whenBalanceNotParseableThenParsedAccountIsNotValid() throws Exception {
+        final Account account = new Account("a", "2,3");
+        final ParsedAccount parsedAccount = ParsedAccount.create(account);
+
+        assertEquals(account.title, parsedAccount.title);
+        assertNull(parsedAccount.balance);
     }
 
 }

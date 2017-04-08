@@ -16,8 +16,8 @@ public class MailFormatter {
     private static ArrayList<Account> createAccounts() {
         final ArrayList<Account> accounts = new ArrayList<>();
 
-        accounts.add(createAccount("t1", "b1"));
-        accounts.add(createAccount("t2", "b2"));
+        accounts.add(createAccount("t1", "1.00"));
+        accounts.add(createAccount("t2", "2.00"));
 
         return accounts;
     }
@@ -26,20 +26,45 @@ public class MailFormatter {
         return new Account(title, balance);
     }
 
-    public static void main(String[] arguments) {
+    private static void generateContentMail() {
         final String caption = "Caption for mail";
         final String time = "2017-03-02 20:15:08";
         final String server = "dm-backup";
         final List<Account> accounts = createAccounts();
+        final List<Account> previousAccounts = new ArrayList<>();
         final String version = "1.2";
 
-        final String content = Template.formatContent(caption, time, server, accounts, version);
+        final String content = Template.formatContent(caption, time, server, accounts, previousAccounts, version);
 
-        try (PrintWriter out = new PrintWriter("C:\\Igor\\temp\\test.html")) {
+        try (PrintWriter out = new PrintWriter("C:\\Igor\\temp\\content.html")) {
             out.println(content);
             out.close();
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
     }
+
+    private static void generateChangedContentMail() {
+        final String caption = "Caption for mail";
+        final String time = "2017-03-02 20:15:08";
+        final String server = "dm-backup";
+        final List<Account> accounts = createAccounts();
+        final List<Account> previousAccounts = createAccounts();
+        final String version = "1.2";
+
+        final String content = Template.formatContent(caption, time, server, accounts, previousAccounts, version);
+
+        try (PrintWriter out = new PrintWriter("C:\\Igor\\temp\\changed-content.html")) {
+            out.println(content);
+            out.close();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void main(String[] arguments) {
+        generateContentMail();
+        generateChangedContentMail();
+    }
+
 }

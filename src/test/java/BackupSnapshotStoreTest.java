@@ -34,7 +34,7 @@ public class BackupSnapshotStoreTest extends BackupTestBase {
 
     @Test
     public void whenActionIsSendThenNoContentActions() {
-        when(this.changesDetector.getActionForContent(CONTENT.file)).thenReturn(Action.SEND);
+        when(this.changesDetector.getActionForContent(CONTENT.file)).thenReturn(Action.send(CONTENT.accounts));
 
         this.backup.checkChanges();
 
