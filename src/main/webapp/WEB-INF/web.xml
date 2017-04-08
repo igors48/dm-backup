@@ -5,6 +5,10 @@
          xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" 
          version="2.5">
 
+  <listener>
+    <listener-class>war.ContextListener</listener-class>
+  </listener>
+
   <servlet>
     <servlet-name>CheckChangesServlet</servlet-name>
     <servlet-class>war.CheckChangesServlet</servlet-class>
