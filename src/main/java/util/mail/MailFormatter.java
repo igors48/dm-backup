@@ -62,9 +62,26 @@ public class MailFormatter {
         }
     }
 
+    private static void generateErrorMail() {
+        final String time = "2017-03-02 20:15:08";
+        final String server = "dm-backup";
+        final String description = "unexpected error";
+        final String version = "1.2";
+
+        final String content = Template.formatError(time, server, description, version);
+
+        try (PrintWriter out = new PrintWriter("C:\\Igor\\temp\\error.html")) {
+            out.println(content);
+            out.close();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+    }
+
     public static void main(String[] arguments) {
         generateContentMail();
         generateChangedContentMail();
+        generateErrorMail();
     }
 
 }

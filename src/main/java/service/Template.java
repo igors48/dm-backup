@@ -13,12 +13,35 @@ import java.util.List;
 import java.util.Locale;
 
 import static util.Assert.guard;
+import static util.Parameter.isValidString;
 import static util.Parameter.notNull;
 
 /**
  * Created by igor on 01.02.2017.
  */
 public class Template {
+
+    public static String formatError(final String time, final String server, final String description, final String version) {
+        guard(isValidString(time));
+        guard(isValidString(server));
+        guard(notNull(description));
+        guard(isValidString(version));
+
+        final Context context = new Context(Locale.ROOT);
+
+        context.setVariable("caption", "Unexpected error");
+        context.setVariable("time", time);
+        context.setVariable("server", server);
+        context.setVariable("description", description);
+        context.setVariable("version", version);
+
+        final TemplateEngine engine = createEngine();
+
+        final String error = engine.process("error", context);
+        context.setVariable("content", error);
+
+        return engine.process("container", context);
+    }
 
     public static String formatContent(final String caption, final String time, final String server, final List<Account> accounts, final List<Account> previousAccounts, final String version) {
         guard(notNull(caption));
