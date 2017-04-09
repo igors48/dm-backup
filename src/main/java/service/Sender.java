@@ -91,11 +91,19 @@ public class Sender {
         guard(isValidEmail(recipient));
         guard(notNull(exception));
 
+        final Date now = new Date();
+
         LOGGER.info(String.format("Sending error message to [ %s ]", recipient));
 
+        final SimpleDateFormat formatForBody = new SimpleDateFormat(DATE_FORMAT_FOR_BODY);
+        final String dateForBody = formatForBody.format(now);
+        final String caption = "Backup error";
+        final String subject = caption + " " + dateForBody;
         final String applicationId = SystemProperty.applicationId.get();
 
-        sendMail(recipient, applicationId, recipient, "Backup error", exception.toString(), null, null);
+        final String body = Template.formatError(dateForBody, applicationId, exception.toString(), this.version);
+
+        sendMail(recipient, applicationId, recipient, subject, body, null, null);
     }
 
     private static void sendMail(final String sender, final String senderName, final String recipient, final String subject, final String body, final String attachmentName, final String attachmentContent) throws ServiceException {
