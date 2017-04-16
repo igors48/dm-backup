@@ -19,7 +19,7 @@ public class ChangesDetectorContentNotChangedTest extends ChangesDetectorTestBas
     }
 
     @Test
-    public void whenWaitPaeriodIsNotExpiredThenNoAction() throws Exception {
+    public void whenWaitPeriodIsNotExpiredThenNoAction() throws Exception {
         when(this.timestampRepository.load()).thenReturn(null);
 
         final Action action = this.changesDetector.getActionForContent("a");

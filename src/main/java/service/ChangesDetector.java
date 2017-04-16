@@ -39,7 +39,6 @@ public class ChangesDetector {
             transaction = this.transactions.beginOne();
 
             final Snapshot latestSnapshot = this.changesSnapshotRepository.loadLatestSnapshot();
-            final List<Account> accounts = latestSnapshot == null ? new ArrayList<Account>() : latestSnapshot.content.accounts;
 
             final boolean contentChanged;
 
@@ -51,7 +50,13 @@ public class ChangesDetector {
                 contentChanged = isContentChanged(latestContent, content);
             }
 
-            final Action action = contentChanged ? createActionForChangedContent() : createActionForNotChangedContent(accounts);
+            final Action action;
+
+            if (contentChanged) {
+                action = createActionForChangedContent();
+            } else {
+                action = createActionForNotChangedContent();
+            }
 
             transaction.commit();
 
@@ -61,7 +66,7 @@ public class ChangesDetector {
         }
     }
 
-    private Action createActionForNotChangedContent(final List<Account> accounts) {
+    private Action createActionForNotChangedContent() {
         final Long stored = this.timestampRepository.load();
 
         if (stored == null) {
@@ -73,6 +78,9 @@ public class ChangesDetector {
 
         if (delta > this.waitInMillis) {
             this.timestampRepository.clear();
+
+            final Snapshot preLatestSnapshot = this.changesSnapshotRepository.loadPreLatestSnapshot();
+            final List<Account> accounts = preLatestSnapshot == null ? new ArrayList<Account>() : preLatestSnapshot.content.accounts;
 
             return Action.send(accounts);
         }

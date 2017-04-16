@@ -7,6 +7,8 @@ import java.util.List;
  */
 public interface SnapshotRepository {
 
+    Snapshot loadPreLatestSnapshot();
+
     Snapshot loadLatestSnapshot();
 
     List<Snapshot> loadAll();
@@ -14,5 +16,4 @@ public interface SnapshotRepository {
     void storeAll(List<Snapshot> snapshots);
 
     void clear();
-
 }
