@@ -11,7 +11,9 @@
     <td style="padding: 5px; border: 1px solid #cccccc;">[(${difference.title})]</td>
     <td style="padding: 5px; border: 1px solid #cccccc;">[(${#numbers.formatDecimal(difference.before, 0, 'DEFAULT', 2, 'DEFAULT')})]</td>
     <td style="padding: 5px; border: 1px solid #cccccc;">[(${#numbers.formatDecimal(difference.after, 0, 'DEFAULT', 2, 'DEFAULT')})]</td>
-    <td style="padding: 5px; border: 1px solid #cccccc;">[(${#numbers.formatDecimal(difference.delta, 0, 'DEFAULT', 2, 'DEFAULT')})]</td>
+    <td style="padding: 5px; border: 1px solid #cccccc;">
+    [(${#numbers.formatDecimal(difference.delta, 0, 'DEFAULT', 2, 'DEFAULT')})]
+    </td>
 </tr>
 
 </table>
