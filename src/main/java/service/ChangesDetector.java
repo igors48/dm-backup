@@ -1,6 +1,7 @@
 package service;
 
 import com.google.appengine.api.datastore.Transaction;
+import util.account.Account;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -49,7 +50,13 @@ public class ChangesDetector {
                 contentChanged = isContentChanged(latestContent, content);
             }
 
-            final Action action = contentChanged ? updateStoredTimestamp() : checkWaitPeriodFinished();
+            final Action action;
+
+            if (contentChanged) {
+                action = createActionForChangedContent();
+            } else {
+                action = createActionForNotChangedContent();
+            }
 
             transaction.commit();
 
@@ -59,7 +66,7 @@ public class ChangesDetector {
         }
     }
 
-    private Action checkWaitPeriodFinished() {
+    private Action createActionForNotChangedContent() {
         final Long stored = this.timestampRepository.load();
 
         if (stored == null) {
@@ -72,13 +79,16 @@ public class ChangesDetector {
         if (delta > this.waitInMillis) {
             this.timestampRepository.clear();
 
-            return Action.SEND;
+            final Snapshot preLatestSnapshot = this.changesSnapshotRepository.loadPreLatestSnapshot();
+            final List<Account> accounts = preLatestSnapshot == null ? new ArrayList<Account>() : preLatestSnapshot.content.accounts;
+
+            return Action.send(accounts);
         }
 
         return Action.NO_ACTION;
     }
 
-    private Action updateStoredTimestamp() {
+    private Action createActionForChangedContent() {
         final Long stored = this.timestampRepository.load();
 
         final long timestamp = this.timeService.currentTimestamp();

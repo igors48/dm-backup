@@ -3,7 +3,9 @@ package service;
 import com.google.appengine.api.datastore.Transaction;
 import service.configuration.Recipients;
 import service.error.ServiceException;
+import util.account.Account;
 
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -45,9 +47,9 @@ public class Backup {
             final Content content = this.loader.load();
 
             final Action action = this.changesDetector.getActionForContent(content.file);
-            LOGGER.info(String.format("Action [ %s ]", action));
+            LOGGER.info(String.format("Action [ %s ]", action.type));
 
-            switch (action) {
+            switch (action.type) {
                 case NO_ACTION:
                     break;
                 case SAVE:
@@ -57,7 +59,7 @@ public class Backup {
                     updateLast(content);
                     break;
                 case SEND:
-                    sendChangedContent(content);
+                    sendChangedContent(content, action.accounts);
                     break;
             }
 
@@ -114,10 +116,10 @@ public class Backup {
         }
     }
 
-    private void sendChangedContent(final Content content) {
+    private void sendChangedContent(final Content content, List<Account> previousAccounts) {
 
         for (final String recipient : this.recipients.contentRecipients) {
-            sendChangedContent(recipient, content);
+            sendChangedContent(recipient, content, previousAccounts);
         }
     }
 
@@ -139,10 +141,10 @@ public class Backup {
         }
     }
 
-    private void sendChangedContent(final String recipient, final Content content) {
+    private void sendChangedContent(final String recipient, final Content content, List<Account> previousAccounts) {
 
         try {
-            this.sender.sendChangedContent(recipients.adminRecipient, recipient, content);
+            this.sender.sendChangedContent(recipients.adminRecipient, recipient, content, previousAccounts);
         } catch (ServiceException exception) {
             LOGGER.log(Level.SEVERE, format("Sending changed content to [ %s ] failed", recipient), exception);
 

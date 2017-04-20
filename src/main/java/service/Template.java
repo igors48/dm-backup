@@ -5,11 +5,15 @@ import org.thymeleaf.context.Context;
 import org.thymeleaf.templatemode.TemplateMode;
 import org.thymeleaf.templateresolver.ClassLoaderTemplateResolver;
 import util.account.Account;
+import util.account.AccountsParser;
+import util.account.ComparisonResult;
+import util.account.ParsedAccount;
 
 import java.util.List;
 import java.util.Locale;
 
 import static util.Assert.guard;
+import static util.Parameter.isValidString;
 import static util.Parameter.notNull;
 
 /**
@@ -17,24 +21,60 @@ import static util.Parameter.notNull;
  */
 public class Template {
 
-    public static String formatContent(final String caption, final String time, final String server, final List<Account> accounts, final String version) {
+    public static String formatError(final String time, final String server, final String description, final String version) {
+        guard(isValidString(time));
+        guard(isValidString(server));
+        guard(notNull(description));
+        guard(isValidString(version));
+
+        final Context context = new Context(Locale.ROOT);
+
+        context.setVariable("caption", "Unexpected error");
+        context.setVariable("time", time);
+        context.setVariable("server", server);
+        context.setVariable("description", description);
+        context.setVariable("version", version);
+
+        final TemplateEngine engine = createEngine();
+
+        final String error = engine.process("error", context);
+        context.setVariable("content", error);
+
+        return engine.process("container", context);
+    }
+
+    public static String formatContent(final String caption, final String time, final String server, final List<Account> accounts, final List<Account> previousAccounts, final String version) {
         guard(notNull(caption));
         guard(notNull(time));
         guard(notNull(server));
         guard(notNull(accounts));
+        guard(notNull(previousAccounts));
 
         final Context context = new Context(Locale.ROOT);
 
         context.setVariable("caption", caption);
         context.setVariable("time", time);
         context.setVariable("server", server);
-        context.setVariable("accounts", accounts);
         context.setVariable("version", version);
 
         final TemplateEngine engine = createEngine();
 
-        final String content = engine.process("content", context);
-        context.setVariable("content", content);
+        if (previousAccounts.isEmpty()) {
+            final List<ParsedAccount> parsedAccounts = ParsedAccount.createList(accounts);
+            context.setVariable("accounts", parsedAccounts);
+
+            final String content = engine.process("content", context);
+            context.setVariable("content", content);
+        } else {
+            final List<ParsedAccount> before = ParsedAccount.createList(previousAccounts);
+            final List<ParsedAccount> after = ParsedAccount.createList(accounts);
+            final List<ComparisonResult> difference = AccountsParser.compare(before, after);
+
+            context.setVariable("differences", difference);
+
+            final String content = engine.process("changed-content", context);
+            context.setVariable("content", content);
+        }
 
         return engine.process("container", context);
     }

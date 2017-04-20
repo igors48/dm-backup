@@ -3,6 +3,7 @@ package service;
 import com.google.appengine.api.utils.SystemProperty;
 import service.error.SendingException;
 import service.error.ServiceException;
+import util.account.Account;
 
 import javax.activation.DataHandler;
 import javax.activation.DataSource;
@@ -16,7 +17,9 @@ import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
 import javax.mail.util.ByteArrayDataSource;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Properties;
 import java.util.logging.Logger;
 
@@ -47,24 +50,26 @@ public class Sender {
 
         LOGGER.info(String.format("Sending daily backup to [ %s ]", recipient));
 
-        this.sendContent("Daily backup", sender, recipient, content);
+        this.sendContent("Daily backup", sender, recipient, content, new ArrayList<Account>());
     }
 
-    public void sendChangedContent(final String sender, final String recipient, final Content content) throws ServiceException {
+    public void sendChangedContent(final String sender, final String recipient, final Content content, List<Account> previousAccounts) throws ServiceException {
         guard(isValidEmail(sender));
         guard(isValidEmail(recipient));
         guard(notNull(content));
+        guard(notNull(previousAccounts));
 
         LOGGER.info(String.format("Sending changed content to [ %s ]", recipient));
 
-        this.sendContent("Changed content", sender, recipient, content);
+        this.sendContent("Changed content", sender, recipient, content, previousAccounts);
     }
 
-    private void sendContent(final String caption, final String sender, final String recipient, final Content content) throws ServiceException {
+    private void sendContent(final String caption, final String sender, final String recipient, final Content content, final List<Account> previousAccounts) throws ServiceException {
         guard(notNull(caption));
         guard(isValidEmail(sender));
         guard(isValidEmail(recipient));
         guard(notNull(content));
+        guard(notNull(previousAccounts));
 
         final Date now = new Date();
 
@@ -77,28 +82,38 @@ public class Sender {
         final String subject = caption + " " + dateForBody;
         final String applicationId = SystemProperty.applicationId.get();
 
-        final String body = Template.formatContent(caption, dateForBody, applicationId, content.accounts, version);
+        final String body = Template.formatContent(caption, dateForBody, applicationId, content.accounts, previousAccounts, version);
 
-        sendMail(sender, recipient, subject, body, attachmentName, content.file);
+        sendMail(sender, applicationId, recipient, subject, body, attachmentName, content.file);
     }
 
     public void sendException(final String recipient, final ServiceException exception) throws ServiceException {
         guard(isValidEmail(recipient));
         guard(notNull(exception));
 
+        final Date now = new Date();
+
         LOGGER.info(String.format("Sending error message to [ %s ]", recipient));
 
-        sendMail(recipient, recipient, "Backup error", exception.toString(), null, null);
+        final SimpleDateFormat formatForBody = new SimpleDateFormat(DATE_FORMAT_FOR_BODY);
+        final String dateForBody = formatForBody.format(now);
+        final String caption = "Backup error";
+        final String subject = caption + " " + dateForBody;
+        final String applicationId = SystemProperty.applicationId.get();
+
+        final String body = Template.formatError(dateForBody, applicationId, exception.toString(), this.version);
+
+        sendMail(recipient, applicationId, recipient, subject, body, null, null);
     }
 
-    private static void sendMail(final String sender, final String recipient, final String subject, final String body, final String attachmentName, final String attachmentContent) throws ServiceException {
+    private static void sendMail(final String sender, final String senderName, final String recipient, final String subject, final String body, final String attachmentName, final String attachmentContent) throws ServiceException {
 
         try {
             final Properties props = new Properties();
             final Session session = Session.getDefaultInstance(props, null);
 
             final Message message = new MimeMessage(session);
-            message.setFrom(new InternetAddress(sender));
+            message.setFrom(new InternetAddress(sender, senderName));
             message.addRecipient(Message.RecipientType.TO, new InternetAddress(recipient));
 
             message.setSubject(subject);

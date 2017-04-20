@@ -13,6 +13,15 @@ public class SnapshotRepositoryStub implements SnapshotRepository {
     private List<Snapshot> snapshots = new ArrayList<>();
 
     @Override
+    public Snapshot loadPreLatestSnapshot() {
+        Collections.sort(this.snapshots, Snapshot.TIMESTAMP_COMPARATOR);
+
+        final int size = this.snapshots.size();
+
+        return size < 1 ? null : this.snapshots.get(size - 2);
+    }
+
+    @Override
     public Snapshot loadLatestSnapshot() {
         Collections.sort(this.snapshots, Snapshot.TIMESTAMP_COMPARATOR);
 

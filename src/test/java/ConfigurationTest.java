@@ -82,7 +82,7 @@ public class ConfigurationTest {
 
             fail();
         } catch (Exception exception) {
-            assertEquals(new InvalidConfigurationParameter("origin", WRONG), exception);
+            assertEquals(new InvalidConfigurationParameter(Configuration.ORIGIN, WRONG), exception);
         }
 
     }
@@ -95,7 +95,7 @@ public class ConfigurationTest {
 
             fail();
         } catch (Exception exception) {
-            assertEquals(new InvalidConfigurationParameter("host", WRONG), exception);
+            assertEquals(new InvalidConfigurationParameter(Configuration.HOST, WRONG), exception);
         }
 
     }
@@ -108,7 +108,7 @@ public class ConfigurationTest {
 
             fail();
         } catch (Exception exception) {
-            assertEquals(new InvalidConfigurationParameter("loginUrl", WRONG), exception);
+            assertEquals(new InvalidConfigurationParameter(Configuration.LOGIN_URL, WRONG), exception);
         }
 
     }
@@ -121,7 +121,7 @@ public class ConfigurationTest {
 
             fail();
         } catch (Exception exception) {
-            assertEquals(new InvalidConfigurationParameter("loginReferer", WRONG), exception);
+            assertEquals(new InvalidConfigurationParameter(Configuration.LOGIN_REFERER, WRONG), exception);
         }
 
     }
@@ -134,7 +134,7 @@ public class ConfigurationTest {
 
             fail();
         } catch (Exception exception) {
-            assertEquals(new InvalidConfigurationParameter("loginData", WRONG), exception);
+            assertEquals(new InvalidConfigurationParameter(Configuration.LOGIN_DATA, WRONG), exception);
         }
 
     }
@@ -147,7 +147,7 @@ public class ConfigurationTest {
 
             fail();
         } catch (Exception exception) {
-            assertEquals(new InvalidConfigurationParameter("downloadUrl", WRONG), exception);
+            assertEquals(new InvalidConfigurationParameter(Configuration.DOWNLOAD_URL, WRONG), exception);
         }
 
     }
@@ -160,7 +160,7 @@ public class ConfigurationTest {
 
             fail();
         } catch (Exception exception) {
-            assertEquals(new InvalidConfigurationParameter("downloadReferer", WRONG), exception);
+            assertEquals(new InvalidConfigurationParameter(Configuration.DOWNLOAD_REFERER, WRONG), exception);
         }
 
     }
@@ -173,7 +173,7 @@ public class ConfigurationTest {
 
             fail();
         } catch (Exception exception) {
-            assertEquals(new InvalidConfigurationParameter("downloadData", WRONG), exception);
+            assertEquals(new InvalidConfigurationParameter(Configuration.DOWNLOAD_DATA, WRONG), exception);
         }
 
     }
@@ -186,7 +186,7 @@ public class ConfigurationTest {
 
             fail();
         } catch (Exception exception) {
-            assertEquals(new InvalidConfigurationParameter("admin", WRONG), exception);
+            assertEquals(new InvalidConfigurationParameter(Configuration.ADMIN, WRONG), exception);
         }
 
     }
@@ -201,7 +201,7 @@ public class ConfigurationTest {
 
             fail();
         } catch (Exception exception) {
-            assertEquals(new InvalidConfigurationParameter("recipient", WRONG), exception);
+            assertEquals(new InvalidConfigurationParameter(Configuration.RECIPIENT, WRONG), exception);
         }
 
     }
@@ -214,7 +214,7 @@ public class ConfigurationTest {
 
             fail();
         } catch (Exception exception) {
-            assertEquals(new InvalidConfigurationParameter("wait.time.millis", WRONG), exception);
+            assertEquals(new InvalidConfigurationParameter(Configuration.WAIT_TIME_MILLIS, WRONG), exception);
         }
     }
 
@@ -226,7 +226,7 @@ public class ConfigurationTest {
 
             fail();
         } catch (Exception exception) {
-            assertEquals(new InvalidConfigurationParameter("accountsUrl", WRONG), exception);
+            assertEquals(new InvalidConfigurationParameter(Configuration.ACCOUNTS_URL, WRONG), exception);
         }
 
     }
@@ -239,7 +239,7 @@ public class ConfigurationTest {
 
             fail();
         } catch (Exception exception) {
-            assertEquals(new InvalidConfigurationParameter("accountsReferer", WRONG), exception);
+            assertEquals(new InvalidConfigurationParameter(Configuration.ACCOUNTS_REFERER, WRONG), exception);
         }
 
     }
@@ -252,7 +252,7 @@ public class ConfigurationTest {
 
             fail();
         } catch (Exception exception) {
-            assertEquals(new InvalidConfigurationParameter("app.version", ""), exception);
+            assertEquals(new InvalidConfigurationParameter(Configuration.APP_VERSION, ""), exception);
         }
 
     }

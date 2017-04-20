@@ -31,7 +31,7 @@ public class ChangesDetectorTestBase {
         this.snapshotRepository = mock(SnapshotRepository.class);
         this.timestampRepository = mock(TimestampRepository.class);
         this.timeService = mock(TimeService.class);
-        this.waitInMillis = 48;
+        this.waitInMillis = 40;
         this.transactions = mock(Transactions.class);
         this.transactionStub = new TransactionStub();
 
