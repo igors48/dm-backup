@@ -30,9 +30,9 @@ public class AccountsComparatorTest {
 
         assertEquals(3, result.size());
 
-        assertEquals(new ComparisonResult(FIRST_BEFORE.title, FIRST_BEFORE.balance, FIRST_AFTER.balance), result.get(0));
-        assertEquals(new ComparisonResult(SECOND_BEFORE.title, SECOND_BEFORE.balance, SECOND_AFTER.balance), result.get(1));
-        assertEquals(new ComparisonResult(THIRD_BEFORE.title, THIRD_BEFORE.balance, THIRD_AFTER.balance), result.get(2));
+        assertEquals(new ComparisonResult(FIRST_BEFORE.title, FIRST_BEFORE.balance, FIRST_AFTER.balance, FIRST_AFTER.balance - FIRST_BEFORE.balance), result.get(0));
+        assertEquals(new ComparisonResult(SECOND_BEFORE.title, SECOND_BEFORE.balance, SECOND_AFTER.balance, SECOND_AFTER.balance - SECOND_BEFORE.balance), result.get(1));
+        assertEquals(new ComparisonResult(THIRD_BEFORE.title, THIRD_BEFORE.balance, THIRD_AFTER.balance, THIRD_AFTER.balance - THIRD_BEFORE.balance), result.get(2));
     }
 
     @Test
@@ -44,9 +44,9 @@ public class AccountsComparatorTest {
 
         assertEquals(3, result.size());
 
-        assertEquals(new ComparisonResult(FIRST_BEFORE.title, FIRST_BEFORE.balance, FIRST_AFTER.balance), result.get(0));
-        assertEquals(new ComparisonResult(SECOND_BEFORE.title, SECOND_BEFORE.balance, null), result.get(1));
-        assertEquals(new ComparisonResult(THIRD_BEFORE.title, THIRD_BEFORE.balance, THIRD_AFTER.balance), result.get(2));
+        assertEquals(new ComparisonResult(FIRST_BEFORE.title, FIRST_BEFORE.balance, FIRST_AFTER.balance, FIRST_AFTER.balance - FIRST_BEFORE.balance), result.get(0));
+        assertEquals(new ComparisonResult(SECOND_BEFORE.title, SECOND_BEFORE.balance, null, -SECOND_BEFORE.balance), result.get(1));
+        assertEquals(new ComparisonResult(THIRD_BEFORE.title, THIRD_BEFORE.balance, THIRD_AFTER.balance, THIRD_AFTER.balance - THIRD_BEFORE.balance), result.get(2));
     }
 
     @Test
@@ -58,9 +58,9 @@ public class AccountsComparatorTest {
 
         assertEquals(3, result.size());
 
-        assertEquals(new ComparisonResult(FIRST_BEFORE.title, FIRST_BEFORE.balance, FIRST_AFTER.balance), result.get(0));
-        assertEquals(new ComparisonResult(SECOND_BEFORE.title, null, SECOND_AFTER.balance), result.get(1));
-        assertEquals(new ComparisonResult(THIRD_BEFORE.title, THIRD_BEFORE.balance, THIRD_AFTER.balance), result.get(2));
+        assertEquals(new ComparisonResult(FIRST_BEFORE.title, FIRST_BEFORE.balance, FIRST_AFTER.balance, FIRST_AFTER.balance - FIRST_BEFORE.balance), result.get(0));
+        assertEquals(new ComparisonResult(SECOND_BEFORE.title, null, SECOND_AFTER.balance, SECOND_AFTER.balance), result.get(1));
+        assertEquals(new ComparisonResult(THIRD_BEFORE.title, THIRD_BEFORE.balance, THIRD_AFTER.balance, THIRD_AFTER.balance - THIRD_BEFORE.balance), result.get(2));
     }
 
 }
