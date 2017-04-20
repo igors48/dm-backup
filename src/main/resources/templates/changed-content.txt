@@ -4,12 +4,14 @@
     <th style="padding: 5px; border: 1px solid #cccccc;">Account</th>
     <th style="padding: 5px; border: 1px solid #cccccc;">Before</th>
     <th style="padding: 5px; border: 1px solid #cccccc;">After</th>
+    <th style="padding: 5px; border: 1px solid #cccccc;">Difference</th>
 </tr>
 
 <tr style="color: #153643; font-family: Arial, sans-serif; font-size: 16px;" th:each="difference : ${differences}">
     <td style="padding: 5px; border: 1px solid #cccccc;">[(${difference.title})]</td>
     <td style="padding: 5px; border: 1px solid #cccccc;">[(${#numbers.formatDecimal(difference.before, 0, 'DEFAULT', 2, 'DEFAULT')})]</td>
     <td style="padding: 5px; border: 1px solid #cccccc;">[(${#numbers.formatDecimal(difference.after, 0, 'DEFAULT', 2, 'DEFAULT')})]</td>
+    <td style="padding: 5px; border: 1px solid #cccccc;">[(${#numbers.formatDecimal(difference.delta, 0, 'DEFAULT', 2, 'DEFAULT')})]</td>
 </tr>
 
 </table>
