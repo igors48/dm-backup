@@ -16,7 +16,7 @@
     </scm>
 
     <properties>
-        <app.version>1.3</app.version>
+        <app.version>${version}</app.version>
         <appengine.version>1.9.51</appengine.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
