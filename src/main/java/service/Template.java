@@ -9,6 +9,7 @@ import util.account.AccountsParser;
 import util.account.ComparisonResult;
 import util.account.ParsedAccount;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
@@ -20,6 +21,10 @@ import static util.Parameter.notNull;
  * Created by igor on 01.02.2017.
  */
 public class Template {
+
+    public static final String GREEN = "#00dd00";
+    public static final String GRAY = "#dddddd";
+    public static final String RED = "#dd0000";
 
     public static String formatError(final String time, final String server, final String description, final String version) {
         guard(isValidString(time));
@@ -68,15 +73,60 @@ public class Template {
         } else {
             final List<ParsedAccount> before = ParsedAccount.createList(previousAccounts);
             final List<ParsedAccount> after = ParsedAccount.createList(accounts);
-            final List<ComparisonResult> difference = AccountsParser.compare(before, after);
+            final List<ComparisonResult> comparison = AccountsParser.compare(before, after);
+            final List<Difference> differences = render(comparison);
 
-            context.setVariable("differences", difference);
+            context.setVariable("differences", differences);
 
             final String content = engine.process("changed-content", context);
             context.setVariable("content", content);
         }
 
         return engine.process("container", context);
+    }
+
+    private static List<Difference> render(final List<ComparisonResult> comparison) {
+        final List<Difference> result = new ArrayList<>();
+
+        for (final ComparisonResult current : comparison) {
+            result.add(render(current));
+        }
+
+        return result;
+    }
+
+    public static Difference render(final ComparisonResult current) {
+        guard(notNull(current));
+
+        final String title = current.title;
+        final String before = formatCurrency(current.before);
+        final String after = formatCurrency(current.after);
+        final String delta = formatCurrency(current.delta);
+        final String color = getColorFor(current.delta);
+
+        return new Difference(title, before, after, delta, color);
+    }
+
+    private static String getColorFor(Float delta) {
+
+        if (delta < 0) {
+            return RED;
+        }
+
+        if (delta < 0.01) {
+            return GRAY;
+        }
+
+        return GREEN;
+    }
+
+    private static String formatCurrency(final Float value) {
+
+        if (value == null) {
+            return "";
+        }
+
+        return String.format("%.02f", value);
     }
 
     private static TemplateEngine createEngine() {
