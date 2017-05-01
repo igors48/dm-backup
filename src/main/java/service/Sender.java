@@ -82,7 +82,7 @@ public class Sender {
         final String subject = caption + " " + dateForBody;
         final String applicationId = SystemProperty.applicationId.get();
 
-        final String body = Template.formatContent(caption, dateForBody, applicationId, content.accounts, previousAccounts, version);
+        final String body = Template.formatContent(caption, dateForBody, applicationId, content.accounts, previousAccounts, dateForBody, dateForBody, version);
 
         sendMail(sender, applicationId, recipient, subject, body, attachmentName, content.file);
     }

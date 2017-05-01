@@ -48,8 +48,10 @@ public class MailFormatter {
         final List<Account> accounts = createAccounts();
         final List<Account> previousAccounts = new ArrayList<>();
         final String version = "1.2";
+        final String beforeTime = "2016-03-02 20:15:08";
+        final String afterTime = "2016-03-02 20:15:08";
 
-        final String content = Template.formatContent(caption, time, server, accounts, previousAccounts, version);
+        final String content = Template.formatContent(caption, time, server, accounts, previousAccounts, beforeTime, afterTime, version);
 
         try (PrintWriter out = new PrintWriter("C:\\Igor\\temp\\content.html")) {
             out.println(content);
@@ -66,8 +68,10 @@ public class MailFormatter {
         final List<Account> accounts = createAccounts();
         final List<Account> previousAccounts = createPreviousAccounts();
         final String version = "1.2";
+        final String beforeTime = "2016-03-02 20:15:08";
+        final String afterTime = "2016-03-02 20:15:08";
 
-        final String content = Template.formatContent(caption, time, server, accounts, previousAccounts, version);
+        final String content = Template.formatContent(caption, time, server, accounts, previousAccounts, beforeTime, afterTime, version);
 
         try (PrintWriter out = new PrintWriter("C:\\Igor\\temp\\changed-content.html")) {
             out.println(content);
