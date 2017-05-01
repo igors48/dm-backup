@@ -45,6 +45,10 @@ public class SnapshotStore {
         this.append(content, snapshots);
     }
 
+    public Snapshot loadLatestSnapshot() {
+        return this.snapshotRepository.loadLatestSnapshot();
+    }
+
     private void append(final Content content, final List<Snapshot> source) {
         final Snapshot snapshot = this.createFor(content);
         source.add(snapshot);
