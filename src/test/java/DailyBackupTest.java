@@ -17,8 +17,8 @@ public class DailyBackupTest extends BackupTestBase {
         verify(loader).load();
         verifyNoMoreInteractions(loader);
 
-        verify(sender).sendDailyBackup(A_B_COM, B_C_COM, CONTENT);
-        verify(sender).sendDailyBackup(A_B_COM, C_D_COM, CONTENT);
+        verify(sender).sendDailyBackup(A_B_COM, B_C_COM, CONTENT, LATEST_ACCOUNTS);
+        verify(sender).sendDailyBackup(A_B_COM, C_D_COM, CONTENT, LATEST_ACCOUNTS);
         verifyNoMoreInteractions(sender);
     }
 
@@ -32,23 +32,22 @@ public class DailyBackupTest extends BackupTestBase {
         verifyNoMoreInteractions(loader);
 
         verify(dailySnapshotStore).store(CONTENT);
-        verifyNoMoreInteractions(dailySnapshotStore);
     }
 
     @Test
     public void whenContentCannotBeSentThenErrorSentToErrorRecipient() throws Exception {
         when(loader.load()).thenReturn(CONTENT);
 
-        doThrow(this.serviceException).when(sender).sendDailyBackup(A_B_COM, B_C_COM, CONTENT);
+        doThrow(this.serviceException).when(sender).sendDailyBackup(A_B_COM, B_C_COM, CONTENT, LATEST_ACCOUNTS);
 
         backup.dailyBackup();
 
         verify(loader).load();
         verifyNoMoreInteractions(loader);
 
-        verify(sender).sendDailyBackup(A_B_COM, B_C_COM, CONTENT);
+        verify(sender).sendDailyBackup(A_B_COM, B_C_COM, CONTENT, LATEST_ACCOUNTS);
         verify(sender).sendException(A_B_COM, this.serviceException);
-        verify(sender).sendDailyBackup(A_B_COM, C_D_COM, CONTENT);
+        verify(sender).sendDailyBackup(A_B_COM, C_D_COM, CONTENT, LATEST_ACCOUNTS);
         verifyNoMoreInteractions(sender);
     }
 

@@ -43,10 +43,11 @@ public class Sender {
         guard(isValidString(this.version = version));
     }
 
-    public void sendDailyBackup(final String sender, final String recipient, final Content content) throws ServiceException {
+    public void sendDailyBackup(final String sender, final String recipient, final Content content, final List<Account> previousAccounts) throws ServiceException {
         guard(isValidEmail(sender));
         guard(isValidEmail(recipient));
         guard(notNull(content));
+        guard(notNull(previousAccounts));
 
         LOGGER.info(String.format("Sending daily backup to [ %s ]", recipient));
 
