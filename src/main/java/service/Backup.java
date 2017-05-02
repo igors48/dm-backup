@@ -79,8 +79,8 @@ public class Backup {
 
             final Content content = this.loader.load();
             Snapshot latest = this.dailySnapshotStore.loadLatestSnapshot();
-            this.dailySnapshotStore.store(content);
-            sendDailyBackup(content, latest.content.accounts);
+            Snapshot current = this.dailySnapshotStore.store(content);
+            sendDailyBackup(content, latest.content.accounts, new Date(latest.timestamp), new Date(current.timestamp));
 
             LOGGER.info("Backup finished");
         } catch (ServiceException exception) {
@@ -125,17 +125,17 @@ public class Backup {
         }
     }
 
-    private void sendDailyBackup(final Content content, final List<Account> previousAccounts) {
+    private void sendDailyBackup(final Content content, final List<Account> previousAccounts, final Date before, final Date after) {
 
         for (final String recipient : this.recipients.contentRecipients) {
-            sendDailyBackup(recipient, content, previousAccounts);
+            sendDailyBackup(recipient, content, previousAccounts, before, after);
         }
     }
 
-    private void sendDailyBackup(final String recipient, final Content content, final List<Account> previousAccounts) {
+    private void sendDailyBackup(final String recipient, final Content content, final List<Account> previousAccounts, final Date before, final Date after) {
 
         try {
-            this.sender.sendDailyBackup(recipients.adminRecipient, recipient, content, previousAccounts);
+            this.sender.sendDailyBackup(recipients.adminRecipient, recipient, content, previousAccounts, before, after);
         } catch (ServiceException exception) {
             LOGGER.log(Level.SEVERE, format("Sending daily backup content to [ %s ] failed", recipient), exception);
 

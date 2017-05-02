@@ -1,5 +1,7 @@
 import org.junit.Test;
 
+import java.util.Date;
+
 import static org.junit.Assert.fail;
 import static org.mockito.Mockito.*;
 
@@ -17,8 +19,8 @@ public class DailyBackupTest extends BackupTestBase {
         verify(loader).load();
         verifyNoMoreInteractions(loader);
 
-        verify(sender).sendDailyBackup(A_B_COM, B_C_COM, CONTENT, LATEST_ACCOUNTS);
-        verify(sender).sendDailyBackup(A_B_COM, C_D_COM, CONTENT, LATEST_ACCOUNTS);
+        verify(sender).sendDailyBackup(A_B_COM, B_C_COM, CONTENT, LATEST_ACCOUNTS, new Date(LATEST_SNAPSHOT.timestamp), new Date(CURRENT_SNAPSHOT.timestamp));
+        verify(sender).sendDailyBackup(A_B_COM, C_D_COM, CONTENT, LATEST_ACCOUNTS, new Date(LATEST_SNAPSHOT.timestamp), new Date(CURRENT_SNAPSHOT.timestamp));
         verifyNoMoreInteractions(sender);
     }
 
@@ -38,16 +40,16 @@ public class DailyBackupTest extends BackupTestBase {
     public void whenContentCannotBeSentThenErrorSentToErrorRecipient() throws Exception {
         when(loader.load()).thenReturn(CONTENT);
 
-        doThrow(this.serviceException).when(sender).sendDailyBackup(A_B_COM, B_C_COM, CONTENT, LATEST_ACCOUNTS);
+        doThrow(this.serviceException).when(sender).sendDailyBackup(A_B_COM, B_C_COM, CONTENT, LATEST_ACCOUNTS, new Date(LATEST_SNAPSHOT.timestamp), new Date(CURRENT_SNAPSHOT.timestamp));
 
         backup.dailyBackup();
 
         verify(loader).load();
         verifyNoMoreInteractions(loader);
 
-        verify(sender).sendDailyBackup(A_B_COM, B_C_COM, CONTENT, LATEST_ACCOUNTS);
+        verify(sender).sendDailyBackup(A_B_COM, B_C_COM, CONTENT, LATEST_ACCOUNTS, new Date(LATEST_SNAPSHOT.timestamp), new Date(CURRENT_SNAPSHOT.timestamp));
         verify(sender).sendException(A_B_COM, this.serviceException);
-        verify(sender).sendDailyBackup(A_B_COM, C_D_COM, CONTENT, LATEST_ACCOUNTS);
+        verify(sender).sendDailyBackup(A_B_COM, C_D_COM, CONTENT, LATEST_ACCOUNTS, new Date(LATEST_SNAPSHOT.timestamp), new Date(CURRENT_SNAPSHOT.timestamp));
         verifyNoMoreInteractions(sender);
     }
 

@@ -17,7 +17,6 @@ import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
 import javax.mail.util.ByteArrayDataSource;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Properties;
@@ -43,15 +42,17 @@ public class Sender {
         guard(isValidString(this.version = version));
     }
 
-    public void sendDailyBackup(final String sender, final String recipient, final Content content, final List<Account> previousAccounts) throws ServiceException {
+    public void sendDailyBackup(final String sender, final String recipient, final Content content, final List<Account> previousAccounts, final Date before, final Date after) throws ServiceException {
         guard(isValidEmail(sender));
         guard(isValidEmail(recipient));
         guard(notNull(content));
         guard(notNull(previousAccounts));
+        guard(notNull(before));
+        guard(notNull(after));
 
         LOGGER.info(String.format("Sending daily backup to [ %s ]", recipient));
 
-        this.sendContent("Daily backup", sender, recipient, content, new ArrayList<Account>(), new Date(), new Date());
+        this.sendContent("Daily backup", sender, recipient, content, previousAccounts, before, after);
     }
 
     public void sendChangedContent(final String sender, final String recipient, final Content content, List<Account> previousAccounts, final Date before, final Date after) throws ServiceException {
@@ -59,6 +60,8 @@ public class Sender {
         guard(isValidEmail(recipient));
         guard(notNull(content));
         guard(notNull(previousAccounts));
+        guard(notNull(before));
+        guard(notNull(after));
 
         LOGGER.info(String.format("Sending changed content to [ %s ]", recipient));
 
