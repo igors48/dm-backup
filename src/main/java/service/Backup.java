@@ -73,13 +73,20 @@ public class Backup {
     }
 
     public void dailyBackup() {
+        Transaction transaction = null;
 
         try {
             LOGGER.info("Backup started");
 
             final Content content = this.loader.load();
+
+            transaction = this.transactions.beginOne();
+
             Snapshot latest = this.dailySnapshotStore.loadLatestSnapshot();
             Snapshot current = this.dailySnapshotStore.store(content);
+
+            transaction.commit();
+
             sendDailyBackup(content, latest.content.accounts, new Date(latest.timestamp), new Date(current.timestamp));
 
             LOGGER.info("Backup finished");
@@ -87,6 +94,8 @@ public class Backup {
             LOGGER.log(Level.SEVERE, "Backup failed", exception);
 
             sendError(exception);
+        } finally {
+            rollbackIfActive(transaction);
         }
     }
 
