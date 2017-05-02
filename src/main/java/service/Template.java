@@ -48,12 +48,14 @@ public class Template {
         return engine.process("container", context);
     }
 
-    public static String formatContent(final String caption, final String time, final String server, final List<Account> accounts, final List<Account> previousAccounts, final String version) {
+    public static String formatContent(final String caption, final String time, final String server, final List<Account> accounts, final List<Account> previousAccounts, final String beforeTime, final String afterTime, final String version) {
         guard(notNull(caption));
         guard(notNull(time));
         guard(notNull(server));
         guard(notNull(accounts));
         guard(notNull(previousAccounts));
+        guard(notNull(beforeTime));
+        guard(notNull(afterTime));
 
         final Context context = new Context(Locale.ROOT);
 
@@ -77,6 +79,8 @@ public class Template {
             final List<Difference> differences = render(comparison);
 
             context.setVariable("differences", differences);
+            context.setVariable("beforeTime", beforeTime);
+            context.setVariable("afterTime", afterTime);
 
             final String content = engine.process("changed-content", context);
             context.setVariable("content", content);

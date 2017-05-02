@@ -37,21 +37,27 @@ public class SnapshotStore {
         this.append(content, snapshots);
     }
 
-    public void store(final Content content) {
+    public Snapshot store(final Content content) {
         guard(notNull(content));
 
         final List<Snapshot> snapshots = this.snapshotRepository.loadAll();
 
-        this.append(content, snapshots);
+        return this.append(content, snapshots);
     }
 
-    private void append(final Content content, final List<Snapshot> source) {
+    public Snapshot loadLatestSnapshot() {
+        return this.snapshotRepository.loadLatestSnapshot();
+    }
+
+    private Snapshot append(final Content content, final List<Snapshot> source) {
         final Snapshot snapshot = this.createFor(content);
         source.add(snapshot);
 
         final List<Snapshot> result = this.checkCapacity(source);
 
         this.snapshotRepository.storeAll(result);
+
+        return snapshot;
     }
 
     private List<Snapshot> checkCapacity(final List<Snapshot> list) {

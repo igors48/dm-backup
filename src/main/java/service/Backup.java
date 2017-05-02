@@ -5,6 +5,7 @@ import service.configuration.Recipients;
 import service.error.ServiceException;
 import util.account.Account;
 
+import java.util.Date;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -59,7 +60,7 @@ public class Backup {
                     updateLast(content);
                     break;
                 case SEND:
-                    sendChangedContent(content, action.accounts);
+                    sendChangedContent(content, action.accounts, action.before, action.after);
                     break;
             }
 
@@ -77,8 +78,9 @@ public class Backup {
             LOGGER.info("Backup started");
 
             final Content content = this.loader.load();
-            this.dailySnapshotStore.store(content);
-            sendDailyBackup(content);
+            Snapshot latest = this.dailySnapshotStore.loadLatestSnapshot();
+            Snapshot current = this.dailySnapshotStore.store(content);
+            sendDailyBackup(content, latest.content.accounts, new Date(latest.timestamp), new Date(current.timestamp));
 
             LOGGER.info("Backup finished");
         } catch (ServiceException exception) {
@@ -116,24 +118,24 @@ public class Backup {
         }
     }
 
-    private void sendChangedContent(final Content content, List<Account> previousAccounts) {
+    private void sendChangedContent(final Content content, List<Account> previousAccounts, final Date before, final Date after) {
 
         for (final String recipient : this.recipients.contentRecipients) {
-            sendChangedContent(recipient, content, previousAccounts);
+            sendChangedContent(recipient, content, previousAccounts, before, after);
         }
     }
 
-    private void sendDailyBackup(final Content content) {
+    private void sendDailyBackup(final Content content, final List<Account> previousAccounts, final Date before, final Date after) {
 
         for (final String recipient : this.recipients.contentRecipients) {
-            sendDailyBackup(recipient, content);
+            sendDailyBackup(recipient, content, previousAccounts, before, after);
         }
     }
 
-    private void sendDailyBackup(final String recipient, final Content content) {
+    private void sendDailyBackup(final String recipient, final Content content, final List<Account> previousAccounts, final Date before, final Date after) {
 
         try {
-            this.sender.sendDailyBackup(recipients.adminRecipient, recipient, content);
+            this.sender.sendDailyBackup(recipients.adminRecipient, recipient, content, previousAccounts, before, after);
         } catch (ServiceException exception) {
             LOGGER.log(Level.SEVERE, format("Sending daily backup content to [ %s ] failed", recipient), exception);
 
@@ -141,10 +143,10 @@ public class Backup {
         }
     }
 
-    private void sendChangedContent(final String recipient, final Content content, List<Account> previousAccounts) {
+    private void sendChangedContent(final String recipient, final Content content, final List<Account> previousAccounts, final Date before, final Date after) {
 
         try {
-            this.sender.sendChangedContent(recipients.adminRecipient, recipient, content, previousAccounts);
+            this.sender.sendChangedContent(recipients.adminRecipient, recipient, content, previousAccounts, before, after);
         } catch (ServiceException exception) {
             LOGGER.log(Level.SEVERE, format("Sending changed content to [ %s ] failed", recipient), exception);
 

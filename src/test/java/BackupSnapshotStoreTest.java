@@ -1,6 +1,8 @@
 import org.junit.Test;
 import service.Action;
 
+import java.util.Date;
+
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 import static org.mockito.Mockito.*;
@@ -34,7 +36,7 @@ public class BackupSnapshotStoreTest extends BackupTestBase {
 
     @Test
     public void whenActionIsSendThenNoContentActions() {
-        when(this.changesDetector.getActionForContent(CONTENT.file)).thenReturn(Action.send(CONTENT.accounts));
+        when(this.changesDetector.getActionForContent(CONTENT.file)).thenReturn(Action.send(CONTENT.accounts, new Date(), new Date()));
 
         this.backup.checkChanges();
 

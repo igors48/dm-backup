@@ -1,9 +1,15 @@
 <table cellpadding="0" cellspacing="0" width="100%" style="border-collapse: collapse; border: 1px solid #cccccc;">
 
 <tr style="color: #153643; font-family: Arial, sans-serif; font-size: 16px;">
-    <th style="padding: 5px; border: 1px solid #cccccc;">Account</th>
-    <th style="padding: 5px; border: 1px solid #cccccc;">Before</th>
-    <th style="padding: 5px; border: 1px solid #cccccc;">After</th>
+    <th style="padding: 5px; border: 1px solid #cccccc;"><p>Account</p></th>
+    <th style="padding: 5px; border: 1px solid #cccccc;">
+        <div>Before</div>
+        <div style="font-size: 12px;">[(${beforeTime})]</div>
+    </th>
+    <th style="padding: 5px; border: 1px solid #cccccc;">
+        <div>After</div>
+        <div style="font-size: 12px;">[(${afterTime})]</div>
+    </th>
     <th style="padding: 5px; border: 1px solid #cccccc;">Difference</th>
 </tr>
 

@@ -3,6 +3,7 @@ import service.Action;
 import util.account.Account;
 
 import java.util.ArrayList;
+import java.util.Date;
 
 import static org.junit.Assert.fail;
 import static org.mockito.Mockito.*;
@@ -25,12 +26,13 @@ public class CheckChangesTest extends BackupTestBase {
 
     @Test
     public void whenContentChangesDetectedThenContentSendsToAllRecipients() throws Exception {
-        when(this.changesDetector.getActionForContent(CONTENT.file)).thenReturn(Action.send(CONTENT.accounts));
+        final Date date = new Date();
+        when(this.changesDetector.getActionForContent(CONTENT.file)).thenReturn(Action.send(CONTENT.accounts, date, date));
 
         this.backup.checkChanges();
 
-        verify(this.sender).sendChangedContent(A_B_COM, B_C_COM, CONTENT, new ArrayList<Account>());
-        verify(this.sender).sendChangedContent(A_B_COM, C_D_COM, CONTENT, new ArrayList<Account>());
+        verify(this.sender).sendChangedContent(A_B_COM, B_C_COM, CONTENT, new ArrayList<Account>(), date, date);
+        verify(this.sender).sendChangedContent(A_B_COM, C_D_COM, CONTENT, new ArrayList<Account>(), date, date);
         verifyNoMoreInteractions(this.sender);
     }
 
@@ -45,17 +47,18 @@ public class CheckChangesTest extends BackupTestBase {
 
     @Test
     public void whenContentCannotBeSentThenErrorSentToErrorRecipient() throws Exception {
-        when(this.changesDetector.getActionForContent(CONTENT.file)).thenReturn(Action.send(CONTENT.accounts));
-        doThrow(this.serviceException).when(sender).sendChangedContent(A_B_COM, B_C_COM, CONTENT, new ArrayList<Account>());
+        final Date date = new Date();
+        when(this.changesDetector.getActionForContent(CONTENT.file)).thenReturn(Action.send(CONTENT.accounts, date, date));
+        doThrow(this.serviceException).when(sender).sendChangedContent(A_B_COM, B_C_COM, CONTENT, new ArrayList<Account>(), date, date);
 
         this.backup.checkChanges();
 
         verify(this.loader).load();
         verifyNoMoreInteractions(this.loader);
 
-        verify(this.sender).sendChangedContent(A_B_COM, B_C_COM, CONTENT, new ArrayList<Account>());
+        verify(this.sender).sendChangedContent(A_B_COM, B_C_COM, CONTENT, new ArrayList<Account>(), date, date);
         verify(this.sender).sendException(A_B_COM, this.serviceException);
-        verify(this.sender).sendChangedContent(A_B_COM, C_D_COM, CONTENT, new ArrayList<Account>());
+        verify(this.sender).sendChangedContent(A_B_COM, C_D_COM, CONTENT, new ArrayList<Account>(), date, date);
         verifyNoMoreInteractions(this.sender);
     }
 
