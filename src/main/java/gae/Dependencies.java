@@ -22,7 +22,7 @@ public enum Dependencies {
 
     private static final Logger LOGGER = Logger.getLogger(Dependencies.class.getName());
 
-    private static final int SNAPSHOTS_STORE_CAPACITY = 10; //TODO move to properties
+    private static final int SNAPSHOTS_STORE_CAPACITY = 4; //TODO move to properties
 
     private static Configuration configuration;
     private static Loader loader;
