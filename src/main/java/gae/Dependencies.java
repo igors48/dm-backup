@@ -52,7 +52,7 @@ public enum Dependencies {
             changesSnapshotStore = new SnapshotStore(SNAPSHOTS_STORE_CAPACITY, Type.CHANGE, changesSnapshotRepository, timeService);
             dailySnapshotStore = new SnapshotStore(SNAPSHOTS_STORE_CAPACITY, Type.DAILY, dailySnapshotRepository, timeService);
             changesDetector = new ChangesDetector(changesSnapshotRepository, timestampRepository, timeService, configuration.getWaitTimeMillis(), transactions);
-            backup = new Backup(loader, sender, changesDetector, configuration.getRecipients(), changesSnapshotStore, dailySnapshotStore, transactions);
+            backup = new Backup(loader, sender, changesDetector, configuration.getRecipients(), changesSnapshotStore, dailySnapshotStore, timeService, transactions);
 
         } catch (Exception exception) {
             LOGGER.log(Level.SEVERE, "Application initialization error", exception);

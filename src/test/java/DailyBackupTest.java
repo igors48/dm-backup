@@ -1,5 +1,7 @@
 import org.junit.Test;
+import util.account.Account;
 
+import java.util.ArrayList;
 import java.util.Date;
 
 import static org.junit.Assert.fail;
@@ -77,6 +79,16 @@ public class DailyBackupTest extends BackupTestBase {
         } catch (Exception exception) {
             fail();
         }
+    }
+
+    @Test
+    public void whenNoLatestDailySnapshotThenDefaultValuesUsed() throws Exception {
+        when(this.dailySnapshotStore.loadLatestSnapshot()).thenReturn(null);
+
+        backup.dailyBackup();
+
+        verify(sender).sendDailyBackup(A_B_COM, B_C_COM, CONTENT, new ArrayList<Account>(), new Date(timeServiceStub.currentTimestamp()), new Date(CURRENT_SNAPSHOT.timestamp));
+        verify(sender).sendDailyBackup(A_B_COM, C_D_COM, CONTENT, new ArrayList<Account>(), new Date(timeServiceStub.currentTimestamp()), new Date(CURRENT_SNAPSHOT.timestamp));
     }
 
 }

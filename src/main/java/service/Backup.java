@@ -5,6 +5,7 @@ import service.configuration.Recipients;
 import service.error.ServiceException;
 import util.account.Account;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.logging.Level;
@@ -22,21 +23,25 @@ public class Backup {
 
     private static final Logger LOGGER = Logger.getLogger(Backup.class.getName());
 
+    public static final ArrayList<Account> EMPTY_ACCOUNTS = new ArrayList<>();
+
     private final Loader loader;
     private final Sender sender;
     private final ChangesDetector changesDetector;
     private final Recipients recipients;
     private final SnapshotStore changesSnapshotStore;
     private final SnapshotStore dailySnapshotStore;
+    private final TimeService timeService;
     private final Transactions transactions;
 
-    public Backup(final Loader loader, final Sender sender, final ChangesDetector changesDetector, final Recipients recipients, final SnapshotStore changesSnapshotStore, final SnapshotStore dailySnapshotStore, final Transactions transactions) {
+    public Backup(final Loader loader, final Sender sender, final ChangesDetector changesDetector, final Recipients recipients, final SnapshotStore changesSnapshotStore, final SnapshotStore dailySnapshotStore, final TimeService timeService, final Transactions transactions) {
         guard(notNull(this.loader = loader));
         guard(notNull(this.sender = sender));
         guard(notNull(this.changesDetector = changesDetector));
         guard(notNull(this.recipients = recipients));
         guard(notNull(this.changesSnapshotStore = changesSnapshotStore));
         guard(notNull(this.dailySnapshotStore = dailySnapshotStore));
+        guard(notNull(this.timeService = timeService));
         guard(notNull(this.transactions = transactions));
     }
 
@@ -87,7 +92,10 @@ public class Backup {
 
             transaction.commit();
 
-            sendDailyBackup(content, latest.content.accounts, new Date(latest.timestamp), new Date(current.timestamp));
+            final List<Account> previousAccounts = latest == null ? EMPTY_ACCOUNTS : latest.content.accounts;
+            final Date before = latest == null ? new Date(this.timeService.currentTimestamp()) : new Date(latest.timestamp);
+
+            sendDailyBackup(content, previousAccounts, before, new Date(current.timestamp));
 
             LOGGER.info("Backup finished");
         } catch (ServiceException exception) {
