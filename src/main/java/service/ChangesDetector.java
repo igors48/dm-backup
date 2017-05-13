@@ -82,7 +82,7 @@ public class ChangesDetector {
 
             final Snapshot preLatestSnapshot = this.changesSnapshotRepository.loadPreLatestSnapshot();
             final List<Account> accounts = preLatestSnapshot == null ? new ArrayList<Account>() : preLatestSnapshot.content.accounts;
-            final Date before = preLatestSnapshot == null ? new Date() : new Date(preLatestSnapshot.timestamp);
+            final Date before = preLatestSnapshot == null ? new Date(this.timeService.currentTimestamp()) : new Date(preLatestSnapshot.timestamp);
             final Date after = new Date(current);
 
             return Action.send(accounts, before, after);
