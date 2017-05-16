@@ -24,7 +24,7 @@ public class GaeSnapshotRepository extends Repository<Snapshot> implements Snaps
 
         final int count = snapshots.size();
 
-        return count < 1 ? null : snapshots.get(count - 2);
+        return count < 3 ? null : snapshots.get(count - 2);
     }
 
     @Override
