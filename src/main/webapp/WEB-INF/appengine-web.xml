@@ -21,5 +21,6 @@
         <property name="recipients" value="${recipients}"/>
         <property name="app.version" value="${app.version}"/>
         <property name="wait.time.millis" value="${wait.time.millis}"/>
+        <property name="snapshots.store.capacity" value="${snapshots.store.capacity}"/>
     </system-properties>
 </appengine-web-app>
