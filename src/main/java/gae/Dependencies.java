@@ -40,6 +40,9 @@ public enum Dependencies {
         try {
 
             configuration = Configuration.fromSystemProperties();
+
+            LOGGER.log(Level.INFO, configuration.toString());
+
             loader = new Loader(configuration.getAccessParameters());
             sender = new Sender(configuration.getAppVersion());
             transactions = GaeTransactions.INSTANCE;

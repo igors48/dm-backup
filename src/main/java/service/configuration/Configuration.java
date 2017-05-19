@@ -159,4 +159,24 @@ public class Configuration {
         return new Configuration(origin, host, loginUrl, loginReferer, loginData, downloadUrl, downloadReferer, downloadData, accountsUrl, accountsReferer, admin, recipients, waitTimeMillis, snapshotsStoreCapacity, appVersionAsString);
     }
 
+    @Override
+    public String toString() {
+        return "Configuration{" +
+                "origin='" + origin + '\'' +
+                ", host='" + host + '\'' +
+                ", loginUrl='" + loginUrl + '\'' +
+                ", loginReferer='" + loginReferer + '\'' +
+                ", loginData='" + loginData + '\'' +
+                ", downloadUrl='" + downloadUrl + '\'' +
+                ", downloadReferer='" + downloadReferer + '\'' +
+                ", downloadData='" + downloadData + '\'' +
+                ", accountsUrl='" + accountsUrl + '\'' +
+                ", accountsReferer='" + accountsReferer + '\'' +
+                ", admin='" + admin + '\'' +
+                ", recipients=" + recipients +
+                ", waitTimeMillis=" + waitTimeMillis +
+                ", snapshotsStoreCapacity=" + snapshotsStoreCapacity +
+                ", appVersion='" + appVersion + '\'' +
+                '}';
+    }
 }
