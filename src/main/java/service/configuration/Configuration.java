@@ -34,6 +34,9 @@ public class Configuration {
     public static final String RECIPIENT = "recipient";
 
     public static final String WAIT_TIME_MILLIS = "wait.time.millis";
+
+    public static final String SNAPSHOTS_STORE_CAPACITY = "snapshots.store.capacity";
+
     public static final String APP_VERSION = "app.version";
 
     private final String origin;
@@ -55,9 +58,11 @@ public class Configuration {
 
     private final long waitTimeMillis;
 
+    private final int snapshotsStoreCapacity;
+
     private final String appVersion;
 
-    public Configuration(final String origin, final String host, final String loginUrl, final String loginReferer, final String loginData, final String downloadUrl, final String downloadReferer, final String downloadData, final String accountsUrl, final String accountsReferer, final String admin, final List<String> recipients, final String waitTimeMillisAsString, final String appVersion) throws ServiceException {
+    public Configuration(final String origin, final String host, final String loginUrl, final String loginReferer, final String loginData, final String downloadUrl, final String downloadReferer, final String downloadData, final String accountsUrl, final String accountsReferer, final String admin, final List<String> recipients, final String waitTimeMillisAsString, final String snapshotsStoreCapacityAsString, final String appVersion) throws ServiceException {
         guard(isValidUrl(this.origin = origin), new InvalidConfigurationParameter(ORIGIN, origin));
         guard(isValidDomain(this.host = host), new InvalidConfigurationParameter(HOST, host));
 
@@ -82,8 +87,11 @@ public class Configuration {
             this.recipients.add(recipient);
         }
 
-        final long waitTimeMillis = convert(waitTimeMillisAsString, new InvalidConfigurationParameter(WAIT_TIME_MILLIS, waitTimeMillisAsString));
+        final long waitTimeMillis = convertAsLong(waitTimeMillisAsString, new InvalidConfigurationParameter(WAIT_TIME_MILLIS, waitTimeMillisAsString));
         guard(isPositive(this.waitTimeMillis = waitTimeMillis), new InvalidConfigurationParameter(WAIT_TIME_MILLIS, String.valueOf(waitTimeMillis)));
+
+        final int snapshotsStoreCapacity = convertAsInt(snapshotsStoreCapacityAsString, new InvalidConfigurationParameter(SNAPSHOTS_STORE_CAPACITY, snapshotsStoreCapacityAsString));
+        guard(isPositive(this.snapshotsStoreCapacity = snapshotsStoreCapacity), new InvalidConfigurationParameter(SNAPSHOTS_STORE_CAPACITY, String.valueOf(snapshotsStoreCapacity)));
 
         guard(isValidString(this.appVersion = appVersion), new InvalidConfigurationParameter(APP_VERSION, appVersion));
     }
@@ -109,9 +117,21 @@ public class Configuration {
         return this.appVersion;
     }
 
-    private long convert(final String value, final ServiceException exception) throws ServiceException {
+    public int getSnapshotsStoreCapacity() {
+        return this.snapshotsStoreCapacity;
+    }
+
+    private long convertAsLong(final String value, final ServiceException exception) throws ServiceException {
         try {
             return Long.valueOf(value);
+        } catch (Exception e) {
+            throw exception;
+        }
+    }
+
+    private int convertAsInt(final String value, final ServiceException exception) throws ServiceException {
+        try {
+            return Integer.valueOf(value);
         } catch (Exception e) {
             throw exception;
         }
@@ -131,11 +151,32 @@ public class Configuration {
         final String admin = System.getProperty(ADMIN);
         final String recipientsAsString = System.getProperty(RECIPIENTS);
         final List<String> recipients = Arrays.asList(recipientsAsString.split(";"));
-
         final String waitTimeMillis = System.getProperty(WAIT_TIME_MILLIS);
+        final String snapshotsStoreCapacity = System.getProperty(SNAPSHOTS_STORE_CAPACITY);
+
         final String appVersionAsString = System.getProperty(APP_VERSION);
 
-        return new Configuration(origin, host, loginUrl, loginReferer, loginData, downloadUrl, downloadReferer, downloadData, accountsUrl, accountsReferer, admin, recipients, waitTimeMillis, appVersionAsString);
+        return new Configuration(origin, host, loginUrl, loginReferer, loginData, downloadUrl, downloadReferer, downloadData, accountsUrl, accountsReferer, admin, recipients, waitTimeMillis, snapshotsStoreCapacity, appVersionAsString);
     }
 
+    @Override
+    public String toString() {
+        return "Configuration{" +
+                "origin='" + origin + '\'' +
+                ", host='" + host + '\'' +
+                ", loginUrl='" + loginUrl + '\'' +
+                ", loginReferer='" + loginReferer + '\'' +
+                ", loginData='" + loginData + '\'' +
+                ", downloadUrl='" + downloadUrl + '\'' +
+                ", downloadReferer='" + downloadReferer + '\'' +
+                ", downloadData='" + downloadData + '\'' +
+                ", accountsUrl='" + accountsUrl + '\'' +
+                ", accountsReferer='" + accountsReferer + '\'' +
+                ", admin='" + admin + '\'' +
+                ", recipients=" + recipients +
+                ", waitTimeMillis=" + waitTimeMillis +
+                ", snapshotsStoreCapacity=" + snapshotsStoreCapacity +
+                ", appVersion='" + appVersion + '\'' +
+                '}';
+    }
 }

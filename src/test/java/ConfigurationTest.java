@@ -29,6 +29,7 @@ public class ConfigurationTest {
     private String admin;
     private List<String> recipients;
     private String waitTimeMillisAsString;
+    private String snapshotsStoreCapacityAsString;
     private String appVersion;
 
     @Before
@@ -49,6 +50,8 @@ public class ConfigurationTest {
             add("d@e.com");
         }};
         this.waitTimeMillisAsString = "3";
+        this.snapshotsStoreCapacityAsString = "5";
+
         this.appVersion = "42.42";
     }
 
@@ -56,7 +59,7 @@ public class ConfigurationTest {
     public void whenAllAreOkThenAllAreOk() {
 
         try {
-            final Configuration configuration = new Configuration(this.origin, this.host, this.loginUrl, this.loginReferer, this.loginData, this.downloadUrl, this.downloadReferer, this.downloadData, this.accountsUrl, this.accountsReferer, this.admin, this.recipients, this.waitTimeMillisAsString, this.appVersion);
+            final Configuration configuration = new Configuration(this.origin, this.host, this.loginUrl, this.loginReferer, this.loginData, this.downloadUrl, this.downloadReferer, this.downloadData, this.accountsUrl, this.accountsReferer, this.admin, this.recipients, this.waitTimeMillisAsString, this.snapshotsStoreCapacityAsString, this.appVersion);
 
             final GeneralParameters general = new GeneralParameters(this.origin, this.host);
             final FormParameters login = new FormParameters(this.loginUrl, this.loginReferer, this.loginData);
@@ -67,6 +70,10 @@ public class ConfigurationTest {
 
             assertEquals(accessParameters, configuration.getAccessParameters());
             assertEquals(recipients, configuration.getRecipients());
+
+            assertEquals(3, configuration.getWaitTimeMillis());
+            assertEquals(5, configuration.getSnapshotsStoreCapacity());
+
             assertEquals(this.appVersion, configuration.getAppVersion());
         } catch (Exception exception) {
             fail();
@@ -78,7 +85,7 @@ public class ConfigurationTest {
     public void wrongOrigin() {
 
         try {
-            new Configuration(WRONG, this.host, this.loginUrl, this.loginReferer, this.loginData, this.downloadUrl, this.downloadReferer, this.downloadData, this.accountsUrl, this.accountsReferer, this.admin, this.recipients, this.waitTimeMillisAsString, this.appVersion);
+            new Configuration(WRONG, this.host, this.loginUrl, this.loginReferer, this.loginData, this.downloadUrl, this.downloadReferer, this.downloadData, this.accountsUrl, this.accountsReferer, this.admin, this.recipients, this.waitTimeMillisAsString, this.snapshotsStoreCapacityAsString, this.appVersion);
 
             fail();
         } catch (Exception exception) {
@@ -91,7 +98,7 @@ public class ConfigurationTest {
     public void wrongHost() {
 
         try {
-            new Configuration(this.origin, WRONG, this.loginUrl, this.loginReferer, this.loginData, this.downloadUrl, this.downloadReferer, this.downloadData, this.accountsUrl, this.accountsReferer, this.admin, this.recipients, this.waitTimeMillisAsString, this.appVersion);
+            new Configuration(this.origin, WRONG, this.loginUrl, this.loginReferer, this.loginData, this.downloadUrl, this.downloadReferer, this.downloadData, this.accountsUrl, this.accountsReferer, this.admin, this.recipients, this.waitTimeMillisAsString, this.snapshotsStoreCapacityAsString, this.appVersion);
 
             fail();
         } catch (Exception exception) {
@@ -104,7 +111,7 @@ public class ConfigurationTest {
     public void wrongLoginUrl() {
 
         try {
-            new Configuration(this.origin, this.host, WRONG, this.loginReferer, this.loginData, this.downloadUrl, this.downloadReferer, this.downloadData, this.accountsUrl, this.accountsReferer, this.admin, this.recipients, this.waitTimeMillisAsString, this.appVersion);
+            new Configuration(this.origin, this.host, WRONG, this.loginReferer, this.loginData, this.downloadUrl, this.downloadReferer, this.downloadData, this.accountsUrl, this.accountsReferer, this.admin, this.recipients, this.waitTimeMillisAsString, this.snapshotsStoreCapacityAsString, this.appVersion);
 
             fail();
         } catch (Exception exception) {
@@ -117,7 +124,7 @@ public class ConfigurationTest {
     public void wrongLoginReferer() {
 
         try {
-            new Configuration(this.origin, this.host, this.loginUrl, WRONG, this.loginData, this.downloadUrl, this.downloadReferer, this.downloadData, this.accountsUrl, this.accountsReferer, this.admin, this.recipients, this.waitTimeMillisAsString, this.appVersion);
+            new Configuration(this.origin, this.host, this.loginUrl, WRONG, this.loginData, this.downloadUrl, this.downloadReferer, this.downloadData, this.accountsUrl, this.accountsReferer, this.admin, this.recipients, this.waitTimeMillisAsString, this.snapshotsStoreCapacityAsString, this.appVersion);
 
             fail();
         } catch (Exception exception) {
@@ -130,7 +137,7 @@ public class ConfigurationTest {
     public void wrongLoginData() {
 
         try {
-            new Configuration(this.origin, this.host, this.loginUrl, this.loginReferer, WRONG, this.downloadUrl, this.downloadReferer, this.downloadData, this.accountsUrl, this.accountsReferer, this.admin, this.recipients, this.waitTimeMillisAsString, this.appVersion);
+            new Configuration(this.origin, this.host, this.loginUrl, this.loginReferer, WRONG, this.downloadUrl, this.downloadReferer, this.downloadData, this.accountsUrl, this.accountsReferer, this.admin, this.recipients, this.waitTimeMillisAsString, this.snapshotsStoreCapacityAsString, this.appVersion);
 
             fail();
         } catch (Exception exception) {
@@ -143,7 +150,7 @@ public class ConfigurationTest {
     public void wrongDownloadUrl() {
 
         try {
-            new Configuration(this.origin, this.host, this.loginUrl, this.loginReferer, this.loginData, WRONG, this.downloadReferer, this.downloadData, this.accountsUrl, this.accountsReferer, this.admin, this.recipients, this.waitTimeMillisAsString, this.appVersion);
+            new Configuration(this.origin, this.host, this.loginUrl, this.loginReferer, this.loginData, WRONG, this.downloadReferer, this.downloadData, this.accountsUrl, this.accountsReferer, this.admin, this.recipients, this.waitTimeMillisAsString, this.snapshotsStoreCapacityAsString, this.appVersion);
 
             fail();
         } catch (Exception exception) {
@@ -156,7 +163,7 @@ public class ConfigurationTest {
     public void wrongDownloadReferer() {
 
         try {
-            new Configuration(this.origin, this.host, this.loginUrl, this.loginReferer, this.loginData, this.downloadUrl, WRONG, this.downloadData, this.accountsUrl, this.accountsReferer, this.admin, this.recipients, this.waitTimeMillisAsString, this.appVersion);
+            new Configuration(this.origin, this.host, this.loginUrl, this.loginReferer, this.loginData, this.downloadUrl, WRONG, this.downloadData, this.accountsUrl, this.accountsReferer, this.admin, this.recipients, this.waitTimeMillisAsString, this.snapshotsStoreCapacityAsString, this.appVersion);
 
             fail();
         } catch (Exception exception) {
@@ -169,7 +176,7 @@ public class ConfigurationTest {
     public void wrongDownloadData() {
 
         try {
-            new Configuration(this.origin, this.host, this.loginUrl, this.loginReferer, this.loginData, this.downloadUrl, this.downloadReferer, WRONG, this.accountsUrl, this.accountsReferer, this.admin, this.recipients, this.waitTimeMillisAsString, this.appVersion);
+            new Configuration(this.origin, this.host, this.loginUrl, this.loginReferer, this.loginData, this.downloadUrl, this.downloadReferer, WRONG, this.accountsUrl, this.accountsReferer, this.admin, this.recipients, this.waitTimeMillisAsString, this.snapshotsStoreCapacityAsString, this.appVersion);
 
             fail();
         } catch (Exception exception) {
@@ -182,7 +189,7 @@ public class ConfigurationTest {
     public void wrongAdmin() {
 
         try {
-            new Configuration(this.origin, this.host, this.loginUrl, this.loginReferer, this.loginData, this.downloadUrl, this.downloadReferer, this.downloadData, this.accountsUrl, this.accountsReferer, WRONG, this.recipients, this.waitTimeMillisAsString, this.appVersion);
+            new Configuration(this.origin, this.host, this.loginUrl, this.loginReferer, this.loginData, this.downloadUrl, this.downloadReferer, this.downloadData, this.accountsUrl, this.accountsReferer, WRONG, this.recipients, this.waitTimeMillisAsString, this.snapshotsStoreCapacityAsString, this.appVersion);
 
             fail();
         } catch (Exception exception) {
@@ -197,7 +204,7 @@ public class ConfigurationTest {
         try {
             this.recipients.add(WRONG);
 
-            new Configuration(this.origin, this.host, this.loginUrl, this.loginReferer, this.loginData, this.downloadUrl, this.downloadReferer, this.downloadData, this.accountsUrl, this.accountsReferer, this.admin, this.recipients, this.waitTimeMillisAsString, this.appVersion);
+            new Configuration(this.origin, this.host, this.loginUrl, this.loginReferer, this.loginData, this.downloadUrl, this.downloadReferer, this.downloadData, this.accountsUrl, this.accountsReferer, this.admin, this.recipients, this.waitTimeMillisAsString, this.snapshotsStoreCapacityAsString, this.appVersion);
 
             fail();
         } catch (Exception exception) {
@@ -210,7 +217,7 @@ public class ConfigurationTest {
     public void wrongWaitTimeMillis() {
 
         try {
-            new Configuration(this.origin, this.host, this.loginUrl, this.loginReferer, this.loginData, this.downloadUrl, this.downloadReferer, this.downloadData, this.accountsUrl, this.accountsReferer, this.admin, this.recipients, WRONG, this.appVersion);
+            new Configuration(this.origin, this.host, this.loginUrl, this.loginReferer, this.loginData, this.downloadUrl, this.downloadReferer, this.downloadData, this.accountsUrl, this.accountsReferer, this.admin, this.recipients, WRONG, this.snapshotsStoreCapacityAsString, this.appVersion);
 
             fail();
         } catch (Exception exception) {
@@ -222,7 +229,7 @@ public class ConfigurationTest {
     public void wrongAccountsUrl() {
 
         try {
-            new Configuration(this.origin, this.host, this.loginUrl, this.loginReferer, this.loginData, this.downloadUrl, this.downloadReferer, this.downloadData, WRONG, this.accountsReferer, this.admin, this.recipients, this.waitTimeMillisAsString, this.appVersion);
+            new Configuration(this.origin, this.host, this.loginUrl, this.loginReferer, this.loginData, this.downloadUrl, this.downloadReferer, this.downloadData, WRONG, this.accountsReferer, this.admin, this.recipients, this.waitTimeMillisAsString, this.snapshotsStoreCapacityAsString, this.appVersion);
 
             fail();
         } catch (Exception exception) {
@@ -235,7 +242,7 @@ public class ConfigurationTest {
     public void wrongAccountsReferer() {
 
         try {
-            new Configuration(this.origin, this.host, this.loginUrl, this.loginReferer, this.loginData, this.downloadUrl, this.downloadReferer, this.downloadData, this.accountsUrl, WRONG, this.admin, this.recipients, this.waitTimeMillisAsString, this.appVersion);
+            new Configuration(this.origin, this.host, this.loginUrl, this.loginReferer, this.loginData, this.downloadUrl, this.downloadReferer, this.downloadData, this.accountsUrl, WRONG, this.admin, this.recipients, this.waitTimeMillisAsString, this.snapshotsStoreCapacityAsString, this.appVersion);
 
             fail();
         } catch (Exception exception) {
@@ -248,11 +255,24 @@ public class ConfigurationTest {
     public void wrongAppVersion() {
 
         try {
-            new Configuration(this.origin, this.host, this.loginUrl, this.loginReferer, this.loginData, this.downloadUrl, this.downloadReferer, this.downloadData, this.accountsUrl, this.accountsReferer, this.admin, this.recipients, this.waitTimeMillisAsString, "");
+            new Configuration(this.origin, this.host, this.loginUrl, this.loginReferer, this.loginData, this.downloadUrl, this.downloadReferer, this.downloadData, this.accountsUrl, this.accountsReferer, this.admin, this.recipients, this.waitTimeMillisAsString, this.snapshotsStoreCapacityAsString, "");
 
             fail();
         } catch (Exception exception) {
             assertEquals(new InvalidConfigurationParameter(Configuration.APP_VERSION, ""), exception);
+        }
+
+    }
+
+    @Test
+    public void wrongSnapshotsStoreCapacity() {
+
+        try {
+            new Configuration(this.origin, this.host, this.loginUrl, this.loginReferer, this.loginData, this.downloadUrl, this.downloadReferer, this.downloadData, this.accountsUrl, this.accountsReferer, this.admin, this.recipients, this.waitTimeMillisAsString, WRONG, this.appVersion);
+
+            fail();
+        } catch (Exception exception) {
+            assertEquals(new InvalidConfigurationParameter(Configuration.SNAPSHOTS_STORE_CAPACITY, WRONG), exception);
         }
 
     }
