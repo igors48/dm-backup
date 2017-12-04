@@ -37,6 +37,7 @@ public class BackupTestBase {
     protected SnapshotStore changesSnapshotStore;
     protected SnapshotStore dailySnapshotStore;
     protected TransactionStub transactionStub;
+    protected TimeServiceStub timeServiceStub;
     private Transactions transactions;
 
     @Before
@@ -48,6 +49,7 @@ public class BackupTestBase {
         this.dailySnapshotStore = mock(SnapshotStore.class);
         this.transactions = mock(Transactions.class);
         this.transactionStub = new TransactionStub();
+        this.timeServiceStub = new TimeServiceStub();
 
         this.serviceException = mock(ServiceException.class);
 
@@ -59,6 +61,6 @@ public class BackupTestBase {
         when(this.dailySnapshotStore.loadLatestSnapshot()).thenReturn(LATEST_SNAPSHOT);
         when(this.dailySnapshotStore.store((Content) any())).thenReturn(CURRENT_SNAPSHOT);
 
-        this.backup = new Backup(this.loader, this.sender, this.changesDetector, recipients, this.changesSnapshotStore, this.dailySnapshotStore, transactions);
+        this.backup = new Backup(this.loader, this.sender, this.changesDetector, recipients, this.changesSnapshotStore, this.dailySnapshotStore, this.timeServiceStub, transactions);
     }
 }
