@@ -17,7 +17,7 @@
 
     <properties>
         <app.version>${project.version}</app.version>
-        <appengine.version>1.9.51</appengine.version>
+        <appengine.version>1.9.59</appengine.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <maven.compiler.source>1.7</maven.compiler.source>
@@ -52,12 +52,12 @@
         <dependency>
             <groupId>com.google.code.gson</groupId>
             <artifactId>gson</artifactId>
-            <version>2.8.0</version>
+            <version>2.8.2</version>
         </dependency>
         <dependency>
             <groupId>org.thymeleaf</groupId>
             <artifactId>thymeleaf</artifactId>
-            <version>3.0.5.RELEASE</version>
+            <version>3.0.9.RELEASE</version>
         </dependency>
         <dependency>
             <groupId>commons-validator</groupId>
@@ -72,12 +72,12 @@
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-core</artifactId>
-            <version>2.9.0.pr2</version>
+            <version>2.9.2</version>
         </dependency>
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-databind</artifactId>
-            <version>2.9.0.pr2</version>
+            <version>2.9.2</version>
         </dependency>
         <dependency>
             <groupId>javax.servlet</groupId>
@@ -108,7 +108,7 @@
         <dependency>
             <groupId>org.mockito</groupId>
             <artifactId>mockito-core</artifactId>
-            <version>2.7.22</version>
+            <version>2.12.0</version>
         </dependency>
 
     </dependencies>
