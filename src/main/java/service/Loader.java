@@ -94,7 +94,7 @@ public class Loader {
                 result.addAll(accounts);
             }
         } catch (Exception exception) {
-            LOGGER.log(Level.SEVERE, "Error parsing acounts", exception);
+            LOGGER.log(Level.SEVERE, "Error parsing accounts", exception);
         } finally {
             disconnect(connection);
         }
