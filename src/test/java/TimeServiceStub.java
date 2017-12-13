@@ -9,7 +9,7 @@ public class TimeServiceStub implements TimeService {
 
     @Override
     public long currentTimestamp() {
-        return ++this.timestamp;
+        return this.timestamp;
     }
 
 }

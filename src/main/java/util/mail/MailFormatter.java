@@ -18,6 +18,21 @@ public class MailFormatter {
 
         accounts.add(createAccount("t1", "1.00"));
         accounts.add(createAccount("t2", "2.00"));
+        accounts.add(createAccount("t3", "3.00"));
+        accounts.add(createAccount("t5", "5.00"));
+        accounts.add(createAccount("t6", "7.00"));
+
+        return accounts;
+    }
+
+    private static ArrayList<Account> createPreviousAccounts() {
+        final ArrayList<Account> accounts = new ArrayList<>();
+
+        accounts.add(createAccount("t1", "1.00"));
+        accounts.add(createAccount("t2", "2.00"));
+        accounts.add(createAccount("t4", "4.00"));
+        accounts.add(createAccount("t5", "4.00"));
+        accounts.add(createAccount("t6", "8.00"));
 
         return accounts;
     }
@@ -33,8 +48,10 @@ public class MailFormatter {
         final List<Account> accounts = createAccounts();
         final List<Account> previousAccounts = new ArrayList<>();
         final String version = "1.2";
+        final String beforeTime = "2016-03-02 20:15:08";
+        final String afterTime = "2016-03-02 20:15:08";
 
-        final String content = Template.formatContent(caption, time, server, accounts, previousAccounts, version);
+        final String content = Template.formatContent(caption, time, server, accounts, previousAccounts, beforeTime, afterTime, version);
 
         try (PrintWriter out = new PrintWriter("C:\\Igor\\temp\\content.html")) {
             out.println(content);
@@ -49,10 +66,12 @@ public class MailFormatter {
         final String time = "2017-03-02 20:15:08";
         final String server = "dm-backup";
         final List<Account> accounts = createAccounts();
-        final List<Account> previousAccounts = createAccounts();
+        final List<Account> previousAccounts = createPreviousAccounts();
         final String version = "1.2";
+        final String beforeTime = "2016-03-02 20:15:08";
+        final String afterTime = "2016-03-02 20:15:08";
 
-        final String content = Template.formatContent(caption, time, server, accounts, previousAccounts, version);
+        final String content = Template.formatContent(caption, time, server, accounts, previousAccounts, beforeTime, afterTime, version);
 
         try (PrintWriter out = new PrintWriter("C:\\Igor\\temp\\changed-content.html")) {
             out.println(content);

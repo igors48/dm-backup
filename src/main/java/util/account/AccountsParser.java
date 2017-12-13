@@ -78,10 +78,10 @@ public class AccountsParser {
             final ParsedAccount newAccount = find(title, afterCopy);
 
             if (newAccount == null) {
-                final ComparisonResult removedItem = new ComparisonResult(title, oldAccount.balance, null);
+                final ComparisonResult removedItem = new ComparisonResult(title, oldAccount.balance, null, -oldAccount.balance);
                 result.add(removedItem);
             } else {
-                final ComparisonResult updatedItem = new ComparisonResult(title, oldAccount.balance, newAccount.balance);
+                final ComparisonResult updatedItem = new ComparisonResult(title, oldAccount.balance, newAccount.balance, newAccount.balance - oldAccount.balance);
                 result.add(updatedItem);
 
                 afterCopy.remove(newAccount);
@@ -89,7 +89,7 @@ public class AccountsParser {
         }
 
         for (final ParsedAccount remain : afterCopy) {
-            final ComparisonResult addedItem = new ComparisonResult(remain.title, null, remain.balance);
+            final ComparisonResult addedItem = new ComparisonResult(remain.title, null, remain.balance, remain.balance);
             result.add(addedItem);
         }
 
