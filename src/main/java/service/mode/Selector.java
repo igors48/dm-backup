@@ -92,7 +92,19 @@ public class Selector {
             final CronJobState cronJobState = this.cronJobStateStore.load();
             cronJobState.onSuccess();
 
+            final long lastRushTime = this.calculateLastRushTime();
+            final boolean dailyBackupPerformed = lastRushTime < cronJobState.getLastDailyBackupTimestamp();
+
+            this.cronJobStateStore.store(cronJobState);
+
             transaction.commit();
+
+            if (dailyBackupPerformed) {
+                this.checkChanges(content);
+            } else {
+                this.dailyBackup(content);
+            }
+
         } catch (Exception e) {
 
         } finally {
@@ -100,17 +112,42 @@ public class Selector {
         }
     }
 
-    private boolean itIsRushTime() {
+    private void dailyBackup(Content content) {
+        Transaction transaction = null;
+
+        try {
+            transaction = this.transactions.beginOne();
+
+        } finally {
+            rollbackIfActive(transaction);
+        }
+    }
+
+    private void checkChanges(Content content) {
+        Transaction transaction = null;
+
+        try {
+            transaction = this.transactions.beginOne();
+
+        } finally {
+            rollbackIfActive(transaction);
+        }
+    }
+
+    private long calculateLastRushTime() {
         final long currentTimestamp = this.timeService.currentTimestamp();
+
         final DateTime current = new DateTime(currentTimestamp);
-        final int currentHour = current.getHourOfDay();
 
-        final int startHour = this.configuration.rushHour;
+        final int year = current.getYear();
+        final int month = current.getMonthOfYear();
+        final int day = current.getDayOfMonth();
 
-        final int endPeriod = this.configuration.rushHour + this.configuration.rushPeriod;
-        final int endHour = endPeriod > 23 ? endPeriod - 23 : endPeriod;
+        final DateTime todayRushTime = new DateTime(year, month, day, this.configuration.rushHour, 0);
 
-        return false;
+        final DateTime rushTime = currentTimestamp < todayRushTime.getMillis() ? todayRushTime.minusDays(1) : todayRushTime;
+
+        return rushTime.getMillis();
     }
 
 }

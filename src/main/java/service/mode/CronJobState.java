@@ -8,6 +8,10 @@ public class CronJobState {
     private int totalFailCount;
     private int totalErrorCount;
 
+    public long getLastDailyBackupTimestamp() {
+        return lastDailyBackupTimestamp;
+    }
+
     public void onSuccess() {
         this.errorCounter = 0;
         ++this.totalSuccessCount;
