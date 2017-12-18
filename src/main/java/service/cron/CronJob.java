@@ -1,4 +1,4 @@
-package service.mode;
+package service.cron;
 
 import com.google.appengine.api.datastore.Transaction;
 import org.joda.time.DateTime;
@@ -12,21 +12,23 @@ import static util.Assert.guard;
 import static util.Parameter.notNull;
 import static util.TransactionTools.rollbackIfActive;
 
-public class Selector {
+public class CronJob {
 
-    private static final Logger LOGGER = Logger.getLogger(Selector.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(CronJob.class.getName());
 
-    private final Configuration configuration;
+    private final CronJobConfiguration configuration;
     private final Loader loader;
     private final Sender sender;
+    private final Backup backup;
     private final CronJobStateStore cronJobStateStore;
     private final TimeService timeService;
     private final Transactions transactions;
 
-    public Selector(final Configuration configuration, final Loader loader, final Sender sender, final CronJobStateStore cronJobStateStore, final TimeService timeService, final Transactions transactions) {
+    public CronJob(final CronJobConfiguration configuration, final Loader loader, final Sender sender, final Backup backup, final CronJobStateStore cronJobStateStore, final TimeService timeService, final Transactions transactions) {
         guard(notNull(this.configuration = configuration));
         guard(notNull(this.loader = loader));
         guard(notNull(this.sender = sender));
+        guard(notNull(this.backup = backup));
         guard(notNull(this.cronJobStateStore = cronJobStateStore));
         guard(notNull(this.timeService = timeService));
         guard(notNull(this.transactions = transactions));
@@ -62,7 +64,7 @@ public class Selector {
         }
     }
 
-    private void sendException(ServiceException exception) {
+    private void sendException(final ServiceException exception) {
 
         try {
             this.sender.sendException(this.configuration.recipients.adminRecipient, exception);
@@ -72,7 +74,7 @@ public class Selector {
 
     }
 
-    private boolean checkErrorMailShouldSent(CronJobState cronJobState) {
+    private boolean checkErrorMailShouldSent(final CronJobState cronJobState) {
         final int errorCounter = cronJobState.onFail();
 
         if (errorCounter > this.configuration.maxConsecutiveErrorsCount) {
@@ -100,34 +102,10 @@ public class Selector {
             transaction.commit();
 
             if (dailyBackupPerformed) {
-                this.checkChanges(content);
+                this.backup.checkChanges(content);
             } else {
-                this.dailyBackup(content);
+                this.backup.dailyBackup(content);
             }
-
-        } catch (Exception e) {
-
-        } finally {
-            rollbackIfActive(transaction);
-        }
-    }
-
-    private void dailyBackup(Content content) {
-        Transaction transaction = null;
-
-        try {
-            transaction = this.transactions.beginOne();
-
-        } finally {
-            rollbackIfActive(transaction);
-        }
-    }
-
-    private void checkChanges(Content content) {
-        Transaction transaction = null;
-
-        try {
-            transaction = this.transactions.beginOne();
 
         } finally {
             rollbackIfActive(transaction);

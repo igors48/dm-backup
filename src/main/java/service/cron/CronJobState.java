@@ -1,4 +1,4 @@
-package service.mode;
+package service.cron;
 
 public class CronJobState {
 

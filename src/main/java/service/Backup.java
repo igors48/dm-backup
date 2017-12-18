@@ -23,9 +23,8 @@ public class Backup {
 
     private static final Logger LOGGER = Logger.getLogger(Backup.class.getName());
 
-    public static final ArrayList<Account> EMPTY_ACCOUNTS = new ArrayList<>();
+    private static final ArrayList<Account> EMPTY_ACCOUNTS = new ArrayList<>();
 
-    private final Loader loader;
     private final Sender sender;
     private final ChangesDetector changesDetector;
     private final Recipients recipients;
@@ -34,8 +33,7 @@ public class Backup {
     private final TimeService timeService;
     private final Transactions transactions;
 
-    public Backup(final Loader loader, final Sender sender, final ChangesDetector changesDetector, final Recipients recipients, final SnapshotStore changesSnapshotStore, final SnapshotStore dailySnapshotStore, final TimeService timeService, final Transactions transactions) {
-        guard(notNull(this.loader = loader));
+    public Backup(final Sender sender, final ChangesDetector changesDetector, final Recipients recipients, final SnapshotStore changesSnapshotStore, final SnapshotStore dailySnapshotStore, final TimeService timeService, final Transactions transactions) {
         guard(notNull(this.sender = sender));
         guard(notNull(this.changesDetector = changesDetector));
         guard(notNull(this.recipients = recipients));
@@ -45,45 +43,38 @@ public class Backup {
         guard(notNull(this.transactions = transactions));
     }
 
-    public void checkChanges() {
+    public void checkChanges(final Content content) {
+        guard(notNull(content));
 
-        try {
-            LOGGER.info("Check changes started");
+        LOGGER.info("Check changes started");
 
-            final Content content = this.loader.load();
+        final Action action = this.changesDetector.getActionForContent(content.file);
+        LOGGER.info(String.format("Action [ %s ]", action.type));
 
-            final Action action = this.changesDetector.getActionForContent(content.file);
-            LOGGER.info(String.format("Action [ %s ]", action.type));
-
-            switch (action.type) {
-                case NO_ACTION:
-                    break;
-                case SAVE:
-                    storeContent(content);
-                    break;
-                case UPDATE_LAST:
-                    updateLast(content);
-                    break;
-                case SEND:
-                    sendChangedContent(content, action.accounts, action.before, action.after);
-                    break;
-            }
-
-            LOGGER.info("Check changes finished");
-        } catch (ServiceException exception) {
-            LOGGER.log(Level.SEVERE, "Check changes failed", exception);
-
-            sendError(exception);
+        switch (action.type) {
+            case NO_ACTION:
+                break;
+            case SAVE:
+                storeContent(content);
+                break;
+            case UPDATE_LAST:
+                updateLast(content);
+                break;
+            case SEND:
+                sendChangedContent(content, action.accounts, action.before, action.after);
+                break;
         }
+
+        LOGGER.info("Check changes finished");
     }
 
-    public void dailyBackup() {
+    public void dailyBackup(final Content content) {
+        guard(notNull(content));
+
         Transaction transaction = null;
 
         try {
             LOGGER.info("Backup started");
-
-            final Content content = this.loader.load();
 
             transaction = this.transactions.beginOne();
 
@@ -98,10 +89,6 @@ public class Backup {
             sendDailyBackup(content, previousAccounts, before, new Date(current.timestamp));
 
             LOGGER.info("Backup finished");
-        } catch (ServiceException exception) {
-            LOGGER.log(Level.SEVERE, "Backup failed", exception);
-
-            sendError(exception);
         } finally {
             rollbackIfActive(transaction);
         }

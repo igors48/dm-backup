@@ -1,4 +1,4 @@
-package service.mode;
+package service.cron;
 
 import static util.Assert.guard;
 import static util.Parameter.notNull;

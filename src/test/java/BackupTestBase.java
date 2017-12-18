@@ -61,6 +61,6 @@ public class BackupTestBase {
         when(this.dailySnapshotStore.loadLatestSnapshot()).thenReturn(LATEST_SNAPSHOT);
         when(this.dailySnapshotStore.store((Content) any())).thenReturn(CURRENT_SNAPSHOT);
 
-        this.backup = new Backup(this.loader, this.sender, this.changesDetector, recipients, this.changesSnapshotStore, this.dailySnapshotStore, this.timeServiceStub, transactions);
+        this.backup = new Backup(this.sender, this.changesDetector, recipients, this.changesSnapshotStore, this.dailySnapshotStore, this.timeServiceStub, transactions);
     }
 }
