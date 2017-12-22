@@ -37,10 +37,11 @@ public class BackupTestBase {
     protected SnapshotStore dailySnapshotStore;
     protected TransactionStub transactionStub;
     protected TimeServiceStub timeServiceStub;
-    private Transactions transactions;
+    protected Recipients recipients;
+    protected Transactions transactions;
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp() {
         this.sender = mock(Sender.class);
         this.changesDetector = mock(ChangesDetector.class);
         this.changesSnapshotStore = mock(SnapshotStore.class);
@@ -51,13 +52,13 @@ public class BackupTestBase {
 
         this.serviceException = mock(ServiceException.class);
 
-        final Recipients recipients = new Recipients(A_B_COM, Arrays.asList(B_C_COM, C_D_COM));
+        this.recipients = new Recipients(A_B_COM, Arrays.asList(B_C_COM, C_D_COM));
 
         when(this.transactions.beginOne()).thenReturn(this.transactionStub);
         when(this.changesDetector.getActionForContent(CONTENT.file)).thenReturn(Action.NO_ACTION);
         when(this.dailySnapshotStore.loadLatestSnapshot()).thenReturn(LATEST_SNAPSHOT);
         when(this.dailySnapshotStore.store((Content) any())).thenReturn(CURRENT_SNAPSHOT);
 
-        this.backup = new Backup(this.sender, this.changesDetector, recipients, this.changesSnapshotStore, this.dailySnapshotStore, this.timeServiceStub, transactions);
+        this.backup = new Backup(this.sender, this.changesDetector, this.recipients, this.changesSnapshotStore, this.dailySnapshotStore, this.timeServiceStub, transactions);
     }
 }
