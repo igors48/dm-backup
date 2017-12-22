@@ -29,7 +29,6 @@ public class BackupTestBase {
     protected static final String B_C_COM = "b@c.com";
     protected static final String C_D_COM = "c@d.com";
 
-    protected Loader loader;
     protected Sender sender;
     protected ChangesDetector changesDetector;
     protected Backup backup;
@@ -42,7 +41,6 @@ public class BackupTestBase {
 
     @Before
     public void setUp() throws Exception {
-        this.loader = mock(Loader.class);
         this.sender = mock(Sender.class);
         this.changesDetector = mock(ChangesDetector.class);
         this.changesSnapshotStore = mock(SnapshotStore.class);
@@ -56,7 +54,6 @@ public class BackupTestBase {
         final Recipients recipients = new Recipients(A_B_COM, Arrays.asList(B_C_COM, C_D_COM));
 
         when(this.transactions.beginOne()).thenReturn(this.transactionStub);
-        when(loader.load()).thenReturn(CONTENT);
         when(this.changesDetector.getActionForContent(CONTENT.file)).thenReturn(Action.NO_ACTION);
         when(this.dailySnapshotStore.loadLatestSnapshot()).thenReturn(LATEST_SNAPSHOT);
         when(this.dailySnapshotStore.store((Content) any())).thenReturn(CURRENT_SNAPSHOT);
