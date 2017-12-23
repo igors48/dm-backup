@@ -12,6 +12,8 @@ import static org.mockito.Mockito.*;
 
 public class CronJobTest extends BackupTestBase {
 
+    //TODO split tests
+
     private static final ServiceException SERVICE_EXCEPTION = mock(ServiceException.class);
 
     private CronJobConfiguration configuration;
