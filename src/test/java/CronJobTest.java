@@ -3,8 +3,12 @@ import org.junit.Test;
 import service.Loader;
 import service.cron.CronJob;
 import service.cron.CronJobConfiguration;
+import service.cron.CronJobState;
 import service.cron.CronJobStateStore;
+import service.error.ServiceException;
 
+import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
 
 public class CronJobTest extends BackupTestBase {
@@ -20,14 +24,24 @@ public class CronJobTest extends BackupTestBase {
         super.setUp();
 
         this.configuration = new CronJobConfiguration(1, 1, 1, 1, this.recipients);
-        this.cronJobStateStore = mock(CronJobStateStore.class);
+        this.cronJobStateStore = new CronJobStateStoreStub();
         this.loader = mock(Loader.class);
 
         this.cronJob = new CronJob(this.configuration, this.loader, this.sender, this.backup, this.cronJobStateStore, this.timeServiceStub, this.transactions);
     }
 
     @Test
-    public void name() {
+    public void whenLoaderFailedThenTotalFailCounterUpdated() throws Exception {
+        doThrow(mock(ServiceException.class)).when(this.loader).load();
 
+        final CronJobState original = new CronJobState(0, 0, 0, 0, 0);
+        this.cronJobStateStore.store(original);
+
+        this.cronJob.execute();
+
+        final CronJobState updated = this.cronJobStateStore.load();
+
+        assertEquals(1, updated.getTotalFailCount());
     }
+
 }

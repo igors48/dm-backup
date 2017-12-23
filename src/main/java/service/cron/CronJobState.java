@@ -1,5 +1,8 @@
 package service.cron;
 
+import static util.Assert.guard;
+import static util.Parameter.isPositive;
+
 public class CronJobState {
 
     private long lastDailyBackupTimestamp;
@@ -7,6 +10,14 @@ public class CronJobState {
     private int totalSuccessCount;
     private int totalFailCount;
     private int totalErrorCount;
+
+    public CronJobState(final long lastDailyBackupTimestamp, final int errorCounter, final int totalSuccessCount, final int totalFailCount, final int totalErrorCount) {
+        guard(isPositive(this.lastDailyBackupTimestamp = lastDailyBackupTimestamp));
+        guard(isPositive(this.errorCounter = errorCounter));
+        guard(isPositive(this.totalSuccessCount = totalSuccessCount));
+        guard(isPositive(this.totalFailCount = totalFailCount));
+        guard(isPositive(this.totalErrorCount = totalErrorCount));
+    }
 
     public long getLastDailyBackupTimestamp() {
         return lastDailyBackupTimestamp;
@@ -26,6 +37,10 @@ public class CronJobState {
     public void onError() {
         this.errorCounter = 0;
         ++this.totalErrorCount;
+    }
+
+    public int getTotalFailCount() {
+        return this.totalFailCount;
     }
 
 }

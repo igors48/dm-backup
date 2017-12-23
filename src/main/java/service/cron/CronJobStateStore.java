@@ -1,16 +1,9 @@
 package service.cron;
 
-import static util.Assert.guard;
-import static util.Parameter.notNull;
+public interface CronJobStateStore {
 
-public class CronJobStateStore {
+    CronJobState load();
 
-    public CronJobState load() {
-        return null;
-    }
-
-    public void store(final CronJobState cronJobState) {
-        guard(notNull(cronJobState));
-    }
+    void store(final CronJobState cronJobState);
 
 }
