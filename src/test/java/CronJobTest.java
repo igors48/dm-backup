@@ -87,4 +87,32 @@ public class CronJobTest extends BackupTestBase {
         assertEquals(1, updated.getTotalSuccessCount());
     }
 
+    @Test
+    public void whenLoaderConsecutiveErrorsCountLimitReachedThenErrorCounterReset() throws Exception {
+        doThrow(SERVICE_EXCEPTION).when(this.loader).load();
+
+        final CronJobState original = new CronJobState(0, this.configuration.maxConsecutiveErrorsCount, 0, 0, 0);
+        this.cronJobStateStore.store(original);
+
+        this.cronJob.execute();
+
+        final CronJobState updated = this.cronJobStateStore.load();
+
+        assertEquals(0, updated.getErrorCounter());
+    }
+
+    @Test
+    public void whenLoaderConsecutiveErrorsCountLimitReachedThenTotalErrorCounterUpdated() throws Exception {
+        doThrow(SERVICE_EXCEPTION).when(this.loader).load();
+
+        final CronJobState original = new CronJobState(0, this.configuration.maxConsecutiveErrorsCount, 0, 0, 0);
+        this.cronJobStateStore.store(original);
+
+        this.cronJob.execute();
+
+        final CronJobState updated = this.cronJobStateStore.load();
+
+        assertEquals(1, updated.getTotalErrorCount());
+    }
+
 }

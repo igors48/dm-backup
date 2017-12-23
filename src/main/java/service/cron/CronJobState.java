@@ -44,11 +44,15 @@ public class CronJobState {
     }
 
     public int getErrorCounter() {
-        return errorCounter;
+        return this.errorCounter;
     }
 
     public int getTotalSuccessCount() {
-        return totalSuccessCount;
+        return this.totalSuccessCount;
+    }
+
+    public int getTotalErrorCount() {
+        return this.totalErrorCount;
     }
 
 }
