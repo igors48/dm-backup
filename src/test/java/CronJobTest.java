@@ -8,10 +8,11 @@ import service.cron.CronJobStateStore;
 import service.error.ServiceException;
 
 import static org.junit.Assert.assertEquals;
-import static org.mockito.Mockito.doThrow;
-import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.*;
 
 public class CronJobTest extends BackupTestBase {
+
+    private static final ServiceException SERVICE_EXCEPTION = mock(ServiceException.class);
 
     private CronJobConfiguration configuration;
     private CronJobStateStore cronJobStateStore;
@@ -32,7 +33,7 @@ public class CronJobTest extends BackupTestBase {
 
     @Test
     public void whenLoaderFailedThenTotalFailCounterUpdated() throws Exception {
-        doThrow(mock(ServiceException.class)).when(this.loader).load();
+        doThrow(SERVICE_EXCEPTION).when(this.loader).load();
 
         final CronJobState original = new CronJobState(0, 0, 0, 0, 0);
         this.cronJobStateStore.store(original);
@@ -42,6 +43,48 @@ public class CronJobTest extends BackupTestBase {
         final CronJobState updated = this.cronJobStateStore.load();
 
         assertEquals(1, updated.getTotalFailCount());
+    }
+
+    @Test
+    public void whenLoaderFailedThenTotalErrorCounterUpdated() throws Exception {
+        doThrow(SERVICE_EXCEPTION).when(this.loader).load();
+
+        final CronJobState original = new CronJobState(0, 0, 0, 0, 0);
+        this.cronJobStateStore.store(original);
+
+        this.cronJob.execute();
+
+        final CronJobState updated = this.cronJobStateStore.load();
+
+        assertEquals(1, updated.getErrorCounter());
+    }
+
+    @Test
+    public void whenLoaderSuccessThenTotalErrorCounterReset() throws Exception {
+        when(this.loader.load()).thenReturn(CONTENT);
+
+        final CronJobState original = new CronJobState(0, 1, 0, 0, 0);
+        this.cronJobStateStore.store(original);
+
+        this.cronJob.execute();
+
+        final CronJobState updated = this.cronJobStateStore.load();
+
+        assertEquals(0, updated.getErrorCounter());
+    }
+
+    @Test
+    public void whenLoaderSuccessThenTotalSuccessCounterUpdated() throws Exception {
+        when(this.loader.load()).thenReturn(CONTENT);
+
+        final CronJobState original = new CronJobState(0, 1, 0, 0, 0);
+        this.cronJobStateStore.store(original);
+
+        this.cronJob.execute();
+
+        final CronJobState updated = this.cronJobStateStore.load();
+
+        assertEquals(1, updated.getTotalSuccessCount());
     }
 
 }
