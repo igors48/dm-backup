@@ -48,7 +48,7 @@ public class BackupTestBase {
         this.dailySnapshotStore = mock(SnapshotStore.class);
         this.transactions = mock(Transactions.class);
         this.transactionStub = new TransactionStub();
-        this.timeServiceStub = new TimeServiceStub();
+        this.timeServiceStub = new TimeServiceStub(0);
 
         this.serviceException = mock(ServiceException.class);
 

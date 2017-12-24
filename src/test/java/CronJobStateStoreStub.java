@@ -5,6 +5,10 @@ public class CronJobStateStoreStub implements CronJobStateStore {
 
     private CronJobState state;
 
+    public CronJobStateStoreStub(final CronJobState state) {
+        this.state = state;
+    }
+
     @Override
     public CronJobState load() {
         return this.state;

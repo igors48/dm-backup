@@ -7,7 +7,7 @@ import static org.mockito.Mockito.when;
 public class CronJobLoaderSuccessTest extends CronJobTestBase {
 
     @Test
-    public void whenLoaderSuccessThenTotalErrorCounterReset() throws Exception {
+    public void whenLoaderSuccessThenErrorCounterReset() throws Exception {
         when(this.loader.load()).thenReturn(CONTENT);
 
         final CronJobState original = new CronJobState(0, 1, 0, 0, 0);

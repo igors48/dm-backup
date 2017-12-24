@@ -8,18 +8,20 @@ import service.error.ServiceException;
 import static org.mockito.Mockito.mock;
 
 public class CronJobTestBase extends BackupTestBase {
-    protected static final ServiceException SERVICE_EXCEPTION = mock(ServiceException.class);
-    protected CronJobConfiguration configuration;
-    protected CronJobStateStore cronJobStateStore;
-    protected Loader loader;
-    protected CronJob cronJob;
+
+    static final ServiceException SERVICE_EXCEPTION = mock(ServiceException.class);
+
+    CronJobConfiguration configuration;
+    CronJobStateStore cronJobStateStore;
+    Loader loader;
+    CronJob cronJob;
 
     @Before
     public void setUp() {
         super.setUp();
 
-        this.configuration = new CronJobConfiguration(1, 1, 1, 1, this.recipients);
-        this.cronJobStateStore = new CronJobStateStoreStub();
+        this.configuration = new CronJobConfiguration(1, 1, this.recipients);
+        this.cronJobStateStore = new CronJobStateStoreStub(null);
         this.loader = mock(Loader.class);
 
         this.cronJob = new CronJob(this.configuration, this.loader, this.sender, this.backup, this.cronJobStateStore, this.timeServiceStub, this.transactions);
