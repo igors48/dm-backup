@@ -56,7 +56,7 @@ public enum Dependencies {
             dailySnapshotStore = new SnapshotStore(configuration.getSnapshotsStoreCapacity(), Type.DAILY, dailySnapshotRepository, timeService);
             changesDetector = new ChangesDetector(changesSnapshotRepository, timestampRepository, timeService, configuration.getWaitTimeMillis(), transactions);
             backup = new Backup(sender, changesDetector, configuration.getRecipients(), changesSnapshotStore, dailySnapshotStore, timeService, transactions);
-            cronJob = new CronJob(null, loader, sender, backup, null, timeService, transactions);
+            cronJob = new CronJob(configuration.getCronJobConfiguration(), loader, sender, backup, null, timeService, transactions);
 
         } catch (Exception exception) {
             LOGGER.log(Level.SEVERE, "Application initialization error", exception);

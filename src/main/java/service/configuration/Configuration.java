@@ -1,5 +1,6 @@
 package service.configuration;
 
+import service.cron.CronJobConfiguration;
 import service.error.InvalidConfigurationParameter;
 import service.error.ServiceException;
 
@@ -37,6 +38,10 @@ public class Configuration {
 
     public static final String SNAPSHOTS_STORE_CAPACITY = "snapshots.store.capacity";
 
+    public static final String CRON = "cron";
+    public static final String RUSH_HOUR = "rush.hour";
+    public static final String MAX_CONSECUTIVE_ERRORS_COUNT = "max.consecutive.errors.count";
+
     public static final String APP_VERSION = "app.version";
 
     private final String origin;
@@ -60,9 +65,12 @@ public class Configuration {
 
     private final int snapshotsStoreCapacity;
 
+    private final int rushHour;
+    private final int maxConsecutiveErrorsCount;
+
     private final String appVersion;
 
-    public Configuration(final String origin, final String host, final String loginUrl, final String loginReferer, final String loginData, final String downloadUrl, final String downloadReferer, final String downloadData, final String accountsUrl, final String accountsReferer, final String admin, final List<String> recipients, final String waitTimeMillisAsString, final String snapshotsStoreCapacityAsString, final String appVersion) throws ServiceException {
+    public Configuration(final String origin, final String host, final String loginUrl, final String loginReferer, final String loginData, final String downloadUrl, final String downloadReferer, final String downloadData, final String accountsUrl, final String accountsReferer, final String admin, final List<String> recipients, final String waitTimeMillisAsString, final String snapshotsStoreCapacityAsString, final String rushHourAsString, final String maxConsecutiveErrorsCountAsString, final String appVersion) throws ServiceException {
         guard(isValidUrl(this.origin = origin), new InvalidConfigurationParameter(ORIGIN, origin));
         guard(isValidDomain(this.host = host), new InvalidConfigurationParameter(HOST, host));
 
@@ -79,6 +87,12 @@ public class Configuration {
 
         guard(isValidEmail(this.admin = admin), new InvalidConfigurationParameter(ADMIN, admin));
 
+        final int rushHour = convertAsInt(rushHourAsString, new InvalidConfigurationParameter(RUSH_HOUR, rushHourAsString));
+        guard(isPositive(this.rushHour = rushHour), new InvalidConfigurationParameter(RUSH_HOUR, rushHourAsString));
+
+        final int maxConsecutiveErrorsCount = convertAsInt(maxConsecutiveErrorsCountAsString, new InvalidConfigurationParameter(MAX_CONSECUTIVE_ERRORS_COUNT, maxConsecutiveErrorsCountAsString));
+        guard(isPositive(this.maxConsecutiveErrorsCount = maxConsecutiveErrorsCount), new InvalidConfigurationParameter(MAX_CONSECUTIVE_ERRORS_COUNT, maxConsecutiveErrorsCountAsString));
+
         guard(notNull(recipients), new InvalidConfigurationParameter(RECIPIENTS, "null"));
         this.recipients = new ArrayList<>();
 
@@ -94,6 +108,10 @@ public class Configuration {
         guard(isPositive(this.snapshotsStoreCapacity = snapshotsStoreCapacity), new InvalidConfigurationParameter(SNAPSHOTS_STORE_CAPACITY, String.valueOf(snapshotsStoreCapacity)));
 
         guard(isValidString(this.appVersion = appVersion), new InvalidConfigurationParameter(APP_VERSION, appVersion));
+    }
+
+    public CronJobConfiguration getCronJobConfiguration() {
+        return new CronJobConfiguration(this.maxConsecutiveErrorsCount, this.rushHour, this.getRecipients());
     }
 
     public AccessParameters getAccessParameters() {
@@ -153,10 +171,12 @@ public class Configuration {
         final List<String> recipients = Arrays.asList(recipientsAsString.split(";"));
         final String waitTimeMillis = System.getProperty(WAIT_TIME_MILLIS);
         final String snapshotsStoreCapacity = System.getProperty(SNAPSHOTS_STORE_CAPACITY);
+        final String rushHour = System.getProperty(RUSH_HOUR);
+        final String maxConsecutiveErrorsCount = System.getProperty(MAX_CONSECUTIVE_ERRORS_COUNT);
 
         final String appVersionAsString = System.getProperty(APP_VERSION);
 
-        return new Configuration(origin, host, loginUrl, loginReferer, loginData, downloadUrl, downloadReferer, downloadData, accountsUrl, accountsReferer, admin, recipients, waitTimeMillis, snapshotsStoreCapacity, appVersionAsString);
+        return new Configuration(origin, host, loginUrl, loginReferer, loginData, downloadUrl, downloadReferer, downloadData, accountsUrl, accountsReferer, admin, recipients, waitTimeMillis, snapshotsStoreCapacity, rushHour, maxConsecutiveErrorsCount, appVersionAsString);
     }
 
     @Override
@@ -176,7 +196,10 @@ public class Configuration {
                 ", recipients=" + recipients +
                 ", waitTimeMillis=" + waitTimeMillis +
                 ", snapshotsStoreCapacity=" + snapshotsStoreCapacity +
+                ", rushHour=" + rushHour +
+                ", maxConsecutiveErrorsCount=" + maxConsecutiveErrorsCount +
                 ", appVersion='" + appVersion + '\'' +
                 '}';
     }
+
 }
