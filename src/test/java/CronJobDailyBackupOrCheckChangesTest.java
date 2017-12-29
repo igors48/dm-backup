@@ -95,16 +95,28 @@ public class CronJobDailyBackupOrCheckChangesTest {
                                 Action.CHECK_CHANGES
                         },
                         {
+                                "if backup has performed in last 24 hours then check changes",
+                                "29/12/2017 22:00:05",
+                                "30/12/2017 21:59:59",
+                                Action.CHECK_CHANGES
+                        },
+                        {
                                 "if backup has not performed in last 24 hours then backup",
                                 "28/12/2017 22:00:05",
                                 "29/12/2017 22:00:05",
                                 Action.DAILY_BACKUP
                         },
                         {
-                                "if backup has not performed in last 24 hours then backup",
-                                "28/10/2017 22:00:05",
-                                "29/12/2017 22:00:05",
+                                "when last backup has performed later than rush hour then new backup will be performed in rush time",
+                                "28/12/2017 03:00:05",
+                                "28/12/2017 22:00:05",
                                 Action.DAILY_BACKUP
+                        },
+                        {
+                                "when last backup has performed later than rush hour then new backup will be performed in rush time",
+                                "28/12/2017 03:00:05",
+                                "28/12/2017 21:59:59",
+                                Action.CHECK_CHANGES
                         }
                 }
         );

@@ -95,7 +95,9 @@ public class CronJob {
             cronJobState.onSuccess();
 
             final long lastRushTime = this.calculateLastRushTime();
-            final boolean dailyBackupPerformed = lastRushTime < cronJobState.getLastDailyBackupTimestamp();
+            final long lastDailyBackupTimestamp = cronJobState.getLastDailyBackupTimestamp();
+
+            final boolean dailyBackupPerformed = lastRushTime < lastDailyBackupTimestamp;
 
             this.cronJobStateStore.store(cronJobState);
 
