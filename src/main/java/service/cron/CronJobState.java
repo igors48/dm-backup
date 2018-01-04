@@ -55,4 +55,28 @@ public class CronJobState {
         return this.totalErrorCount;
     }
 
+    @Override
+    public boolean equals(final Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        CronJobState that = (CronJobState) o;
+
+        if (lastDailyBackupTimestamp != that.lastDailyBackupTimestamp) return false;
+        if (errorCounter != that.errorCounter) return false;
+        if (totalSuccessCount != that.totalSuccessCount) return false;
+        if (totalFailCount != that.totalFailCount) return false;
+        return totalErrorCount == that.totalErrorCount;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = (int) (lastDailyBackupTimestamp ^ (lastDailyBackupTimestamp >>> 32));
+        result = 31 * result + errorCounter;
+        result = 31 * result + totalSuccessCount;
+        result = 31 * result + totalFailCount;
+        result = 31 * result + totalErrorCount;
+        return result;
+    }
+
 }
