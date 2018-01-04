@@ -9,7 +9,8 @@ public enum Kind {
     ROOT("Root"),
     TIMESTAMP("Timestamp"),
     CHANGE("Change"),
-    DAILY("Daily");
+    DAILY("Daily"),
+    CRON_JOB_STATE("CronJobState");
 
     public final String value;
 

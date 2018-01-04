@@ -40,6 +40,7 @@ public class SnapshotConverter extends Converter<Snapshot> {
 
         @Override
         public void write(final Entity entity, final Snapshot data) {
+            guard(notNull(entity));
             guard(notNull(data));
 
             entity.setProperty(UUID_KEY, data.uuid.toString());

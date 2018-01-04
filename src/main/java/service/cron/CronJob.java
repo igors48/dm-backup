@@ -106,6 +106,7 @@ public class CronJob {
             if (dailyBackupPerformed) {
                 this.backup.checkChanges(content);
             } else {
+                //TODO update last backup timestamp
                 this.backup.dailyBackup(content);
             }
 

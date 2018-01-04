@@ -27,6 +27,7 @@ public class TimestampConverter extends Converter<Long> {
 
         @Override
         public void write(final Entity entity, final Long data) {
+            guard(notNull(entity));
             guard(notNull(data));
 
             entity.setProperty(TIMESTAMP_KEY, data);
