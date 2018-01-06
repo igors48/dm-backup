@@ -20,16 +20,16 @@ public class CronJob {
     private final Loader loader;
     private final Sender sender;
     private final Backup backup;
-    private final CronJobStateStore cronJobStateStore;
+    private final CronJobStateRepository cronJobStateRepository;
     private final TimeService timeService;
     private final Transactions transactions;
 
-    public CronJob(final CronJobConfiguration configuration, final Loader loader, final Sender sender, final Backup backup, final CronJobStateStore cronJobStateStore, final TimeService timeService, final Transactions transactions) {
+    public CronJob(final CronJobConfiguration configuration, final Loader loader, final Sender sender, final Backup backup, final CronJobStateRepository cronJobStateRepository, final TimeService timeService, final Transactions transactions) {
         guard(notNull(this.configuration = configuration));
         guard(notNull(this.loader = loader));
         guard(notNull(this.sender = sender));
         guard(notNull(this.backup = backup));
-        guard(notNull(this.cronJobStateStore = cronJobStateStore));
+        guard(notNull(this.cronJobStateRepository = cronJobStateRepository));
         guard(notNull(this.timeService = timeService));
         guard(notNull(this.transactions = transactions));
     }
@@ -49,9 +49,9 @@ public class CronJob {
         try {
             transaction = this.transactions.beginOne();
 
-            final CronJobState cronJobState = this.cronJobStateStore.load();
+            final CronJobState cronJobState = this.cronJobStateRepository.load();
             final boolean errorMailShouldSent = this.checkErrorMailShouldSent(cronJobState);
-            this.cronJobStateStore.store(cronJobState);
+            this.cronJobStateRepository.store(cronJobState);
 
             transaction.commit();
 
@@ -91,7 +91,7 @@ public class CronJob {
         try {
             transaction = this.transactions.beginOne();
 
-            final CronJobState cronJobState = this.cronJobStateStore.load();
+            final CronJobState cronJobState = this.cronJobStateRepository.load();
             cronJobState.onSuccess();
 
             final long lastRushTime = this.calculateLastRushTime();
@@ -99,14 +99,20 @@ public class CronJob {
 
             final boolean dailyBackupPerformed = lastRushTime < lastDailyBackupTimestamp;
 
-            this.cronJobStateStore.store(cronJobState);
+            final boolean updateLastBackupTimeStamp = !dailyBackupPerformed;
+
+            if (updateLastBackupTimeStamp) {
+                final long timestamp = this.timeService.currentTimestamp();
+                cronJobState.onDailyBackup(timestamp);
+            }
+
+            this.cronJobStateRepository.store(cronJobState);
 
             transaction.commit();
 
             if (dailyBackupPerformed) {
                 this.backup.checkChanges(content);
             } else {
-                //TODO update last backup timestamp
                 this.backup.dailyBackup(content);
             }
 

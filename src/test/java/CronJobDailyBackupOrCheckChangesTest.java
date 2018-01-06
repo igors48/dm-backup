@@ -7,7 +7,7 @@ import service.configuration.Recipients;
 import service.cron.CronJob;
 import service.cron.CronJobConfiguration;
 import service.cron.CronJobState;
-import service.cron.CronJobStateStore;
+import service.cron.CronJobStateRepository;
 import service.error.ServiceException;
 import util.account.Account;
 
@@ -38,7 +38,7 @@ public class CronJobDailyBackupOrCheckChangesTest {
         final TimeService timeServiceStub = new TimeServiceStub(parse(currentDate));
 
         final CronJobState cronJobState = new CronJobState(parse(lastBackupDate), 0, 0, 0, 0);
-        final CronJobStateStore cronJobStateStore = new CronJobStateStoreStub(cronJobState);
+        final CronJobStateRepository cronJobStateRepository = new CronJobStateRepositoryStub(cronJobState);
 
         final Sender sender = mock(Sender.class);
 
@@ -52,7 +52,7 @@ public class CronJobDailyBackupOrCheckChangesTest {
         when(transactions.beginOne()).thenReturn(transactionStub);
 
         final CronJobConfiguration configuration = new CronJobConfiguration(1, RUSH_HOUR, new Recipients(EMAIL, Collections.singletonList("admin@a.com")));
-        this.cronJob = new CronJob(configuration, loader, sender, this.backup, cronJobStateStore, timeServiceStub, transactions);
+        this.cronJob = new CronJob(configuration, loader, sender, this.backup, cronJobStateRepository, timeServiceStub, transactions);
 
         this.expected = expected;
     }

@@ -39,6 +39,10 @@ public class CronJobState {
         ++this.totalErrorCount;
     }
 
+    public void onDailyBackup(final long timestamp) {
+        guard(isPositive(this.lastDailyBackupTimestamp = timestamp));
+    }
+
     public int getTotalFailCount() {
         return this.totalFailCount;
     }

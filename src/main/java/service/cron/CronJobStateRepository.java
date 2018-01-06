@@ -1,6 +1,6 @@
 package service.cron;
 
-public interface CronJobStateStore {
+public interface CronJobStateRepository {
 
     CronJobState load();
 

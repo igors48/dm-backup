@@ -11,11 +11,11 @@ public class CronJobLoaderSuccessTest extends CronJobTestBase {
         when(this.loader.load()).thenReturn(CONTENT);
 
         final CronJobState original = new CronJobState(0, 1, 0, 0, 0);
-        this.cronJobStateStore.store(original);
+        this.cronJobStateRepository.store(original);
 
         this.cronJob.execute();
 
-        final CronJobState updated = this.cronJobStateStore.load();
+        final CronJobState updated = this.cronJobStateRepository.load();
 
         assertEquals(0, updated.getErrorCounter());
     }
@@ -25,11 +25,11 @@ public class CronJobLoaderSuccessTest extends CronJobTestBase {
         when(this.loader.load()).thenReturn(CONTENT);
 
         final CronJobState original = new CronJobState(0, 1, 0, 0, 0);
-        this.cronJobStateStore.store(original);
+        this.cronJobStateRepository.store(original);
 
         this.cronJob.execute();
 
-        final CronJobState updated = this.cronJobStateStore.load();
+        final CronJobState updated = this.cronJobStateRepository.load();
 
         assertEquals(1, updated.getTotalSuccessCount());
     }

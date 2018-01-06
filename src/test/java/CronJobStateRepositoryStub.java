@@ -1,11 +1,11 @@
 import service.cron.CronJobState;
-import service.cron.CronJobStateStore;
+import service.cron.CronJobStateRepository;
 
-public class CronJobStateStoreStub implements CronJobStateStore {
+public class CronJobStateRepositoryStub implements CronJobStateRepository {
 
     private CronJobState state;
 
-    public CronJobStateStoreStub(final CronJobState state) {
+    public CronJobStateRepositoryStub(final CronJobState state) {
         this.state = state;
     }
 
