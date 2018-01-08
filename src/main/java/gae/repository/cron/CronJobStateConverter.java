@@ -16,7 +16,7 @@ import static util.Parameter.notNull;
 
 public class CronJobStateConverter extends Converter<CronJobState> {
 
-    private static final CronJobStateConverter CRON_JOB_STATE_CONVERTER = CronJobStateConverter.create();
+    public static final CronJobStateConverter CRON_JOB_STATE_CONVERTER = CronJobStateConverter.create();
 
     private static final int VERSION = 1;
 
