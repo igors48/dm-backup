@@ -5,6 +5,8 @@ import static util.Parameter.isPositive;
 
 public class CronJobState {
 
+    public static final CronJobState INITIAL = new CronJobState(0, 0, 0, 0, 0);
+
     private long lastDailyBackupTimestamp;
     private int errorCounter;
     private int totalSuccessCount;

@@ -49,7 +49,7 @@ public class CronJob {
         try {
             transaction = this.transactions.beginOne();
 
-            final CronJobState cronJobState = this.cronJobStateRepository.load();
+            final CronJobState cronJobState = this.loadCronJobState();
             final boolean errorMailShouldSent = this.checkErrorMailShouldSent(cronJobState);
             this.cronJobStateRepository.store(cronJobState);
 
@@ -91,7 +91,7 @@ public class CronJob {
         try {
             transaction = this.transactions.beginOne();
 
-            final CronJobState cronJobState = this.cronJobStateRepository.load();
+            final CronJobState cronJobState = this.loadCronJobState();
             cronJobState.onSuccess();
 
             final long lastRushTime = this.calculateLastRushTime();
@@ -135,6 +135,12 @@ public class CronJob {
         final DateTime rushTime = currentTimestamp < todayRushTime.getMillis() ? todayRushTime.minusDays(1) : todayRushTime;
 
         return rushTime.getMillis();
+    }
+
+    private CronJobState loadCronJobState() {
+        final CronJobState loaded = this.cronJobStateRepository.load();
+
+        return loaded == null ? CronJobState.INITIAL : loaded;
     }
 
 }
