@@ -16,6 +16,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 
+import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.*;
 
 @RunWith(value = Parameterized.class)
@@ -34,11 +35,14 @@ public class CronJobDailyBackupOrCheckChangesTest {
     private CronJob cronJob;
     private Action expected;
 
+    private CronJobStateRepository cronJobStateRepository;
+    private TimeService timeServiceStub;
+
     public CronJobDailyBackupOrCheckChangesTest(final String name, final String lastBackupDate, final String currentDate, final Action expected) throws ServiceException {
-        final TimeService timeServiceStub = new TimeServiceStub(parse(currentDate));
+        this.timeServiceStub = new TimeServiceStub(parse(currentDate));
 
         final CronJobState cronJobState = new CronJobState(parse(lastBackupDate), 0, 0, 0, 0);
-        final CronJobStateRepository cronJobStateRepository = new CronJobStateRepositoryStub(cronJobState);
+        this.cronJobStateRepository = new CronJobStateRepositoryStub(cronJobState);
 
         final Sender sender = mock(Sender.class);
 
@@ -52,7 +56,7 @@ public class CronJobDailyBackupOrCheckChangesTest {
         when(transactions.beginOne()).thenReturn(transactionStub);
 
         final CronJobConfiguration configuration = new CronJobConfiguration(1, RUSH_HOUR, new Recipients(EMAIL, Collections.singletonList("admin@a.com")));
-        this.cronJob = new CronJob(configuration, loader, sender, this.backup, cronJobStateRepository, timeServiceStub, transactions);
+        this.cronJob = new CronJob(configuration, loader, sender, this.backup, this.cronJobStateRepository, this.timeServiceStub, transactions);
 
         this.expected = expected;
     }
@@ -63,17 +67,29 @@ public class CronJobDailyBackupOrCheckChangesTest {
 
     @Test
     public void test() {
+        final CronJobState origin = this.cronJobStateRepository.load();
+        final long originLastDailyBackupTimestamp = origin.getLastDailyBackupTimestamp();
+
         this.cronJob.execute();
+
+        final CronJobState updated = this.cronJobStateRepository.load();
+        final long updatedLastDailyBackupTimestamp = updated.getLastDailyBackupTimestamp();
 
         switch (this.expected) {
 
             case DAILY_BACKUP:
+                assertEquals(this.timeServiceStub.currentTimestamp(), updatedLastDailyBackupTimestamp);
+
                 verify(this.backup).dailyBackup(CONTENT);
                 verifyNoMoreInteractions(this.backup);
+
                 break;
             case CHECK_CHANGES:
+                assertEquals(originLastDailyBackupTimestamp, updatedLastDailyBackupTimestamp);
+
                 verify(this.backup).checkChanges(CONTENT);
                 verifyNoMoreInteractions(this.backup);
+
                 break;
         }
     }
