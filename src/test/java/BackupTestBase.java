@@ -29,7 +29,6 @@ public class BackupTestBase {
     protected static final String B_C_COM = "b@c.com";
     protected static final String C_D_COM = "c@d.com";
 
-    protected Loader loader;
     protected Sender sender;
     protected ChangesDetector changesDetector;
     protected Backup backup;
@@ -38,29 +37,28 @@ public class BackupTestBase {
     protected SnapshotStore dailySnapshotStore;
     protected TransactionStub transactionStub;
     protected TimeServiceStub timeServiceStub;
-    private Transactions transactions;
+    protected Recipients recipients;
+    protected Transactions transactions;
 
     @Before
-    public void setUp() throws Exception {
-        this.loader = mock(Loader.class);
+    public void setUp() {
         this.sender = mock(Sender.class);
         this.changesDetector = mock(ChangesDetector.class);
         this.changesSnapshotStore = mock(SnapshotStore.class);
         this.dailySnapshotStore = mock(SnapshotStore.class);
         this.transactions = mock(Transactions.class);
         this.transactionStub = new TransactionStub();
-        this.timeServiceStub = new TimeServiceStub();
+        this.timeServiceStub = new TimeServiceStub(0);
 
         this.serviceException = mock(ServiceException.class);
 
-        final Recipients recipients = new Recipients(A_B_COM, Arrays.asList(B_C_COM, C_D_COM));
+        this.recipients = new Recipients(A_B_COM, Arrays.asList(B_C_COM, C_D_COM));
 
         when(this.transactions.beginOne()).thenReturn(this.transactionStub);
-        when(loader.load()).thenReturn(CONTENT);
         when(this.changesDetector.getActionForContent(CONTENT.file)).thenReturn(Action.NO_ACTION);
         when(this.dailySnapshotStore.loadLatestSnapshot()).thenReturn(LATEST_SNAPSHOT);
         when(this.dailySnapshotStore.store((Content) any())).thenReturn(CURRENT_SNAPSHOT);
 
-        this.backup = new Backup(this.loader, this.sender, this.changesDetector, recipients, this.changesSnapshotStore, this.dailySnapshotStore, this.timeServiceStub, transactions);
+        this.backup = new Backup(this.sender, this.changesDetector, this.recipients, this.changesSnapshotStore, this.dailySnapshotStore, this.timeServiceStub, transactions);
     }
 }

@@ -18,7 +18,7 @@ public class SnapshotStoreTestBase {
     @Before
     public void setUp() throws Exception {
         this.snapshotRepository = new SnapshotRepositoryStub();
-        this.timeService = new TimeServiceStub();
+        this.timeService = new TimeServiceStub(0);
 
         this.snapshotStore = new SnapshotStore(MAXIMUM_CAPACITY, Type.CHANGE, this.snapshotRepository, this.timeService);
     }

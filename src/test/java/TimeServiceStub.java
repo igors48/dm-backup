@@ -7,6 +7,10 @@ public class TimeServiceStub implements TimeService {
 
     private long timestamp;
 
+    public TimeServiceStub(final long timestamp) {
+        this.timestamp = timestamp;
+    }
+
     @Override
     public long currentTimestamp() {
         return this.timestamp;

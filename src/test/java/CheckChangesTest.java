@@ -15,10 +15,7 @@ public class CheckChangesTest extends BackupTestBase {
 
     @Test
     public void whenContentReceivedThenItSendsToChangesDetector() throws Exception {
-        this.backup.checkChanges();
-
-        verify(this.loader).load();
-        verifyNoMoreInteractions(this.loader);
+        this.backup.checkChanges(CONTENT);
 
         verify(changesDetector).getActionForContent(CONTENT.file);
         verifyNoMoreInteractions(changesDetector);
@@ -29,7 +26,7 @@ public class CheckChangesTest extends BackupTestBase {
         final Date date = new Date();
         when(this.changesDetector.getActionForContent(CONTENT.file)).thenReturn(Action.send(CONTENT.accounts, date, date));
 
-        this.backup.checkChanges();
+        this.backup.checkChanges(CONTENT);
 
         verify(this.sender).sendChangedContent(A_B_COM, B_C_COM, CONTENT, new ArrayList<Account>(), date, date);
         verify(this.sender).sendChangedContent(A_B_COM, C_D_COM, CONTENT, new ArrayList<Account>(), date, date);
@@ -40,7 +37,7 @@ public class CheckChangesTest extends BackupTestBase {
     public void whenContentChangesNotDetectedThenContentNotSent() throws Exception {
         when(this.changesDetector.getActionForContent(CONTENT.file)).thenReturn(Action.NO_ACTION);
 
-        this.backup.checkChanges();
+        this.backup.checkChanges(CONTENT);
 
         verifyZeroInteractions(sender);
     }
@@ -51,10 +48,7 @@ public class CheckChangesTest extends BackupTestBase {
         when(this.changesDetector.getActionForContent(CONTENT.file)).thenReturn(Action.send(CONTENT.accounts, date, date));
         doThrow(this.serviceException).when(sender).sendChangedContent(A_B_COM, B_C_COM, CONTENT, new ArrayList<Account>(), date, date);
 
-        this.backup.checkChanges();
-
-        verify(this.loader).load();
-        verifyNoMoreInteractions(this.loader);
+        this.backup.checkChanges(CONTENT);
 
         verify(this.sender).sendChangedContent(A_B_COM, B_C_COM, CONTENT, new ArrayList<Account>(), date, date);
         verify(this.sender).sendException(A_B_COM, this.serviceException);
@@ -63,26 +57,12 @@ public class CheckChangesTest extends BackupTestBase {
     }
 
     @Test
-    public void whenContentNotReceivedThenErrorSentToErrorRecipient() throws Exception {
-        when(this.loader.load()).thenThrow(this.serviceException);
-
-        this.backup.checkChanges();
-
-        verify(this.loader).load();
-        verifyNoMoreInteractions(this.loader);
-
-        verify(this.sender).sendException(A_B_COM, this.serviceException);
-        verifyNoMoreInteractions(this.sender);
-    }
-
-    @Test
     public void whenErrorCanNotBeSentThenNoExceptionThrown() throws Exception {
 
         try {
-            when(this.loader.load()).thenThrow(this.serviceException);
             doThrow(this.serviceException).when(this.sender).sendException(A_B_COM, this.serviceException);
 
-            this.backup.checkChanges();
+            this.backup.checkChanges(CONTENT);
         } catch (Exception exception) {
             fail();
         }

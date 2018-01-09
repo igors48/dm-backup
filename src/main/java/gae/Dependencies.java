@@ -2,6 +2,8 @@ package gae;
 
 import gae.repository.GaeDatastore;
 import gae.repository.GaeTransactions;
+import gae.repository.cron.CronJobStateConverter;
+import gae.repository.cron.GaeCronJobStateRepository;
 import gae.repository.snapshot.GaeSnapshotRepository;
 import gae.repository.snapshot.SnapshotConverter;
 import gae.repository.timestamp.GaeTimestampRepository;
@@ -9,6 +11,8 @@ import gae.repository.timestamp.TimestampConverter;
 import gae.service.GaeTimeService;
 import service.*;
 import service.configuration.Configuration;
+import service.cron.CronJob;
+import service.cron.CronJobStateRepository;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -34,6 +38,8 @@ public enum Dependencies {
     private static SnapshotStore changesSnapshotStore;
     private static SnapshotStore dailySnapshotStore;
     private static Backup backup;
+    private static CronJobStateRepository cronJobStateRepository;
+    private static CronJob cronJob;
 
     static {
 
@@ -53,15 +59,17 @@ public enum Dependencies {
             changesSnapshotStore = new SnapshotStore(configuration.getSnapshotsStoreCapacity(), Type.CHANGE, changesSnapshotRepository, timeService);
             dailySnapshotStore = new SnapshotStore(configuration.getSnapshotsStoreCapacity(), Type.DAILY, dailySnapshotRepository, timeService);
             changesDetector = new ChangesDetector(changesSnapshotRepository, timestampRepository, timeService, configuration.getWaitTimeMillis(), transactions);
-            backup = new Backup(loader, sender, changesDetector, configuration.getRecipients(), changesSnapshotStore, dailySnapshotStore, timeService, transactions);
+            backup = new Backup(sender, changesDetector, configuration.getRecipients(), changesSnapshotStore, dailySnapshotStore, timeService, transactions);
+            cronJobStateRepository = new GaeCronJobStateRepository(GaeDatastore.INSTANCE.getDatastoreService(), CronJobStateConverter.CRON_JOB_STATE_CONVERTER);
+            cronJob = new CronJob(configuration.getCronJobConfiguration(), loader, sender, backup, cronJobStateRepository, timeService, transactions);
 
         } catch (Exception exception) {
             LOGGER.log(Level.SEVERE, "Application initialization error", exception);
         }
     }
 
-    public Backup backupService() {
-        return backup;
+    public CronJob cronJob() {
+        return cronJob;
     }
 
 }

@@ -1,4 +1,5 @@
 import service.Content;
+import service.cron.CronJobState;
 import util.account.Account;
 
 import java.util.ArrayList;
@@ -29,5 +30,8 @@ public class TestData {
         return new Account(title, balance);
     }
 
+    public static CronJobState createCronJobState() {
+        return new CronJobState(48, 49, 50, 51, 52);
+    }
 
 }
