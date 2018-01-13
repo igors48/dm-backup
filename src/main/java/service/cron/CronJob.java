@@ -75,7 +75,7 @@ public class CronJob {
     }
 
     private boolean checkErrorMailShouldSent(final CronJobState cronJobState) {
-        final int errorCounter = cronJobState.onFail();
+        final long errorCounter = cronJobState.onFail();
 
         if (errorCounter > this.configuration.maxConsecutiveErrorsCount) {
             cronJobState.onError();

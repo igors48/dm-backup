@@ -51,10 +51,10 @@ public class CronJobStateConverter extends Converter<CronJobState> {
             guard(notNull(entity));
 
             final long lastDailyBackupTimestamp = (long) entity.getProperty(LAST_DAILY_BACKUP_TIMESTAMP_KEY);
-            final int errorCounter = (int) entity.getProperty(ERROR_COUNTER_KEY);
-            final int totalSuccessCount = (int) entity.getProperty(TOTAL_SUCCESS_COUNT_KEY);
-            final int totalFailCount = (int) entity.getProperty(TOTAL_FAIL_COUNT_KEY);
-            final int totalErrorCount = (int) entity.getProperty(TOTAL_ERROR_COUNT_KEY);
+            final long errorCounter = (long) entity.getProperty(ERROR_COUNTER_KEY);
+            final long totalSuccessCount = (long) entity.getProperty(TOTAL_SUCCESS_COUNT_KEY);
+            final long totalFailCount = (long) entity.getProperty(TOTAL_FAIL_COUNT_KEY);
+            final long totalErrorCount = (long) entity.getProperty(TOTAL_ERROR_COUNT_KEY);
 
             return new CronJobState(lastDailyBackupTimestamp, errorCounter, totalSuccessCount, totalFailCount, totalErrorCount);
         }
