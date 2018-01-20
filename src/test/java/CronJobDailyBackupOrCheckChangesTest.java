@@ -133,6 +133,12 @@ public class CronJobDailyBackupOrCheckChangesTest {
                                 "28/12/2017 03:00:05",
                                 "28/12/2017 21:59:59",
                                 Action.CHECK_CHANGES
+                        },
+                        {
+                                "one hour bug",
+                                "28/12/2017 03:00:05",
+                                "28/12/2017 03:05:05",
+                                Action.CHECK_CHANGES
                         }
                 }
         );
