@@ -8,10 +8,21 @@ import service.cron.CronJobStateRepository;
 
 import java.util.List;
 
+import static util.Assert.guard;
+import static util.Parameter.notNull;
+
 public class GaeCronJobStateRepository extends Repository<CronJobState> implements CronJobStateRepository {
 
     public GaeCronJobStateRepository(final DatastoreService service, final Converter<CronJobState> converter) {
         super(service, converter);
+    }
+
+    @Override
+    public void store(final CronJobState value) {
+        guard(notNull(value));
+
+        super.clear();
+        super.store(value);
     }
 
     @Override
