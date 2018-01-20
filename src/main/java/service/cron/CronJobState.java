@@ -8,12 +8,12 @@ public class CronJobState {
     public static final CronJobState INITIAL = new CronJobState(0, 0, 0, 0, 0);
 
     private long lastDailyBackupTimestamp;
-    private int errorCounter;
-    private int totalSuccessCount;
-    private int totalFailCount;
-    private int totalErrorCount;
+    private long errorCounter;
+    private long totalSuccessCount;
+    private long totalFailCount;
+    private long totalErrorCount;
 
-    public CronJobState(final long lastDailyBackupTimestamp, final int errorCounter, final int totalSuccessCount, final int totalFailCount, final int totalErrorCount) {
+    public CronJobState(final long lastDailyBackupTimestamp, final long errorCounter, final long totalSuccessCount, final long totalFailCount, final long totalErrorCount) {
         guard(isPositive(this.lastDailyBackupTimestamp = lastDailyBackupTimestamp));
         guard(isPositive(this.errorCounter = errorCounter));
         guard(isPositive(this.totalSuccessCount = totalSuccessCount));
@@ -30,7 +30,7 @@ public class CronJobState {
         ++this.totalSuccessCount;
     }
 
-    public int onFail() {
+    public long onFail() {
         this.totalFailCount++;
 
         return ++this.errorCounter;
@@ -45,19 +45,19 @@ public class CronJobState {
         guard(isPositive(this.lastDailyBackupTimestamp = timestamp));
     }
 
-    public int getTotalFailCount() {
+    public long getTotalFailCount() {
         return this.totalFailCount;
     }
 
-    public int getErrorCounter() {
+    public long getErrorCounter() {
         return this.errorCounter;
     }
 
-    public int getTotalSuccessCount() {
+    public long getTotalSuccessCount() {
         return this.totalSuccessCount;
     }
 
-    public int getTotalErrorCount() {
+    public long getTotalErrorCount() {
         return this.totalErrorCount;
     }
 
@@ -78,10 +78,10 @@ public class CronJobState {
     @Override
     public int hashCode() {
         int result = (int) (lastDailyBackupTimestamp ^ (lastDailyBackupTimestamp >>> 32));
-        result = 31 * result + errorCounter;
-        result = 31 * result + totalSuccessCount;
-        result = 31 * result + totalFailCount;
-        result = 31 * result + totalErrorCount;
+        result = 31 * result + (int) (errorCounter ^ (errorCounter >>> 32));
+        result = 31 * result + (int) (totalSuccessCount ^ (totalSuccessCount >>> 32));
+        result = 31 * result + (int) (totalFailCount ^ (totalFailCount >>> 32));
+        result = 31 * result + (int) (totalErrorCount ^ (totalErrorCount >>> 32));
         return result;
     }
 
